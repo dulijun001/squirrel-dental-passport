@@ -882,9 +882,9 @@
       let count = 0;
       checkboxes.forEach(cb => { if(cb.checked) count++; });
       const badge = document.getElementById('checklist-progress');
-      badge.textContent = ;
+      badge.textContent = count + ' / ' + checkboxes.length + ' 完成';
 
-      showToast();
+      showToast('已完成【' + itemName + '】打卡，状态已同步企微');
 
       if (count === checkboxes.length) {
         badge.classList.remove('text-emerald-400', 'bg-emerald-500/10');
@@ -907,7 +907,7 @@
       } else {
         reply = '已为您接通专属管家微信通道，请在微信中直接拍照发送，值班医生将在 3 分钟内为您研判！';
       }
-      alert();
+      alert('【松鼠口腔 · 智能应答】\n\n' + reply);
     }
 
     // 6. 医生语音条播放
@@ -950,13 +950,7 @@
       try {
         confetti({ particleCount: 90, spread: 80, origin: { y: 0.5 } });
       } catch(e) {}
-      alert('【松鼠口腔 · 微笑新生纪念卡】已为您生成！
-
-★ 专属质保编号：SQ-ITI-202610-889
-★ 主刀院长：刘彦廷 (20年资历)
-★ 专属特权：已激活全国联保与每年免费洁牙
-
-卡片已自动排版，可截图直接发送朋友圈分享微笑喜悦！');
+      alert('【松鼠口腔 · 微笑新生纪念卡】已为您生成！\n\n★ 专属质保编号：SQ-ITI-202610-889\n★ 主刀院长：刘彦廷 (20年资历)\n★ 专属特权：已激活全国联保与每年免费洁牙\n\n卡片已自动排版，可截图直接发送朋友圈分享微笑喜悦！');
     }
 
     // 8. 案例弹窗
@@ -970,16 +964,12 @@
 
     // 9. 家庭权益领取
     function claimFamilyGift() {
-      alert('恭喜张叔！您已成功激活【松鼠家庭口腔守护计划】！
-
-我们已将家庭专属卡券发送至您的手机微信，老伴的假牙超声养护与孙辈的防龋涂氟绿色通道本月均可随时使用。');
+      alert('恭喜张叔！您已成功激活【松鼠家庭口腔守护计划】！\n\n我们已将家庭专属卡券发送至您的手机微信，老伴的假牙超声养护与孙辈的防龋涂氟绿色通道本月均可随时使用。');
     }
 
     // 10. 地图与转发
     function openMapNavigation() {
-      alert('正在启动地图导航前往：【昆明松鼠口腔旗舰门诊】
-地址：昆明市西山区环城南路
-B1-08 专属车位已录入张叔车牌，免费自动抬杆。');
+      alert('正在启动地图导航前往：【昆明松鼠口腔旗舰门诊】\n地址：昆明市西山区环城南路\nB1-08 专属车位已录入张叔车牌，免费自动抬杆。');
     }
     function sharePage() {
       if (navigator.share) {
@@ -1171,6 +1161,7 @@ B1-08 专属车位已录入张叔车牌，免费自动抬杆。');
     window.addEventListener('DOMContentLoaded', () => {
       init3D();
     });
+
   </script>
 </body>
 </html>

@@ -16,6 +16,8 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Confetti 礼花动效 -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Three.js 3D 渲染引擎 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <style>
     * {
@@ -557,6 +559,90 @@
             </div>
             <div class="text-[11px] text-slate-600 mt-1 leading-relaxed">
               放射专科医生进行卡瓦超微剂量 CBCT 扫描，0.075mm 精微成像，1:1 精准测量缺牙区骨高度、骨密度与下颌神经走向。
+            </div>
+          </div>
+        </div>
+
+        <!-- 🌟 核心增值模块：3D 仿生种植牙·交互式全景解构视窗 -->
+        <div class="relative rounded-2xl overflow-hidden border border-orange-200/90 shadow-md bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 text-white p-3.5 my-1">
+          <!-- 头部标题与触控引导 -->
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-lg bg-orange-500/20 border border-orange-500/40 text-orange-400 flex items-center justify-center font-bold">
+                <i data-lucide="box" class="w-3.5 h-3.5"></i>
+              </div>
+              <div>
+                <div class="text-xs font-black text-white flex items-center gap-1.5">
+                  <span>3D 仿生微创种植 · 结构原理解构</span>
+                  <span class="text-[8.5px] px-1 py-0.2 rounded bg-orange-500/20 text-orange-300 border border-orange-500/40 font-bold">360°可旋转</span>
+                </div>
+                <div class="text-[9.5px] text-slate-400 mt-0.5">单指滑动全方位旋转 · 消除未知恐惧 · 亲见骨结合原理</div>
+              </div>
+            </div>
+            <button id="btn-toggle-explode" onclick="toggleImplantExplode()" class="px-2 py-1 rounded-lg bg-orange-500/30 hover:bg-orange-500/40 border border-orange-400/50 text-orange-200 text-[10px] font-bold flex items-center gap-1 active:scale-95 transition-all shrink-0">
+              <i data-lucide="layers" class="w-3 h-3 text-orange-400"></i>
+              <span id="explode-btn-text">一键分层拆解</span>
+            </button>
+          </div>
+
+          <!-- 3D WebGL 交互画布容器 -->
+          <div class="relative w-full h-64 rounded-xl overflow-hidden my-2 bg-gradient-to-b from-slate-950/80 to-slate-900/90 border border-slate-800/80 flex items-center justify-center">
+            <canvas id="implant-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block"></canvas>
+
+            <!-- 旋转引导微提示信标 (交互一次后淡出) -->
+            <div id="hint-drag-rotate" class="pointer-events-none absolute bottom-1 left-2 px-2 py-0.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-orange-500/30 text-[8px] text-orange-200 flex items-center gap-1 shadow-lg transition-opacity duration-500 whitespace-nowrap z-10">
+              <i data-lucide="rotate-cw" class="w-2.5 h-2.5 text-orange-400 animate-spin" style="animation-duration: 3s;"></i>
+              <span>单指左右滑动 360° 旋转</span>
+            </div>
+
+            <!-- 3D 浮动定位锚点标签 (随拆解展开) -->
+            <div id="label-crown" class="absolute top-2 right-2 pointer-events-none bg-slate-900/90 backdrop-blur-sm border border-amber-400/50 px-2 py-0.5 rounded-lg text-right transition-all duration-500 opacity-95 shadow-lg z-10">
+              <div class="text-[9.5px] font-black text-amber-300 flex items-center justify-end gap-1">
+                <span>① 全瓷仿生牙冠</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              </div>
+              <div class="text-[8px] text-slate-300">德国威兰德全瓷 · 媲美真牙</div>
+            </div>
+
+            <div id="label-abutment" class="absolute top-[80px] left-2 pointer-events-none bg-slate-900/90 backdrop-blur-sm border border-sky-400/50 px-2 py-0.5 rounded-lg text-left transition-all duration-500 opacity-95 shadow-lg z-10">
+              <div class="text-[9.5px] font-black text-sky-300 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                <span>② 纯钛精密基台</span>
+              </div>
+              <div class="text-[8px] text-slate-300">0微米微缝固位 · 终身无松动</div>
+            </div>
+
+            <div id="label-implant" class="absolute bottom-2 right-2 pointer-events-none bg-slate-900/90 backdrop-blur-sm border border-emerald-400/50 px-2 py-0.5 rounded-lg text-right transition-all duration-500 opacity-95 shadow-lg z-10">
+              <div class="text-[9.5px] font-black text-emerald-300 flex items-center justify-end gap-1">
+                <span>③ 亲骨微螺纹植体</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              </div>
+              <div class="text-[8px] text-slate-300">四级纯钛SLA · 扎根稳固如真牙</div>
+            </div>
+          </div>
+
+          <!-- 3大结构一键点选大白话医嘱 (适老化大卡片) -->
+          <div class="grid grid-cols-3 gap-1.5 text-center mt-2">
+            <button onclick="highlight3DPart('crown')" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-amber-500/30 text-left transition-all active:scale-95">
+              <div class="text-[10px] font-black text-amber-300">① 牙冠层</div>
+              <div class="text-[8.5px] text-slate-400 mt-0.5 leading-tight">天然真牙透光 啃排骨不崩瓷</div>
+            </button>
+            <button onclick="highlight3DPart('abutment')" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-sky-500/30 text-left transition-all active:scale-95">
+              <div class="text-[10px] font-black text-sky-300">② 基台连接</div>
+              <div class="text-[8.5px] text-slate-400 mt-0.5 leading-tight">纳米锁紧 杜绝细菌塞牙异味</div>
+            </button>
+            <button onclick="highlight3DPart('implant')" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-emerald-500/30 text-left transition-all active:scale-95">
+              <div class="text-[10px] font-black text-emerald-300">③ 亲骨植体</div>
+              <div class="text-[8.5px] text-slate-400 mt-0.5 leading-tight">像树根扎入骨中 30年稳固相伴</div>
+            </button>
+          </div>
+
+          <!-- 白话解惑备忘 (彻底消除“打钢钉”恐惧) -->
+          <div class="mt-2.5 p-2 rounded-xl bg-orange-950/40 border border-orange-500/30 flex items-start gap-2 text-[10px] text-orange-200/90 leading-relaxed">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5"></i>
+            <div>
+              <strong class="text-orange-300 font-bold">刘院长数字化微创承诺：</strong>
+              “很多长辈以为种植牙是开刀打大铁钉，其实植体直径仅如米粒，德国数字化导板导航精微植入，出血少于拔牙，微痛局麻下舒适无感。”
             </div>
           </div>
         </div>
@@ -1742,12 +1828,275 @@
       } catch (err) {}
     }
 
+    // ==================== 3D 仿生种植牙 WebGL / Three.js 交互引擎 ====================
+    let scene3D, camera3D, renderer3D;
+    let crownMesh, abutmentMesh, screwMesh, boneMesh, implantGroup;
+    let isExploded = false;
+    let isDragging3D = false;
+    let prevMousePos = { x: 0, y: 0 };
+    let targetRotationY = 0.4;
+    let targetRotationX = 0.15;
+    let autoRotate = true;
+
+    function init3DImplantViewer() {
+      const canvas = document.getElementById('implant-3d-canvas');
+      if (!canvas || typeof THREE === 'undefined') return;
+
+      const container = canvas.parentElement;
+      const width = container.clientWidth || 340;
+      const height = container.clientHeight || 224;
+
+      // 1. Scene & Camera
+      scene3D = new THREE.Scene();
+      camera3D = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+      camera3D.position.set(0, 0, 5.8);
+
+      // 2. Renderer
+      renderer3D = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+      renderer3D.setSize(width, height);
+      renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer3D.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer3D.toneMappingExposure = 1.15;
+
+      // 3. Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
+      scene3D.add(ambientLight);
+
+      const mainSpot = new THREE.DirectionalLight(0xffedd5, 1.4);
+      mainSpot.position.set(4, 5, 4);
+      scene3D.add(mainSpot);
+
+      const rimLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
+      rimLight.position.set(-4, -2, -3);
+      scene3D.add(rimLight);
+
+      const goldFill = new THREE.PointLight(0xf59e0b, 1.0, 8);
+      goldFill.position.set(2, 1, 2);
+      scene3D.add(goldFill);
+
+      // 4. Model Group
+      implantGroup = new THREE.Group();
+      implantGroup.rotation.y = 0.4;
+      implantGroup.rotation.x = 0.15;
+      scene3D.add(implantGroup);
+
+      // Materials
+      const crownMat = new THREE.MeshPhysicalMaterial({
+        color: 0xfdfdfd,
+        roughness: 0.18,
+        metalness: 0.05,
+        transmission: 0.55,
+        transparent: true,
+        opacity: 0.96,
+        ior: 1.52,
+        reflectivity: 0.8,
+        clearcoat: 0.9,
+        clearcoatRoughness: 0.1
+      });
+
+      const abutmentMat = new THREE.MeshStandardMaterial({
+        color: 0x94a3b8,
+        metalness: 0.85,
+        roughness: 0.25,
+        envMapIntensity: 1.0
+      });
+
+      const titaniumScrewMat = new THREE.MeshStandardMaterial({
+        color: 0x64748b,
+        metalness: 0.82,
+        roughness: 0.35,
+        envMapIntensity: 0.8
+      });
+
+      const boneMat = new THREE.MeshStandardMaterial({
+        color: 0xfcd34d,
+        metalness: 0.1,
+        roughness: 0.65,
+        transparent: true,
+        opacity: 0.32,
+        wireframe: false
+      });
+
+      // --- Part 1: Crown (全瓷仿生牙冠) ---
+      const crownGeo = new THREE.CylinderGeometry(0.55, 0.45, 0.85, 24);
+      // 让牙冠圆润仿生
+      const crownTopGeo = new THREE.SphereGeometry(0.54, 24, 16, 0, Math.PI * 2, 0, Math.PI * 0.4);
+      crownMesh = new THREE.Group();
+      const cBody = new THREE.Mesh(crownGeo, crownMat);
+      const cTop = new THREE.Mesh(crownTopGeo, crownMat);
+      cTop.position.y = 0.38;
+      crownMesh.add(cBody);
+      crownMesh.add(cTop);
+      crownMesh.position.y = 1.0;
+      implantGroup.add(crownMesh);
+
+      // --- Part 2: Abutment (钛合金精密基台) ---
+      abutmentMesh = new THREE.Group();
+      const abGeo1 = new THREE.CylinderGeometry(0.32, 0.42, 0.42, 24);
+      const ab1 = new THREE.Mesh(abGeo1, abutmentMat);
+      const abGeo2 = new THREE.CylinderGeometry(0.24, 0.24, 0.32, 24);
+      const ab2 = new THREE.Mesh(abGeo2, abutmentMat);
+      ab2.position.y = 0.28;
+      abutmentMesh.add(ab1);
+      abutmentMesh.add(ab2);
+      abutmentMesh.position.y = 0.32;
+      implantGroup.add(abutmentMesh);
+
+      // --- Part 3: Implant Screw (亲骨微螺纹植体) ---
+      screwMesh = new THREE.Group();
+      // 主干圆锥
+      const screwBodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 1.45, 24);
+      const screwBody = new THREE.Mesh(screwBodyGeo, titaniumScrewMat);
+      screwMesh.add(screwBody);
+
+      // 精密微螺纹环圈 (5层螺纹)
+      for (let i = 0; i < 5; i++) {
+        const ringGeo = new THREE.TorusGeometry(0.33 - i * 0.03, 0.035, 12, 28);
+        const ring = new THREE.Mesh(ringGeo, titaniumScrewMat);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = 0.45 - i * 0.22;
+        screwMesh.add(ring);
+      }
+      screwMesh.position.y = -0.65;
+      implantGroup.add(screwMesh);
+
+      // --- Part 4: Bone Socket (透光牙槽骨轮廓) ---
+      const boneGeo = new THREE.CylinderGeometry(0.72, 0.55, 1.6, 24);
+      boneMesh = new THREE.Mesh(boneGeo, boneMat);
+      boneMesh.position.y = -0.7;
+      implantGroup.add(boneMesh);
+
+      // 5. Touch / Mouse Event Handlers
+      function onStart(x, y) {
+        isDragging3D = true;
+        autoRotate = false;
+        prevMousePos = { x, y };
+        const hint = document.getElementById('hint-drag-rotate');
+        if (hint) hint.style.opacity = '0';
+      }
+
+      function onMove(x, y) {
+        if (!isDragging3D) return;
+        const deltaX = x - prevMousePos.x;
+        const deltaY = y - prevMousePos.y;
+        targetRotationY += deltaX * 0.012;
+        targetRotationX += deltaY * 0.008;
+        targetRotationX = Math.max(-0.6, Math.min(0.6, targetRotationX));
+        prevMousePos = { x, y };
+      }
+
+      function onEnd() {
+        isDragging3D = false;
+      }
+
+      canvas.addEventListener('mousedown', (e) => onStart(e.clientX, e.clientY));
+      window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
+      window.addEventListener('mouseup', onEnd);
+
+      canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          onStart(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1 && isDragging3D) {
+          onMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', onEnd);
+
+      // 6. Animation Loop
+      function animate() {
+        requestAnimationFrame(animate);
+
+        if (autoRotate && !isDragging3D) {
+          targetRotationY += 0.006;
+        }
+
+        // Smooth damping
+        implantGroup.rotation.y += (targetRotationY - implantGroup.rotation.y) * 0.1;
+        implantGroup.rotation.x += (targetRotationX - implantGroup.rotation.x) * 0.1;
+
+        // Smooth Explode Animation
+        const targetCrownY = isExploded ? 1.42 : 0.85;
+        const targetAbutmentY = isExploded ? 0.52 : 0.25;
+        const targetScrewY = isExploded ? -0.75 : -0.58;
+        const targetBoneY = isExploded ? -0.85 : -0.62;
+
+        crownMesh.position.y += (targetCrownY - crownMesh.position.y) * 0.12;
+        abutmentMesh.position.y += (targetAbutmentY - abutmentMesh.position.y) * 0.12;
+        screwMesh.position.y += (targetScrewY - screwMesh.position.y) * 0.12;
+        boneMesh.position.y += (targetBoneY - boneMesh.position.y) * 0.12;
+
+        renderer3D.render(scene3D, camera3D);
+      }
+      animate();
+
+      // Window resize handler
+      window.addEventListener('resize', () => {
+        const newW = container.clientWidth;
+        const newH = container.clientHeight;
+        camera3D.aspect = newW / newH;
+        camera3D.updateProjectionMatrix();
+        renderer3D.setSize(newW, newH);
+      });
+    }
+
+    function toggleImplantExplode() {
+      isExploded = !isExploded;
+      const btnText = document.getElementById('explode-btn-text');
+      const crownLabel = document.getElementById('label-crown');
+      const abLabel = document.getElementById('label-abutment');
+      const scLabel = document.getElementById('label-implant');
+
+      if (isExploded) {
+        if (btnText) btnText.textContent = '聚合复原模型';
+        if (crownLabel) crownLabel.style.transform = 'translateY(-12px)';
+        if (abLabel) abLabel.style.transform = 'translateY(-6px)';
+        if (scLabel) scLabel.style.transform = 'translateY(12px)';
+        showToast('已完成三层仿生拆解：牙冠、基台、亲骨植体');
+      } else {
+        if (btnText) btnText.textContent = '一键分层拆解';
+        if (crownLabel) crownLabel.style.transform = 'translateY(0)';
+        if (abLabel) abLabel.style.transform = 'translateY(0)';
+        if (scLabel) scLabel.style.transform = 'translateY(0)';
+        showToast('已复原完整植入体形态');
+      }
+    }
+
+    function highlight3DPart(part) {
+      if (!isExploded) toggleImplantExplode();
+
+      if (part === 'crown') {
+        targetRotationX = 0.25;
+        showToast('【全瓷仿生牙冠】：耐磨通透，与真牙硬度色泽 1:1 媲美');
+      } else if (part === 'abutment') {
+        targetRotationX = 0.05;
+        showToast('【纯钛精密基台】：医用四级钛，连接紧密绝无松动摇晃');
+      } else if (part === 'implant') {
+        targetRotationX = -0.25;
+        showToast('【亲骨微螺纹植体】：0.075mm精准植入，与牙槽骨牢固结合');
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       parseURLParams();
       try {
         const raw = localStorage.getItem('squirrel_reg_data');
         if (raw) applyRegistrationSuccess(JSON.parse(raw));
       } catch (e) {}
+
+      // 启动 3D WebGL 渲染
+      setTimeout(() => {
+        init3DImplantViewer();
+      }, 200);
     });
   </script>
 </body>

@@ -563,85 +563,85 @@
           </div>
         </div>
 
-        <!-- 🌟 核心增值模块：3D 仿生种植牙·交互式全景解构视窗 -->
-        <div class="relative rounded-2xl overflow-hidden border border-orange-200/90 shadow-md bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 text-white p-3.5 my-1">
+        <!-- 🌟 核心增值模块：3D 仿生种植牙·交互式全景解构视窗（柔光温润医学卡片风格） -->
+        <div class="relative rounded-2xl overflow-hidden border border-orange-200/90 shadow-sm bg-gradient-to-b from-white via-orange-50/25 to-slate-50/80 p-3.5 my-2">
           <!-- 头部标题与触控引导 -->
-          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+          <div class="flex items-center justify-between pb-2 border-b border-orange-100">
             <div class="flex items-center gap-2">
-              <div class="w-6 h-6 rounded-lg bg-orange-500/20 border border-orange-500/40 text-orange-400 flex items-center justify-center font-bold">
-                <i data-lucide="box" class="w-3.5 h-3.5"></i>
+              <div class="w-7 h-7 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0">
+                <i data-lucide="box" class="w-4 h-4"></i>
               </div>
               <div>
-                <div class="text-xs font-black text-white flex items-center gap-1.5">
-                  <span>3D 仿生微创种植 · 结构原理解构</span>
-                  <span class="text-[8.5px] px-1 py-0.2 rounded bg-orange-500/20 text-orange-300 border border-orange-500/40 font-bold">360°可旋转</span>
+                <div class="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                  <span>3D 仿生微创种植 · 结构与稳固原理</span>
+                  <span class="text-[8.5px] px-1.5 py-0.2 rounded-full bg-orange-100 text-orange-700 border border-orange-200 font-bold">360°可旋转</span>
                 </div>
-                <div class="text-[9.5px] text-slate-400 mt-0.5">单指滑动全方位旋转 · 消除未知恐惧 · 亲见骨结合原理</div>
+                <div class="text-[9.5px] text-slate-500 mt-0.5">手指滑动全景旋转 · 亲见牙槽骨稳固结合过程</div>
               </div>
             </div>
-            <button id="btn-toggle-explode" onclick="toggleImplantExplode()" class="px-2 py-1 rounded-lg bg-orange-500/30 hover:bg-orange-500/40 border border-orange-400/50 text-orange-200 text-[10px] font-bold flex items-center gap-1 active:scale-95 transition-all shrink-0">
-              <i data-lucide="layers" class="w-3 h-3 text-orange-400"></i>
+            <button id="btn-toggle-explode" onclick="toggleImplantExplode()" class="px-2 py-1 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 transition-all shrink-0 shadow-xs">
+              <i data-lucide="layers" class="w-3 h-3"></i>
               <span id="explode-btn-text">一键分层拆解</span>
             </button>
           </div>
 
-          <!-- 3D WebGL 交互画布容器 -->
-          <div class="relative w-full h-64 rounded-xl overflow-hidden my-2 bg-gradient-to-b from-slate-950/80 to-slate-900/90 border border-slate-800/80 flex items-center justify-center">
+          <!-- 3D WebGL 交互画布容器（柔和温润透光背景） -->
+          <div class="relative w-full h-64 rounded-xl overflow-hidden my-2 bg-gradient-to-b from-slate-100/70 via-orange-50/40 to-slate-100/90 border border-orange-200/50 flex items-center justify-center">
             <canvas id="implant-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block"></canvas>
 
             <!-- 旋转引导微提示信标 (交互一次后淡出) -->
-            <div id="hint-drag-rotate" class="pointer-events-none absolute bottom-1 left-2 px-2 py-0.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-orange-500/30 text-[8px] text-orange-200 flex items-center gap-1 shadow-lg transition-opacity duration-500 whitespace-nowrap z-10">
-              <i data-lucide="rotate-cw" class="w-2.5 h-2.5 text-orange-400 animate-spin" style="animation-duration: 3s;"></i>
+            <div id="hint-drag-rotate" class="pointer-events-none absolute bottom-1.5 left-2 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-orange-200 text-[8.5px] text-slate-600 flex items-center gap-1 shadow-sm transition-opacity duration-500 whitespace-nowrap z-10">
+              <i data-lucide="rotate-cw" class="w-2.5 h-2.5 text-orange-600 animate-spin" style="animation-duration: 3s;"></i>
               <span>单指左右滑动 360° 旋转</span>
             </div>
 
             <!-- 3D 浮动定位锚点标签 (随拆解展开) -->
-            <div id="label-crown" class="absolute top-2 right-2 pointer-events-none bg-slate-900/90 backdrop-blur-sm border border-amber-400/50 px-2 py-0.5 rounded-lg text-right transition-all duration-500 opacity-95 shadow-lg z-10">
-              <div class="text-[9.5px] font-black text-amber-300 flex items-center justify-end gap-1">
+            <div id="label-crown" class="absolute top-2 right-2 pointer-events-none bg-white/95 backdrop-blur-sm border border-amber-300 px-2 py-0.5 rounded-lg text-right transition-all duration-500 opacity-95 shadow-sm z-10">
+              <div class="text-[9.5px] font-black text-amber-700 flex items-center justify-end gap-1">
                 <span>① 全瓷仿生牙冠</span>
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
               </div>
-              <div class="text-[8px] text-slate-300">德国威兰德全瓷 · 媲美真牙</div>
+              <div class="text-[8px] text-slate-500">德国威兰德全瓷 · 媲美真牙</div>
             </div>
 
-            <div id="label-abutment" class="absolute top-[80px] left-2 pointer-events-none bg-slate-900/90 backdrop-blur-sm border border-sky-400/50 px-2 py-0.5 rounded-lg text-left transition-all duration-500 opacity-95 shadow-lg z-10">
-              <div class="text-[9.5px] font-black text-sky-300 flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+            <div id="label-abutment" class="absolute top-[80px] left-2 pointer-events-none bg-white/95 backdrop-blur-sm border border-sky-300 px-2 py-0.5 rounded-lg text-left transition-all duration-500 opacity-95 shadow-sm z-10">
+              <div class="text-[9.5px] font-black text-sky-700 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
                 <span>② 纯钛精密基台</span>
               </div>
-              <div class="text-[8px] text-slate-300">0微米微缝固位 · 终身无松动</div>
+              <div class="text-[8px] text-slate-500">0微米微缝固位 · 终身无松动</div>
             </div>
 
-            <div id="label-implant" class="absolute bottom-2 right-2 pointer-events-none bg-slate-900/90 backdrop-blur-sm border border-emerald-400/50 px-2 py-0.5 rounded-lg text-right transition-all duration-500 opacity-95 shadow-lg z-10">
-              <div class="text-[9.5px] font-black text-emerald-300 flex items-center justify-end gap-1">
+            <div id="label-implant" class="absolute bottom-2 right-2 pointer-events-none bg-white/95 backdrop-blur-sm border border-emerald-300 px-2 py-0.5 rounded-lg text-right transition-all duration-500 opacity-95 shadow-sm z-10">
+              <div class="text-[9.5px] font-black text-emerald-700 flex items-center justify-end gap-1">
                 <span>③ 亲骨微螺纹植体</span>
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               </div>
-              <div class="text-[8px] text-slate-300">四级纯钛SLA · 扎根稳固如真牙</div>
+              <div class="text-[8px] text-slate-500">四级纯钛SLA · 扎根稳固如真牙</div>
             </div>
           </div>
 
-          <!-- 3大结构一键点选大白话医嘱 (适老化大卡片) -->
+          <!-- 3大结构一键点选大白话医嘱 (浅色适老化卡片) -->
           <div class="grid grid-cols-3 gap-1.5 text-center mt-2">
-            <button onclick="highlight3DPart('crown')" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-amber-500/30 text-left transition-all active:scale-95">
-              <div class="text-[10px] font-black text-amber-300">① 牙冠层</div>
-              <div class="text-[8.5px] text-slate-400 mt-0.5 leading-tight">天然真牙透光 啃排骨不崩瓷</div>
+            <button onclick="highlight3DPart('crown')" class="p-1.5 rounded-xl bg-white hover:bg-amber-50/50 border border-amber-200 text-left transition-all active:scale-95 shadow-2xs">
+              <div class="text-[10px] font-black text-amber-800">① 牙冠层</div>
+              <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">天然真牙透光 啃排骨不崩瓷</div>
             </button>
-            <button onclick="highlight3DPart('abutment')" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-sky-500/30 text-left transition-all active:scale-95">
-              <div class="text-[10px] font-black text-sky-300">② 基台连接</div>
-              <div class="text-[8.5px] text-slate-400 mt-0.5 leading-tight">纳米锁紧 杜绝细菌塞牙异味</div>
+            <button onclick="highlight3DPart('abutment')" class="p-1.5 rounded-xl bg-white hover:bg-sky-50/50 border border-sky-200 text-left transition-all active:scale-95 shadow-2xs">
+              <div class="text-[10px] font-black text-sky-800">② 基台连接</div>
+              <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">纳米锁紧 杜绝细菌塞牙异味</div>
             </button>
-            <button onclick="highlight3DPart('implant')" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-emerald-500/30 text-left transition-all active:scale-95">
-              <div class="text-[10px] font-black text-emerald-300">③ 亲骨植体</div>
-              <div class="text-[8.5px] text-slate-400 mt-0.5 leading-tight">像树根扎入骨中 30年稳固相伴</div>
+            <button onclick="highlight3DPart('implant')" class="p-1.5 rounded-xl bg-white hover:bg-emerald-50/50 border border-emerald-200 text-left transition-all active:scale-95 shadow-2xs">
+              <div class="text-[10px] font-black text-emerald-800">③ 亲骨植体</div>
+              <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">像树根扎入骨中 30年稳固相伴</div>
             </button>
           </div>
 
           <!-- 白话解惑备忘 (彻底消除“打钢钉”恐惧) -->
-          <div class="mt-2.5 p-2 rounded-xl bg-orange-950/40 border border-orange-500/30 flex items-start gap-2 text-[10px] text-orange-200/90 leading-relaxed">
-            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5"></i>
+          <div class="mt-2.5 p-2 rounded-xl bg-orange-50 border border-orange-200/80 flex items-start gap-2 text-[10px] text-slate-700 leading-relaxed">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-orange-600 shrink-0 mt-0.5"></i>
             <div>
-              <strong class="text-orange-300 font-bold">刘院长数字化微创承诺：</strong>
+              <strong class="text-orange-800 font-bold">刘院长数字化微创承诺：</strong>
               “很多长辈以为种植牙是开刀打大铁钉，其实植体直径仅如米粒，德国数字化导板导航精微植入，出血少于拔牙，微痛局麻下舒适无感。”
             </div>
           </div>
@@ -962,26 +962,26 @@
   </main>
 
   <!-- ==================== 底部固定行动底栏（全宽超级显眼·准时赴约行动核） ==================== -->
-  <div class="fixed bottom-0 left-0 right-0 z-50 px-4 py-3 bg-white/95 backdrop-blur-xl border-t border-orange-200/90 max-w-md mx-auto shadow-2xl">
-    <!-- 确认准时赴约全宽大按钮 (高度饱满、双行文案、呼吸光晕) -->
-    <button onclick="confirmAppointment()" class="w-full py-3.5 px-4 rounded-2xl btn-glow text-white flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shrink-0 shadow-inner">
-          <i data-lucide="check" class="w-5 h-5 text-white stroke-[3]"></i>
+  <div class="fixed bottom-0 left-0 right-0 z-50 px-3.5 py-2.5 bg-white/95 backdrop-blur-xl border-t border-orange-200/90 max-w-md mx-auto shadow-2xl">
+    <!-- 确认准时赴约全宽大按钮 (高度饱满、单行不折行、呼吸光晕) -->
+    <button onclick="confirmAppointment()" class="w-full py-3 px-3.5 rounded-2xl btn-glow text-white flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer">
+      <div class="flex items-center gap-2.5 min-w-0 flex-1">
+        <div class="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shrink-0 shadow-inner">
+          <i data-lucide="check" class="w-4.5 h-4.5 text-white stroke-[3]"></i>
         </div>
-        <div class="text-left">
-          <div class="text-sm font-black tracking-tight leading-tight flex items-center gap-1.5">
+        <div class="text-left min-w-0">
+          <div class="text-xs sm:text-sm font-black tracking-tight leading-tight flex items-center gap-1.5 whitespace-nowrap">
             <span>确认明早准时赴约</span>
-            <span class="text-[9px] font-bold px-1.5 py-0.2 bg-white/25 rounded-full border border-white/40">专属特免礼遇</span>
+            <span class="text-[8.5px] font-bold px-1.5 py-0.2 bg-white/25 rounded-full border border-white/40 shrink-0">专属特免礼遇</span>
           </div>
-          <div class="text-[10.5px] text-orange-100 font-medium leading-tight mt-0.5 opacity-90">
-            刘彦廷院长专席与地下车位将为您持续保留
+          <div class="text-[9.5px] text-orange-100 font-medium leading-tight mt-0.5 opacity-90 truncate">
+            刘彦廷院长专席与地下车位已保留
           </div>
         </div>
       </div>
-      <div class="flex items-center gap-1 shrink-0 text-white font-bold text-xs pl-2">
+      <div class="flex items-center gap-0.5 shrink-0 text-white font-bold text-xs pl-2 whitespace-nowrap">
         <span>出具凭证</span>
-        <i data-lucide="arrow-right" class="w-4 h-4 stroke-[2.5]"></i>
+        <i data-lucide="arrow-right" class="w-3.5 h-3.5 stroke-[2.5]"></i>
       </div>
     </button>
   </div>
@@ -1848,8 +1848,8 @@
 
       // 1. Scene & Camera
       scene3D = new THREE.Scene();
-      camera3D = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-      camera3D.position.set(0, 0, 5.8);
+      camera3D = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
+      camera3D.position.set(0, 0.1, 6.2);
 
       // 2. Renderer
       renderer3D = new THREE.WebGLRenderer({
@@ -1861,114 +1861,153 @@
       renderer3D.setSize(width, height);
       renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer3D.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer3D.toneMappingExposure = 1.15;
+      renderer3D.toneMappingExposure = 1.05;
 
-      // 3. Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
+      // 3. Lighting (柔和温润的自然漫反射照影，去除死黑，强化全瓷与金属高光)
+      const ambientLight = new THREE.AmbientLight(0xf8fafc, 1.4);
       scene3D.add(ambientLight);
 
-      const mainSpot = new THREE.DirectionalLight(0xffedd5, 1.4);
-      mainSpot.position.set(4, 5, 4);
-      scene3D.add(mainSpot);
+      const keyLight = new THREE.DirectionalLight(0xffedd5, 1.5);
+      keyLight.position.set(4, 6, 5);
+      scene3D.add(keyLight);
 
-      const rimLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
-      rimLight.position.set(-4, -2, -3);
-      scene3D.add(rimLight);
+      const softFill = new THREE.DirectionalLight(0xe0f2fe, 1.0);
+      softFill.position.set(-4, 2, 4);
+      scene3D.add(softFill);
 
-      const goldFill = new THREE.PointLight(0xf59e0b, 1.0, 8);
-      goldFill.position.set(2, 1, 2);
-      scene3D.add(goldFill);
+      const bottomRim = new THREE.DirectionalLight(0xfef3c7, 0.8);
+      bottomRim.position.set(0, -5, -2);
+      scene3D.add(bottomRim);
 
       // 4. Model Group
       implantGroup = new THREE.Group();
-      implantGroup.rotation.y = 0.4;
-      implantGroup.rotation.x = 0.15;
+      implantGroup.rotation.y = 0.35;
+      implantGroup.rotation.x = 0.12;
       scene3D.add(implantGroup);
 
-      // Materials
+      // Materials (真实仿生牙医质感)
+      // 牙冠：天然真牙牙釉质材质，乳白温润，边缘透光，带有自然微黄象牙质底色
       const crownMat = new THREE.MeshPhysicalMaterial({
-        color: 0xfdfdfd,
-        roughness: 0.18,
-        metalness: 0.05,
-        transmission: 0.55,
+        color: 0xfffcf7,
+        roughness: 0.15,
+        metalness: 0.02,
+        transmission: 0.35,
         transparent: true,
-        opacity: 0.96,
-        ior: 1.52,
-        reflectivity: 0.8,
-        clearcoat: 0.9,
-        clearcoatRoughness: 0.1
+        opacity: 0.98,
+        ior: 1.48,
+        reflectivity: 0.7,
+        clearcoat: 0.95,
+        clearcoatRoughness: 0.12
       });
 
+      // 牙合面窝沟深色细微材质
+      const crownGrooveMat = new THREE.MeshStandardMaterial({
+        color: 0xeadbc8,
+        roughness: 0.35,
+        metalness: 0.05
+      });
+
+      // 基台：医用四级纯钛金属质感，冷银高光
       const abutmentMat = new THREE.MeshStandardMaterial({
         color: 0x94a3b8,
-        metalness: 0.85,
-        roughness: 0.25,
-        envMapIntensity: 1.0
+        metalness: 0.92,
+        roughness: 0.22
       });
 
+      // 植体：SLA 喷砂酸蚀生物纯钛微螺纹，微暗冷钛金属质感
       const titaniumScrewMat = new THREE.MeshStandardMaterial({
         color: 0x64748b,
-        metalness: 0.82,
-        roughness: 0.35,
-        envMapIntensity: 0.8
+        metalness: 0.88,
+        roughness: 0.28
       });
 
+      // 牙槽骨：温馨半透明牙周软硬组织结构提示轮廓
       const boneMat = new THREE.MeshStandardMaterial({
-        color: 0xfcd34d,
-        metalness: 0.1,
-        roughness: 0.65,
+        color: 0xfbbf24,
+        metalness: 0.05,
+        roughness: 0.6,
         transparent: true,
-        opacity: 0.32,
-        wireframe: false
+        opacity: 0.22
       });
 
-      // --- Part 1: Crown (全瓷仿生牙冠) ---
-      const crownGeo = new THREE.CylinderGeometry(0.55, 0.45, 0.85, 24);
-      // 让牙冠圆润仿生
-      const crownTopGeo = new THREE.SphereGeometry(0.54, 24, 16, 0, Math.PI * 2, 0, Math.PI * 0.4);
+      // --- Part 1: Crown (真牙仿生第一磨牙臼齿形态) ---
       crownMesh = new THREE.Group();
-      const cBody = new THREE.Mesh(crownGeo, crownMat);
-      const cTop = new THREE.Mesh(crownTopGeo, crownMat);
-      cTop.position.y = 0.38;
-      crownMesh.add(cBody);
-      crownMesh.add(cTop);
-      crownMesh.position.y = 1.0;
+      // 牙冠主体：具有解剖学收腰与倒角形态
+      const crownBodyGeo = new THREE.CylinderGeometry(0.56, 0.44, 0.82, 32);
+      const crownBody = new THREE.Mesh(crownBodyGeo, crownMat);
+      crownMesh.add(crownBody);
+
+      // 牙冠顶部咬合面：4个微凸的仿生咬合牙尖（Cusps）与窝沟
+      const cuspGeo = new THREE.SphereGeometry(0.25, 20, 16);
+      const cuspPositions = [
+        { x: 0.2, z: 0.2, y: 0.42 },
+        { x: -0.2, z: 0.2, y: 0.42 },
+        { x: 0.2, z: -0.2, y: 0.42 },
+        { x: -0.2, z: -0.2, y: 0.42 }
+      ];
+      cuspPositions.forEach(pos => {
+        const cusp = new THREE.Mesh(cuspGeo, crownMat);
+        cusp.position.set(pos.x, pos.y, pos.z);
+        cusp.scale.set(1.05, 0.75, 1.05);
+        crownMesh.add(cusp);
+      });
+      // 咬合中心窝
+      const grooveGeo = new THREE.CylinderGeometry(0.24, 0.05, 0.1, 16);
+      const groove = new THREE.Mesh(grooveGeo, crownGrooveMat);
+      groove.position.y = 0.44;
+      crownMesh.add(groove);
+
+      crownMesh.position.y = 1.02;
       implantGroup.add(crownMesh);
 
-      // --- Part 2: Abutment (钛合金精密基台) ---
+      // --- Part 2: Abutment (高精密钛合金八角基台) ---
       abutmentMesh = new THREE.Group();
-      const abGeo1 = new THREE.CylinderGeometry(0.32, 0.42, 0.42, 24);
-      const ab1 = new THREE.Mesh(abGeo1, abutmentMat);
-      const abGeo2 = new THREE.CylinderGeometry(0.24, 0.24, 0.32, 24);
-      const ab2 = new THREE.Mesh(abGeo2, abutmentMat);
-      ab2.position.y = 0.28;
-      abutmentMesh.add(ab1);
-      abutmentMesh.add(ab2);
-      abutmentMesh.position.y = 0.32;
+      // 基台穿龈颈圈（平滑穿龈轮廓）
+      const abCollarGeo = new THREE.CylinderGeometry(0.38, 0.26, 0.36, 32);
+      const abCollar = new THREE.Mesh(abCollarGeo, abutmentMat);
+      // 基台顶部固位芯轴（进入牙冠内部锁定）
+      const abCoreGeo = new THREE.CylinderGeometry(0.24, 0.25, 0.4, 24);
+      const abCore = new THREE.Mesh(abCoreGeo, abutmentMat);
+      abCore.position.y = 0.32;
+      // 基台底部莫氏锥度锁定接头
+      const abTaperGeo = new THREE.CylinderGeometry(0.25, 0.16, 0.22, 24);
+      const abTaper = new THREE.Mesh(abTaperGeo, abutmentMat);
+      abTaper.position.y = -0.24;
+
+      abutmentMesh.add(abCollar);
+      abutmentMesh.add(abCore);
+      abutmentMesh.add(abTaper);
+      abutmentMesh.position.y = 0.34;
       implantGroup.add(abutmentMesh);
 
-      // --- Part 3: Implant Screw (亲骨微螺纹植体) ---
+      // --- Part 3: Implant Screw (亲骨微螺纹纯钛植体 - 仿真解剖结构) ---
       screwMesh = new THREE.Group();
-      // 主干圆锥
-      const screwBodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 1.45, 24);
+      // 根尖微锥形主体
+      const screwBodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 1.45, 32);
       const screwBody = new THREE.Mesh(screwBodyGeo, titaniumScrewMat);
       screwMesh.add(screwBody);
 
-      // 精密微螺纹环圈 (5层螺纹)
-      for (let i = 0; i < 5; i++) {
-        const ringGeo = new THREE.TorusGeometry(0.33 - i * 0.03, 0.035, 12, 28);
+      // 6层梯形微螺纹，间距自上而下递减，模拟德国精工变螺距
+      for (let i = 0; i < 6; i++) {
+        const ringGeo = new THREE.TorusGeometry(0.34 - i * 0.026, 0.038, 14, 32);
         const ring = new THREE.Mesh(ringGeo, titaniumScrewMat);
         ring.rotation.x = Math.PI / 2;
-        ring.position.y = 0.45 - i * 0.22;
+        ring.position.y = 0.52 - i * 0.20;
         screwMesh.add(ring);
       }
-      screwMesh.position.y = -0.65;
+      // 根尖球形圆钝安全收口（防止刺穿下颌神经管）
+      const apexGeo = new THREE.SphereGeometry(0.16, 20, 16);
+      const apex = new THREE.Mesh(apexGeo, titaniumScrewMat);
+      apex.position.y = -0.72;
+      screwMesh.add(apex);
+
+      screwMesh.position.y = -0.66;
       implantGroup.add(screwMesh);
 
-      // --- Part 4: Bone Socket (透光牙槽骨轮廓) ---
-      const boneGeo = new THREE.CylinderGeometry(0.72, 0.55, 1.6, 24);
+      // --- Part 4: Bone Socket (透光牙槽骨床) ---
+      const boneGeo = new THREE.CylinderGeometry(0.76, 0.58, 1.65, 32);
       boneMesh = new THREE.Mesh(boneGeo, boneMat);
-      boneMesh.position.y = -0.7;
+      boneMesh.position.y = -0.72;
       implantGroup.add(boneMesh);
 
       // 5. Touch / Mouse Event Handlers
@@ -2024,11 +2063,11 @@
         implantGroup.rotation.y += (targetRotationY - implantGroup.rotation.y) * 0.1;
         implantGroup.rotation.x += (targetRotationX - implantGroup.rotation.x) * 0.1;
 
-        // Smooth Explode Animation
-        const targetCrownY = isExploded ? 1.42 : 0.85;
-        const targetAbutmentY = isExploded ? 0.52 : 0.25;
-        const targetScrewY = isExploded ? -0.75 : -0.58;
-        const targetBoneY = isExploded ? -0.85 : -0.62;
+        // Smooth Explode Animation (扩大拆解间距，清晰可见内部锁紧结构)
+        const targetCrownY = isExploded ? 1.65 : 1.02;
+        const targetAbutmentY = isExploded ? 0.65 : 0.34;
+        const targetScrewY = isExploded ? -0.82 : -0.66;
+        const targetBoneY = isExploded ? -0.92 : -0.72;
 
         crownMesh.position.y += (targetCrownY - crownMesh.position.y) * 0.12;
         abutmentMesh.position.y += (targetAbutmentY - abutmentMesh.position.y) * 0.12;

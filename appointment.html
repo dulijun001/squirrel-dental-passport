@@ -331,19 +331,26 @@
           </div>
         </div>
 
-        <!-- 姓名与就诊目的地看板 (严格单行不折行) -->
-        <div class="mt-3 flex items-end justify-between relative z-10 gap-2">
+        <!-- 姓名与就诊目的地看板 -->
+        <div class="mt-3 flex items-start justify-between relative z-10 gap-2">
           <div class="min-w-0 flex-1">
-            <div class="text-[9px] text-orange-100/90 font-medium tracking-wider uppercase">PASSENGER / 贵宾就诊人</div>
-            <div class="flex items-center gap-1.5 mt-0.5 flex-nowrap">
-              <span id="card-name" class="text-xl font-black tracking-tight text-white drop-shadow-sm whitespace-nowrap">张建国 先生</span>
+            <div class="flex items-center gap-2">
+              <span class="text-[9px] text-orange-100/90 font-medium tracking-wider uppercase">PASSENGER / 贵宾就诊人</span>
+              <!-- 挂号直通状态微徽标移到上层副标处，避免横向挤压 -->
+              <span id="card-reg-badge" onclick="openRegistrationModal()" class="inline-flex items-center gap-1 px-1.5 py-0.2 text-[7.5px] font-bold text-amber-100 bg-black/25 border border-amber-300/40 rounded-full cursor-pointer hover:bg-black/40 transition-all shrink-0 whitespace-nowrap">
+                <span class="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="card-reg-badge-text">提前挂号免排队</span>
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span id="card-name" class="text-xl font-black tracking-tight text-white drop-shadow-sm truncate">张建国 先生</span>
               <!-- 红色名医亲诊专属小印章 (拟真印章) -->
               <span class="inline-flex items-center justify-center px-1.5 py-0.2 text-[8px] font-black text-rose-700 bg-white/95 border border-rose-300 rounded shadow-sm rotate-[-3deg] tracking-wider uppercase font-serif shrink-0 whitespace-nowrap">
                 名医亲诊
               </span>
             </div>
           </div>
-          <div class="text-right shrink-0">
+          <div class="text-right shrink-0 pl-1">
             <div class="text-[9px] text-orange-100/90 font-medium tracking-wider uppercase">DESTINATION / 目的地</div>
             <div class="text-xs font-black text-white mt-0.5 flex items-center gap-1 justify-end">
               <i data-lucide="map-pin" class="w-3 h-3 text-amber-200"></i>
@@ -510,7 +517,21 @@
               <span class="text-[9px] text-orange-700 font-bold bg-orange-100/80 px-1.5 py-0.2 rounded">约 2 分钟</span>
             </div>
             <div class="text-[11px] text-slate-600 mt-1 leading-relaxed">
-              到院 1 楼大厅直报 <strong class="text-orange-950 font-bold">「张建国先生」</strong>，无需普通门诊排队，专属医助即刻迎候入座贵宾室，递上热茶。
+              到院 1 楼大厅直报 <strong id="step-lead-name" class="text-orange-950 font-bold">「张建国 先生」</strong>，无需普通门诊排队，专属医助即刻迎候入座贵宾室，递上热茶。
+            </div>
+            <!-- 提前挂号快捷入口微卡片 (大按钮卡片式，点击区域大) -->
+            <div id="step-reg-badge" class="mt-3 pt-2.5 border-t border-orange-100/90">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-1.5 text-[10.5px] text-orange-950 font-medium">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span id="step-reg-status-text">尚未录入健康档案？建议提前挂号</span>
+                </div>
+                <span class="text-[9px] text-amber-700 font-bold bg-amber-100/70 px-1.5 py-0.2 rounded">省时20分钟</span>
+              </div>
+              <button onclick="openRegistrationModal()" class="w-full py-2 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-white text-xs font-black rounded-xl shadow-xs hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5">
+                <i data-lucide="clipboard-pen" class="w-3.5 h-3.5"></i>
+                <span id="step-reg-btn-text">立即提前就诊挂号 · 锁定 0 元首诊档案</span>
+              </button>
             </div>
           </div>
         </div>
@@ -921,6 +942,138 @@
   </div>
 
   <!-- ==================== 地图导航选择底部弹层 ==================== -->
+  
+  <!-- ==================== 提前预约挂号·绿色通道适老化抽屉 ==================== -->
+  <div id="registration-modal" class="action-modal" onclick="if(event.target === this) closeRegistrationModal()">
+    <div class="action-sheet max-h-[88vh] overflow-y-auto space-y-3.5 pb-6">
+      <!-- 头部标题与承诺 -->
+      <div class="flex items-center justify-between pb-2.5 border-b border-orange-100 sticky top-0 bg-white/95 backdrop-blur z-20">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold shadow-sm shadow-orange-500/30">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-black text-slate-900 flex items-center gap-1.5">
+              <span>提前就诊挂号 · 绿色免排通道</span>
+              <span class="text-[9px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-bold">省时特权</span>
+            </div>
+            <div class="text-[10px] text-slate-500">实名就诊建档 · 提前锁定刘彦廷院长专席</div>
+          </div>
+        </div>
+        <button onclick="closeRegistrationModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- 提示条 -->
+      <div class="bg-amber-50/80 border border-amber-200/80 rounded-xl p-2.5 flex items-start gap-2 text-[11px] text-amber-900 leading-snug">
+        <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5"></i>
+        <div>
+          <strong class="font-bold">提前 1 分钟挂号，到院节省 20 分钟：</strong>
+          信息将预录入云南省口腔专科就诊系统，到院直报姓名即可入座贵宾室，无需在大厅排队填表。
+        </div>
+      </div>
+
+      <!-- 挂号表单 -->
+      <form id="reg-form" onsubmit="handleRegistrationSubmit(event)" class="space-y-3">
+        <!-- 姓名与性别 -->
+        <div class="grid grid-cols-5 gap-2">
+          <div class="col-span-3">
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">
+              就诊人姓名 <span class="text-rose-500">*</span>
+            </label>
+            <input type="text" id="reg-name" required placeholder="如：张建国" class="w-full px-3 py-2 text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500" />
+          </div>
+          <div class="col-span-2">
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">
+              性别 <span class="text-rose-500">*</span>
+            </label>
+            <div class="grid grid-cols-2 gap-1 h-[34px]">
+              <button type="button" id="gender-male" onclick="selectGender('男士')" class="gender-btn active w-full h-full rounded-xl border border-orange-500 bg-orange-50 text-orange-700 text-xs font-black flex items-center justify-center transition-all">男</button>
+              <button type="button" id="gender-female" onclick="selectGender('女士')" class="gender-btn w-full h-full rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-bold flex items-center justify-center transition-all">女</button>
+            </div>
+            <input type="hidden" id="reg-gender" value="男士" />
+          </div>
+        </div>
+
+        <!-- 手机电话与出生年月 -->
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">
+              联系电话 <span class="text-rose-500">*</span>
+            </label>
+            <input type="tel" id="reg-phone" required placeholder="接收车位及就诊短信" maxlength="11" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">
+              出生年月日 / 年龄 <span class="text-rose-500">*</span>
+            </label>
+            <input type="text" id="reg-birth" required placeholder="如：1962年 或 64岁" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500" />
+          </div>
+        </div>
+
+        <!-- 既往健康史（适老标签式多选） -->
+        <div class="pt-1">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-[11px] font-bold text-slate-800 flex items-center gap-1">
+              <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-rose-500"></i>
+              <span>既往健康状况（慢病把关 · 可多选）</span>
+            </label>
+            <span class="text-[9px] text-slate-600 font-bold">严谨医疗安全评估</span>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5" id="health-conditions-box">
+            <button type="button" onclick="toggleHealthTag(this, '高血压')" class="health-tag p-2 rounded-xl border border-slate-200 bg-slate-50/70 text-left transition-all text-xs font-medium text-slate-700 flex items-center justify-between">
+              <span>🔴 高血压</span>
+              <span class="check-icon opacity-0 text-orange-600 font-black text-xs">✓</span>
+            </button>
+            <button type="button" onclick="toggleHealthTag(this, '糖尿病')" class="health-tag p-2 rounded-xl border border-slate-200 bg-slate-50/70 text-left transition-all text-xs font-medium text-slate-700 flex items-center justify-between">
+              <span>🟠 糖尿病 / 控糖</span>
+              <span class="check-icon opacity-0 text-orange-600 font-black text-xs">✓</span>
+            </button>
+            <button type="button" onclick="toggleHealthTag(this, '心脏病/支架')" class="health-tag p-2 rounded-xl border border-slate-200 bg-slate-50/70 text-left transition-all text-xs font-medium text-slate-700 flex items-center justify-between">
+              <span>🟡 心脏病 / 搭桥支架</span>
+              <span class="check-icon opacity-0 text-orange-600 font-black text-xs">✓</span>
+            </button>
+            <button type="button" onclick="toggleHealthTag(this, '骨质疏松')" class="health-tag p-2 rounded-xl border border-slate-200 bg-slate-50/70 text-left transition-all text-xs font-medium text-slate-700 flex items-center justify-between">
+              <span>🔵 骨质疏松</span>
+              <span class="check-icon opacity-0 text-orange-600 font-black text-xs">✓</span>
+            </button>
+            <button type="button" onclick="toggleHealthTag(this, '长期服用抗凝药')" class="health-tag col-span-2 p-2 rounded-xl border border-slate-200 bg-slate-50/70 text-left transition-all text-xs font-medium text-slate-700 flex items-center justify-between">
+              <span>🟣 长期服用抗凝药（如阿司匹林、华法林等）</span>
+              <span class="check-icon opacity-0 text-orange-600 font-black text-xs">✓</span>
+            </button>
+            <button type="button" onclick="toggleHealthTagNone(this)" class="health-tag col-span-2 p-2 rounded-xl border border-emerald-300 bg-emerald-50/60 text-left transition-all text-xs font-bold text-emerald-800 flex items-center justify-between active-none">
+              <span>🟢 身体健康 · 无上述既往史</span>
+              <span class="check-icon-none text-emerald-600 font-black text-xs">✓</span>
+            </button>
+          </div>
+          <input type="hidden" id="reg-health" value="无特殊既往史" />
+
+          <!-- 动态健康医嘱提醒条 -->
+          <div id="health-tips-card" class="mt-2 p-2 rounded-xl bg-orange-50/80 border border-orange-200 text-[10px] text-orange-900 hidden flex items-start gap-1.5 leading-relaxed">
+            <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-orange-600 shrink-0 mt-0.5"></i>
+            <div>
+              <strong class="font-bold">主理专家特别医嘱：</strong>
+              若有高血压或糖尿病，明日就诊前请照常清淡吃早饭并按时服药，无需刻意空腹。诊室内配备专人多参数心电监护。
+            </div>
+          </div>
+        </div>
+
+        <!-- 提交大金键 -->
+        <div class="pt-2">
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-white font-black text-sm rounded-xl shadow-md shadow-orange-500/25 hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5">
+            <i data-lucide="badge-check" class="w-4 h-4 text-amber-200"></i>
+            <span>立即完成提前挂号 · 锁定 0 元首诊档案</span>
+          </button>
+          <div class="text-center text-[9px] text-slate-600 font-medium mt-1.5 flex items-center justify-center gap-1">
+            <i data-lucide="lock" class="w-2.5 h-2.5 text-slate-600"></i>
+            <span>严格遵守国家《医疗机构病历管理规定》· 信息全程银行级加密</span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div id="nav-modal" class="action-modal" onclick="if(event.target === this) closeNavModal()">
     <div class="action-sheet space-y-3.5">
       <div class="flex items-center justify-between pb-3 border-b border-orange-100">
@@ -1405,8 +1558,177 @@
       if (modal) modal.classList.remove('active');
     }
 
+    
+    // ==================== 提前预约挂号绿色通道交互逻辑 ====================
+    let selectedHealthTags = [];
+
+    function openRegistrationModal() {
+      const modal = document.getElementById('registration-modal');
+      if (modal) {
+        modal.classList.add('active');
+        // 自动把 URL 中的姓名带入表单
+        const currentName = document.getElementById('card-name') ? document.getElementById('card-name').textContent.replace(' 先生', '').replace(' 女士', '').trim() : '';
+        if (currentName && !document.getElementById('reg-name').value) {
+          document.getElementById('reg-name').value = currentName;
+        }
+        // 如果本地已存有挂号数据，回填
+        loadSavedRegistration();
+      }
+    }
+
+    function closeRegistrationModal() {
+      const modal = document.getElementById('registration-modal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function selectGender(gender) {
+      document.getElementById('reg-gender').value = gender;
+      const maleBtn = document.getElementById('gender-male');
+      const femaleBtn = document.getElementById('gender-female');
+      if (gender === '男士') {
+        maleBtn.className = 'gender-btn active w-full h-full rounded-xl border border-orange-500 bg-orange-50 text-orange-700 text-xs font-black flex items-center justify-center transition-all';
+        femaleBtn.className = 'gender-btn w-full h-full rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-bold flex items-center justify-center transition-all';
+      } else {
+        femaleBtn.className = 'gender-btn active w-full h-full rounded-xl border border-orange-500 bg-orange-50 text-orange-700 text-xs font-black flex items-center justify-center transition-all';
+        maleBtn.className = 'gender-btn w-full h-full rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-bold flex items-center justify-center transition-all';
+      }
+    }
+
+    function toggleHealthTag(btn, tag) {
+      // 取消“无上述既往史”的高亮
+      const noneBtn = document.querySelector('.active-none');
+      if (noneBtn) {
+        noneBtn.classList.remove('border-emerald-500', 'bg-emerald-100', 'text-emerald-900', 'active-none');
+        noneBtn.classList.add('border-slate-200', 'bg-slate-50/70', 'text-slate-700');
+        noneBtn.querySelector('.check-icon-none').textContent = '';
+      }
+
+      const check = btn.querySelector('.check-icon');
+      const idx = selectedHealthTags.indexOf(tag);
+      if (idx > -1) {
+        selectedHealthTags.splice(idx, 1);
+        btn.classList.remove('border-orange-500', 'bg-orange-50', 'text-orange-950', 'font-bold');
+        btn.classList.add('border-slate-200', 'bg-slate-50/70', 'text-slate-700');
+        check.classList.add('opacity-0');
+      } else {
+        selectedHealthTags.push(tag);
+        btn.classList.add('border-orange-500', 'bg-orange-50', 'text-orange-950', 'font-bold');
+        btn.classList.remove('border-slate-200', 'bg-slate-50/70', 'text-slate-700');
+        check.classList.remove('opacity-0');
+      }
+
+      const tipsCard = document.getElementById('health-tips-card');
+      if (selectedHealthTags.some(t => t.includes('高血压') || t.includes('糖尿病') || t.includes('心脏'))) {
+        tipsCard.classList.remove('hidden');
+      } else {
+        tipsCard.classList.add('hidden');
+      }
+
+      document.getElementById('reg-health').value = selectedHealthTags.length > 0 ? selectedHealthTags.join('、') : '无特殊既往史';
+    }
+
+    function toggleHealthTagNone(btn) {
+      selectedHealthTags = [];
+      document.querySelectorAll('#health-conditions-box .health-tag').forEach(b => {
+        b.classList.remove('border-orange-500', 'bg-orange-50', 'text-orange-950', 'font-bold');
+        b.classList.add('border-slate-200', 'bg-slate-50/70', 'text-slate-700');
+        const c = b.querySelector('.check-icon');
+        if (c) c.classList.add('opacity-0');
+      });
+      btn.className = 'health-tag col-span-2 p-2 rounded-xl border border-emerald-500 bg-emerald-100 text-left transition-all text-xs font-bold text-emerald-900 flex items-center justify-between active-none';
+      btn.querySelector('.check-icon-none').textContent = '✓';
+      document.getElementById('health-tips-card').classList.add('hidden');
+      document.getElementById('reg-health').value = '身体健康·无特殊既往史';
+    }
+
+    function handleRegistrationSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value.trim();
+      const gender = document.getElementById('reg-gender').value;
+      const phone = document.getElementById('reg-phone').value.trim();
+      const birth = document.getElementById('reg-birth').value.trim();
+      const health = document.getElementById('reg-health').value;
+
+      if (!name || !phone || !birth) {
+        showToast('请完整填写挂号信息');
+        return;
+      }
+
+      const regData = {
+        name: `${name} ${gender}`,
+        phone,
+        birth,
+        health,
+        regTime: new Date().toLocaleString(),
+        status: 'FAST-PASS ACTIVE'
+      };
+
+      try {
+        localStorage.setItem('squirrel_reg_data', JSON.stringify(regData));
+      } catch (err) {}
+
+      // 更新界面状态
+      applyRegistrationSuccess(regData);
+      closeRegistrationModal();
+
+      // 撒花与仪式感 Toast
+      try {
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      } catch (e) {}
+
+      showToast(`🎉 挂号成功！已为您预留 ${name} 专属 VIP 绿色通道`);
+    }
+
+    function applyRegistrationSuccess(data) {
+      // 1. 更新登机牌姓名
+      const cardName = document.getElementById('card-name');
+      if (cardName && data.name) {
+        cardName.textContent = data.name;
+      }
+      // 2. 更新登机牌小徽标
+      const cardRegBadge = document.getElementById('card-reg-badge');
+      if (cardRegBadge) {
+        cardRegBadge.className = 'inline-flex items-center gap-1 px-1.5 py-0.2 text-[7.5px] font-bold text-emerald-900 bg-emerald-100/90 border border-emerald-300 rounded-full cursor-pointer hover:bg-emerald-200 transition-all shrink-0 whitespace-nowrap shadow-xs';
+        cardRegBadge.innerHTML = '<span class="w-1 h-1 rounded-full bg-emerald-600"></span><span>✓ 已提前就诊挂号</span>';
+      }
+      // 3. 更新步骤 1 的状态
+      const stepLeadName = document.getElementById('step-lead-name');
+      if (stepLeadName && data.name) {
+        stepLeadName.textContent = `「${data.name}」`;
+      }
+      const stepRegStatusText = document.getElementById('step-reg-status-text');
+      if (stepRegStatusText) {
+        stepRegStatusText.innerHTML = '<strong class="text-emerald-700">✓ 挂号档案已提前锁定</strong>（免排队通道开启）';
+      }
+      const stepRegBtnText = document.getElementById('step-reg-btn-text');
+      if (stepRegBtnText) {
+        stepRegBtnText.textContent = '查看/修改';
+      }
+    }
+
+    function loadSavedRegistration() {
+      try {
+        const raw = localStorage.getItem('squirrel_reg_data');
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (data.name) {
+            const rawName = data.name.replace(' 男士', '').replace(' 女士', '').trim();
+            document.getElementById('reg-name').value = rawName;
+            if (data.name.includes('女士')) selectGender('女士');
+            else selectGender('男士');
+          }
+          if (data.phone) document.getElementById('reg-phone').value = data.phone;
+          if (data.birth) document.getElementById('reg-birth').value = data.birth;
+        }
+      } catch (err) {}
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       parseURLParams();
+      try {
+        const raw = localStorage.getItem('squirrel_reg_data');
+        if (raw) applyRegistrationSuccess(JSON.parse(raw));
+      } catch (e) {}
     });
   </script>
 </body>

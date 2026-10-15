@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="dark">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -7,8 +7,8 @@
 
   <!-- iOS / 微信全屏沉浸配置 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#070c18">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#FFF7ED">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -29,19 +29,17 @@
       padding: 0;
       width: 100%;
       min-height: 100%;
-      background-color: #070c18;
-      color: #f8fafc;
+      background-color: #FFF7ED; /* 松鼠品牌暖米橙底色 */
+      color: #1E293B;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       overflow-x: hidden;
     }
 
-    /* 方案 A: 成功确认大卡片质感 (森林绿履约 + 松鼠橙点缀) */
+    /* 成功确认大卡片质感 */
     .confirmed-card {
-      background: linear-gradient(145deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.96) 45%, rgba(26, 36, 56, 0.90));
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.25);
+      background: #FFFFFF;
+      border: 1.5px solid #A7F3D0;
+      box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.15);
       position: relative;
     }
 
@@ -51,16 +49,14 @@
 
     @keyframes pulse-ring {
       0% { transform: scale(0.95); opacity: 0.8; }
-      50% { transform: scale(1.1); opacity: 0.3; }
+      50% { transform: scale(1.1); opacity: 0.2; }
       100% { transform: scale(0.95); opacity: 0.8; }
     }
 
-    .glass-card {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
+    .clean-card {
+      background: #FFFFFF;
+      border: 1px solid #FED7AA;
+      box-shadow: 0 8px 24px -6px rgba(249, 115, 22, 0.08);
     }
 
     .wechat-toast {
@@ -68,11 +64,11 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.9);
-      background: rgba(15, 23, 42, 0.96);
-      border: 1px solid rgba(249, 115, 22, 0.4);
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid rgba(249, 115, 22, 0.5);
       padding: 14px 22px;
       border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
       z-index: 200;
       opacity: 0;
       pointer-events: none;
@@ -86,28 +82,28 @@
     }
   </style>
 </head>
-<body class="text-slate-100 antialiased selection:bg-orange-500 selection:text-white pb-16">
+<body class="text-slate-800 antialiased selection:bg-orange-500 selection:text-white pb-16">
 
   <!-- ==================== 顶部导航 ==================== -->
-  <header class="sticky top-0 z-40 px-4 py-2.5 flex items-center justify-between bg-[#070c18]/90 backdrop-blur-md border-b border-white/5">
+  <header class="sticky top-0 z-40 px-4 py-2.5 flex items-center justify-between bg-white/90 backdrop-blur-md border-b border-orange-100 shadow-sm">
     <div class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 p-0.5 flex items-center justify-center shadow-lg shadow-orange-500/25">
-        <div class="w-full h-full bg-[#070c18] rounded-[10px] flex items-center justify-center">
-          <span class="text-xs font-black text-orange-400">松鼠</span>
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 p-0.5 flex items-center justify-center shadow-md shadow-orange-500/20">
+        <div class="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
+          <span class="text-xs font-black text-orange-600">松鼠</span>
         </div>
       </div>
       <div>
-        <div class="text-[13px] font-bold text-white tracking-tight flex items-center gap-1.5">
+        <div class="text-[13px] font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
           <span>松鼠口腔 · 履约确认凭证</span>
-          <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">已生效</span>
+          <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-300 font-semibold">已生效</span>
         </div>
-        <div class="text-[10px] text-slate-400">昆明双塔旁 · 锦粼天序二级口腔专科新院区</div>
+        <div class="text-[10px] text-slate-500">昆明双塔旁 · 锦粼天序二级专科新院区</div>
       </div>
     </div>
 
-    <button onclick="window.history.back()" class="px-2 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 text-xs flex items-center gap-1 active:scale-95 transition-all">
-      <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-slate-400"></i>
-      <span class="text-[10px]">返回</span>
+    <button onclick="window.history.back()" class="px-2 py-1 rounded-lg bg-orange-50 text-orange-700 border border-orange-200 text-xs flex items-center gap-1 active:scale-95 transition-all">
+      <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-orange-600"></i>
+      <span class="text-[10px] font-medium">返回</span>
     </button>
   </header>
 
@@ -115,86 +111,86 @@
 
     <!-- ==================== 核心确认凭证大卡 ==================== -->
     <section class="confirmed-card rounded-2xl p-5 text-center overflow-hidden">
-      <!-- 动态成功徽章 (医疗健康翡翠绿呼吸光环) -->
+      <!-- 动态成功徽章 -->
       <div class="relative w-20 h-20 mx-auto mt-2 flex items-center justify-center">
-        <div class="absolute inset-0 rounded-full bg-emerald-500/20 success-pulse"></div>
-        <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-          <i data-lucide="check-check" class="w-8 h-8 text-slate-950 stroke-[2.5]"></i>
+        <div class="absolute inset-0 rounded-full bg-emerald-200 success-pulse"></div>
+        <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-md shadow-emerald-500/30">
+          <i data-lucide="check-check" class="w-8 h-8 text-white stroke-[2.5]"></i>
         </div>
       </div>
 
       <div class="mt-4">
-        <div class="inline-flex items-center gap-1 text-[11px] font-mono tracking-widest text-emerald-400 uppercase bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/60 font-semibold">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <div class="inline-flex items-center gap-1 text-[11px] font-mono tracking-widest text-emerald-800 uppercase bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300 font-semibold">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
           <span>准时赴约回执已归档</span>
         </div>
-        <div class="text-xl font-black text-white tracking-tight mt-2">
+        <div class="text-xl font-black text-slate-900 tracking-tight mt-2">
           履约凭证已生成
         </div>
-        <div class="text-xs text-slate-300 mt-1">
-          尊敬的 <span id="conf-name" class="font-bold text-orange-400">张建国 先生</span>，已锁定您的专属就诊通道
+        <div class="text-xs text-slate-600 mt-1">
+          尊敬的 <span id="conf-name" class="font-bold text-orange-600">张建国 先生</span>，已锁定您的专属就诊通道
         </div>
       </div>
 
       <!-- 核心信息明细表 -->
-      <div class="mt-5 p-3.5 rounded-xl bg-slate-950/85 border border-slate-800 text-left space-y-2.5 text-xs">
-        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-          <span class="text-slate-400">专属通行编号：</span>
-          <span class="font-mono text-orange-400 font-bold" id="conf-sn">SQ-PASS-202610-892</span>
+      <div class="mt-5 p-3.5 rounded-xl bg-orange-50/60 border border-orange-200 text-left space-y-2.5 text-xs">
+        <div class="flex items-center justify-between pb-2 border-b border-orange-200">
+          <span class="text-slate-500">专属通行编号：</span>
+          <span class="font-mono text-orange-700 font-bold" id="conf-sn">SQ-PASS-202610-892</span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-slate-400">预约到院时间：</span>
-          <span class="font-bold text-white" id="conf-time">明日 (10月15日) 10:00</span>
+          <span class="text-slate-500">预约到院时间：</span>
+          <span class="font-bold text-slate-900" id="conf-time">明日 (10月15日) 10:00</span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-slate-400">预约诊疗项目：</span>
-          <span class="font-bold text-white" id="conf-item">单颗缺牙 3D 骨量精准评估</span>
+          <span class="text-slate-500">预约诊疗项目：</span>
+          <span class="font-bold text-slate-900" id="conf-item">单颗缺牙 3D 骨量精准评估</span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-slate-400">主诊专家团队：</span>
-          <span class="font-bold text-emerald-400 flex items-center gap-1">
+          <span class="text-slate-500">主诊专家团队：</span>
+          <span class="font-bold text-emerald-700 flex items-center gap-1">
             <span>刘彦廷院长 MDT智囊组</span>
             <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
           </span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-slate-400">地下专属泊位：</span>
-          <span class="font-bold text-slate-200" id="conf-car">地下 B1-08 (自动抬杆)</span>
+          <span class="text-slate-500">地下专属泊位：</span>
+          <span class="font-bold text-slate-800" id="conf-car">地下 B1-08 (自动抬杆)</span>
         </div>
       </div>
 
-      <div class="mt-3.5 text-[11px] text-slate-400 leading-relaxed">
+      <div class="mt-3.5 text-[11px] text-slate-500 leading-relaxed">
         提示：您的专属档案已实时同步至门诊导医前台与刘彦廷院长工作台，明早到院直接报姓名即可。
       </div>
     </section>
 
     <!-- ==================== 专属医助王敏直通接单卡 ==================== -->
-    <section class="glass-card rounded-2xl p-4 border border-orange-500/30">
+    <section class="clean-card rounded-2xl p-4">
       <div class="flex items-center gap-3">
         <div class="relative">
           <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 p-0.5">
-            <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center overflow-hidden">
-              <span class="text-sm font-bold text-orange-300">王敏</span>
+            <div class="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden">
+              <span class="text-sm font-bold text-orange-600">王敏</span>
             </div>
           </div>
-          <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-slate-900"></span>
+          <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></span>
         </div>
 
         <div class="flex-1 min-w-0 text-left">
           <div class="flex items-center gap-2">
-            <span class="text-sm font-bold text-white">王敏 护士长</span>
-            <span class="text-[9px] px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30 font-semibold">您的专属医助</span>
+            <span class="text-sm font-bold text-slate-900">王敏 护士长</span>
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-orange-100 text-orange-700 border border-orange-300 font-semibold">您的专属医助</span>
           </div>
-          <div class="text-[11px] text-slate-400 mt-0.5">已为您预留明日接待贵宾室与热茶，明早全程陪同引导。</div>
+          <div class="text-[11px] text-slate-600 mt-0.5">已为您预留明日接待贵宾室与热茶，明早全程陪同引导。</div>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-800 text-xs">
-        <button onclick="callAssistant()" class="py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-          <i data-lucide="phone" class="w-3.5 h-3.5 text-orange-400"></i>
+      <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-orange-100 text-xs">
+        <button onclick="callAssistant()" class="py-2 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+          <i data-lucide="phone" class="w-3.5 h-3.5 text-orange-600"></i>
           <span>一键拨打医助电话</span>
         </button>
-        <button onclick="showToast('已复制医助微信号：sqdc-care01')" class="py-2 rounded-xl bg-orange-500/20 border border-orange-500/40 text-orange-300 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+        <button onclick="showToast('已复制医助微信号：sqdc-care01')" class="py-2 rounded-xl bg-orange-500 text-white font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-sm shadow-orange-500/25">
           <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
           <span>加医助微信备忘</span>
         </button>
@@ -202,42 +198,42 @@
     </section>
 
     <!-- ==================== 专享 4 大就诊权益 ==================== -->
-    <section class="glass-card rounded-2xl p-4 border border-slate-800 text-xs">
-      <div class="font-bold text-white mb-2.5 flex items-center gap-1.5">
-        <i data-lucide="gem" class="w-4 h-4 text-orange-400"></i>
+    <section class="clean-card rounded-2xl p-4 text-xs">
+      <div class="font-bold text-slate-900 mb-2.5 flex items-center gap-1.5">
+        <i data-lucide="gem" class="w-4 h-4 text-orange-600"></i>
         <span>初诊到院 · 凭此函专享 VIP 礼遇</span>
       </div>
 
-      <div class="grid grid-cols-2 gap-2 text-slate-300">
-        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2">
-          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5"></i>
+      <div class="grid grid-cols-2 gap-2 text-slate-700">
+        <div class="p-2.5 rounded-xl bg-orange-50/60 border border-orange-200 flex items-start gap-2">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-600 shrink-0 mt-0.5"></i>
           <div>
-            <div class="font-bold text-white text-[11px]">免排队专属通道</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">免普通门诊排队叫号</div>
+            <div class="font-bold text-slate-900 text-[11px]">免排队专属通道</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">免普通门诊排队叫号</div>
           </div>
         </div>
 
-        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2">
-          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5"></i>
+        <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200 flex items-start gap-2">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5"></i>
           <div>
-            <div class="font-bold text-white text-[11px]">0元卡瓦 CBCT</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">立省 580 元骨量全景片</div>
+            <div class="font-bold text-slate-900 text-[11px]">0元卡瓦 CBCT</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">立省 580 元全景片</div>
           </div>
         </div>
 
-        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2">
-          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5"></i>
+        <div class="p-2.5 rounded-xl bg-orange-50/60 border border-orange-200 flex items-start gap-2">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-600 shrink-0 mt-0.5"></i>
           <div>
-            <div class="font-bold text-white text-[11px]">MDT 智囊团研判</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">刘彦廷院长团队 1对1 研判</div>
+            <div class="font-bold text-slate-900 text-[11px]">MDT 智囊团研判</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">刘彦廷团队 1对1 研判</div>
           </div>
         </div>
 
-        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2">
-          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5"></i>
+        <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200 flex items-start gap-2">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5"></i>
           <div>
-            <div class="font-bold text-white text-[11px]">免费专属停车</div>
-            <div class="text-[10px] text-slate-400 mt-0.5">地下专属车位无需缴费</div>
+            <div class="font-bold text-slate-900 text-[11px]">免费专属停车</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">地下车位免停车费</div>
           </div>
         </div>
       </div>
@@ -245,13 +241,13 @@
 
     <!-- ==================== 快捷操作按钮 ==================== -->
     <div class="space-y-2 pt-1">
-      <button onclick="shareToFamily()" class="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-orange-500/25 active:scale-95 transition-all">
+      <button onclick="shareToFamily()" class="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-orange-500/30 active:scale-95 transition-all">
         <i data-lucide="share-2" class="w-4 h-4"></i>
         <span>转发给老伴 / 儿女确认行程</span>
       </button>
 
-      <button onclick="addToCalendar()" class="w-full py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-        <i data-lucide="calendar-plus" class="w-4 h-4 text-emerald-400"></i>
+      <button onclick="addToCalendar()" class="w-full py-2.5 rounded-xl bg-white border border-orange-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+        <i data-lucide="calendar-plus" class="w-4 h-4 text-emerald-600"></i>
         <span>添加手机日历提醒（明日 09:30 出发）</span>
       </button>
     </div>
@@ -265,7 +261,6 @@
   <script>
     lucide.createIcons();
 
-    // 自动喷射欢庆礼花
     try {
       confetti({ particleCount: 70, spread: 70, origin: { y: 0.4 } });
     } catch(e) {}

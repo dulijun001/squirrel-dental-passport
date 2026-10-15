@@ -136,12 +136,21 @@
       opacity: 0.85;
     }
 
-    /* 呼吸流光按钮 */
+    /* 呼吸流光按钮 (升级为高奢双层脉冲光晕与全宽触控) */
     .btn-glow {
-      background: linear-gradient(135deg, #EA580C 0%, #F97316 50%, #FB923C 100%);
-      box-shadow: 0 10px 25px -4px rgba(234, 88, 12, 0.45);
+      background: linear-gradient(135deg, #EA580C 0%, #F97316 48%, #FB923C 100%);
+      box-shadow: 0 12px 30px -4px rgba(234, 88, 12, 0.5), 0 0 0 1px rgba(254, 215, 170, 0.4);
       position: relative;
       overflow: hidden;
+      animation: pulseGlow 2.4s infinite ease-in-out;
+    }
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 12px 28px -4px rgba(234, 88, 12, 0.45), 0 0 0 0 rgba(234, 88, 12, 0.35);
+      }
+      50% {
+        box-shadow: 0 16px 36px -2px rgba(234, 88, 12, 0.65), 0 0 0 6px rgba(249, 115, 22, 0.18);
+      }
     }
     .btn-glow::after {
       content: '';
@@ -150,9 +159,9 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: linear-gradient(60deg, transparent, rgba(255,255,255,0.25), transparent);
+      background: linear-gradient(60deg, transparent, rgba(255,255,255,0.32), transparent);
       transform: rotate(30deg);
-      animation: sweep 3s infinite linear;
+      animation: sweep 2.6s infinite linear;
     }
     @keyframes sweep {
       0% { transform: translate(-100%, -100%) rotate(30deg); }
@@ -866,18 +875,28 @@
 
   </main>
 
-  <!-- ==================== 底部固定行动底栏（双触点微交互） ==================== -->
-  <div class="fixed bottom-0 left-0 right-0 z-50 p-3 bg-white/95 backdrop-blur-xl border-t border-orange-200 flex items-center gap-2.5 max-w-md mx-auto shadow-xl">
-    <!-- 转发儿女带专属提示气泡 -->
-    <button onclick="shareToFamily()" class="flex-1 py-2.5 px-3 rounded-2xl bg-orange-50 border border-orange-200 text-orange-800 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all relative">
-      <i data-lucide="share-2" class="w-3.5 h-3.5 text-orange-600"></i>
-      <span>给儿女看车位/路线</span>
-    </button>
-
-    <!-- 确认准时赴约呼吸流光按键 -->
-    <button onclick="confirmAppointment()" class="flex-1 py-3 px-3 rounded-2xl btn-glow text-white text-xs font-black flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-      <i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>
-      <span>确认明早准时赴约</span>
+  <!-- ==================== 底部固定行动底栏（全宽超级显眼·准时赴约行动核） ==================== -->
+  <div class="fixed bottom-0 left-0 right-0 z-50 px-4 py-3 bg-white/95 backdrop-blur-xl border-t border-orange-200/90 max-w-md mx-auto shadow-2xl">
+    <!-- 确认准时赴约全宽大按钮 (高度饱满、双行文案、呼吸光晕) -->
+    <button onclick="confirmAppointment()" class="w-full py-3.5 px-4 rounded-2xl btn-glow text-white flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shrink-0 shadow-inner">
+          <i data-lucide="check" class="w-5 h-5 text-white stroke-[3]"></i>
+        </div>
+        <div class="text-left">
+          <div class="text-sm font-black tracking-tight leading-tight flex items-center gap-1.5">
+            <span>确认明早准时赴约</span>
+            <span class="text-[9px] font-bold px-1.5 py-0.2 bg-white/25 rounded-full border border-white/40">专属特免礼遇</span>
+          </div>
+          <div class="text-[10.5px] text-orange-100 font-medium leading-tight mt-0.5 opacity-90">
+            刘彦廷院长专席与地下车位将为您持续保留
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-1 shrink-0 text-white font-bold text-xs pl-2">
+        <span>出具凭证</span>
+        <i data-lucide="arrow-right" class="w-4 h-4 stroke-[2.5]"></i>
+      </div>
     </button>
   </div>
 

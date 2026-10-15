@@ -137,6 +137,47 @@
       display: flex;
     }
 
+    /* 微信右上角分享指引遮罩 */
+    .wx-guide-mask {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 400;
+      color: #FFFFFF;
+    }
+    .wx-guide-mask.active {
+      display: block;
+    }
+
+    /* 动作抽屉面板 */
+    .action-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(5px);
+      z-index: 250;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .action-modal.active {
+      display: flex;
+    }
+    .action-sheet {
+      width: 100%;
+      max-width: 440px;
+      background: #FFFFFF;
+      border-radius: 24px 24px 0 0;
+      padding: 20px 20px calc(env(safe-area-inset-bottom, 20px) + 20px);
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+      animation: sheetUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
     .toast-box {
       position: fixed;
       top: 50%;
@@ -471,6 +512,72 @@
     </div>
   </div>
 
+  <!-- ==================== 转发给儿女/老伴 微信指引与备忘复制弹层 ==================== -->
+  <div id="share-modal" class="action-modal" onclick="if(event.target === this) closeShareModal()">
+    <div class="action-sheet space-y-3.5 text-left">
+      <div class="flex items-center justify-between pb-3 border-b border-orange-100">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+            <i data-lucide="share-2" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-900">发送给儿女 / 老伴留档备忘</div>
+            <div class="text-[10px] text-slate-400">附带完整车位、专家及零隐形消费承诺</div>
+          </div>
+        </div>
+        <button onclick="closeShareModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- 专属备忘文案卡片 -->
+      <div class="p-3.5 rounded-xl bg-orange-50/70 border border-orange-200 space-y-1.5 text-xs">
+        <div class="font-bold text-orange-950 flex items-center gap-1">
+          <i data-lucide="clipboard-check" class="w-3.5 h-3.5 text-orange-600"></i>
+          <span>已为您生成儿女把关备忘单：</span>
+        </div>
+        <div id="share-memo-text" class="text-[11px] text-slate-700 font-mono bg-white p-2.5 rounded-lg border border-orange-100 leading-relaxed break-words">
+          【松鼠口腔·名医亲诊备忘】爸妈明早10:00在希望路锦粼天序松鼠口腔预约了刘彦廷院长团队（3F-VIP01），已预留地下B1-08车位（车牌自动抬杆）。卡瓦3D影像评估0元免单，无隐形消费，儿女可放心把关！查验凭证：
+        </div>
+      </div>
+
+      <!-- 核心行动双通道 -->
+      <div class="space-y-2 pt-1">
+        <button onclick="handleWechatShareGuide()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-600/25 active:scale-95 transition-all">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span id="wx-btn-label">直接转发给微信儿女（微信一键分享）</span>
+        </button>
+
+        <button onclick="copyShareText()" class="w-full py-2.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+          <i data-lucide="copy" class="w-3.5 h-3.5 text-orange-600"></i>
+          <span>仅复制备忘文字与链接</span>
+        </button>
+      </div>
+
+      <div class="text-[10px] text-slate-400 text-center">
+        长辈转发后，儿女可在手机端随时查验专家资质与到院导航动线
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 微信右上角分享指引遮罩 ==================== -->
+  <div id="wx-guide-mask" class="wx-guide-mask" onclick="this.classList.remove('active')">
+    <div class="absolute top-2 right-4 flex flex-col items-end text-right p-4">
+      <svg class="w-16 h-16 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18" transform="rotate(45 12 12)" />
+      </svg>
+      <div class="mt-2 text-base font-black text-white">
+        点击右上角「···」
+      </div>
+      <div class="text-xs text-orange-200 mt-1">
+        选择「发送给朋友」或「分享到微信」
+      </div>
+      <div class="mt-4 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs border border-white/30 text-white">
+        已自动复制备忘文案，直接粘贴即可
+      </div>
+    </div>
+  </div>
+
   <!-- Toast 提示条 -->
   <div id="toast-box" class="toast-box">
     <div id="toast-msg" class="text-xs font-semibold text-white">操作成功</div>
@@ -513,8 +620,73 @@
       }
     }
 
+    function isWeChatBrowser() {
+      const ua = navigator.userAgent.toLowerCase();
+      return ua.indexOf('micromessenger') !== -1;
+    }
+
+    function getFormattedShareMemo() {
+      const name = document.getElementById('conf-name') ? document.getElementById('conf-name').textContent.trim() : '张建国 先生';
+      const time = document.getElementById('conf-time') ? document.getElementById('conf-time').textContent.trim() : '明日 10:00';
+      const car = document.getElementById('conf-car') ? document.getElementById('conf-car').textContent.trim() : '地下 B1-08';
+      const url = window.location.href;
+
+      return `【松鼠口腔·名医亲诊孝心备忘】\n父母（${name}）已预约：${time}\n主理团队：刘彦廷院长 MDT种植专家组\n专属车位：${car}（系统已录入，地下车库自动抬杆）\n专属门牌：独栋新院 3F-VIP01\n权威承诺：0元卡瓦3D扫描评估，绝无隐形消费。\n请儿女放心查验专属凭证：${url}`;
+    }
+
     function shareToFamily() {
-      showToast('已生成家庭转发展开！请点击右上角「...」发送给儿女');
+      const memo = getFormattedShareMemo();
+      const memoEl = document.getElementById('share-memo-text');
+      if (memoEl) memoEl.textContent = memo;
+
+      const btnLabel = document.getElementById('wx-btn-label');
+      if (btnLabel) {
+        if (isWeChatBrowser()) {
+          btnLabel.textContent = '直接转发给微信儿女 / 老伴';
+        } else {
+          btnLabel.textContent = '复制备忘并唤起微信';
+        }
+      }
+
+      const modal = document.getElementById('share-modal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeShareModal() {
+      const modal = document.getElementById('share-modal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function handleWechatShareGuide() {
+      const memo = getFormattedShareMemo();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(memo).catch(() => {});
+      }
+
+      if (isWeChatBrowser()) {
+        closeShareModal();
+        const mask = document.getElementById('wx-guide-mask');
+        if (mask) mask.classList.add('active');
+      } else {
+        showToast('已复制备忘文案！正在为您打开微信...');
+        setTimeout(() => {
+          window.location.href = 'weixin://';
+        }, 800);
+      }
+    }
+
+    function copyShareText() {
+      const memo = getFormattedShareMemo();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(memo).then(() => {
+          showToast('已复制备忘文字与链接！可直接粘贴发微信');
+          closeShareModal();
+        }).catch(() => {
+          prompt('请长按复制备忘文字：', memo);
+        });
+      } else {
+        prompt('请长按复制备忘文字：', memo);
+      }
     }
 
     function addToCalendar() {

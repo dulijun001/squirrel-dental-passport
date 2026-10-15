@@ -563,90 +563,6 @@
           </div>
         </div>
 
-        <!-- 🌟 核心增值模块：3D 仿生种植牙·交互式全景解构视窗（柔光温润医学卡片风格） -->
-        <div class="relative rounded-2xl overflow-hidden border border-orange-200/90 shadow-sm bg-gradient-to-b from-white via-orange-50/25 to-slate-50/80 p-3.5 my-2">
-          <!-- 头部标题与触控引导 -->
-          <div class="flex items-center justify-between pb-2 border-b border-orange-100">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0">
-                <i data-lucide="box" class="w-4 h-4"></i>
-              </div>
-              <div>
-                <div class="text-xs font-black text-slate-900 flex items-center gap-1.5">
-                  <span>3D 仿生微创种植 · 结构与稳固原理</span>
-                  <span class="text-[8.5px] px-1.5 py-0.2 rounded-full bg-orange-100 text-orange-700 border border-orange-200 font-bold">360°可旋转</span>
-                </div>
-                <div class="text-[9.5px] text-slate-500 mt-0.5">手指滑动全景旋转 · 亲见牙槽骨稳固结合过程</div>
-              </div>
-            </div>
-            <button id="btn-toggle-explode" onclick="toggleImplantExplode()" class="px-2 py-1 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 transition-all shrink-0 shadow-xs">
-              <i data-lucide="layers" class="w-3 h-3"></i>
-              <span id="explode-btn-text">一键分层拆解</span>
-            </button>
-          </div>
-
-          <!-- 3D WebGL 交互画布容器（柔和温润透光背景） -->
-          <div class="relative w-full h-64 rounded-xl overflow-hidden my-2 bg-gradient-to-b from-slate-100/70 via-orange-50/40 to-slate-100/90 border border-orange-200/50 flex items-center justify-center">
-            <canvas id="implant-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block"></canvas>
-
-            <!-- 旋转引导微提示信标 (交互一次后淡出) -->
-            <div id="hint-drag-rotate" class="pointer-events-none absolute bottom-1.5 left-2 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-orange-200 text-[8.5px] text-slate-600 flex items-center gap-1 shadow-sm transition-opacity duration-500 whitespace-nowrap z-10">
-              <i data-lucide="rotate-cw" class="w-2.5 h-2.5 text-orange-600 animate-spin" style="animation-duration: 3s;"></i>
-              <span>单指左右滑动 360° 旋转</span>
-            </div>
-
-            <!-- 3D 浮动定位锚点标签 (随拆解展开) -->
-            <div id="label-crown" class="absolute top-2 right-2 pointer-events-none bg-white/95 backdrop-blur-sm border border-amber-300 px-2 py-0.5 rounded-lg text-right transition-all duration-500 opacity-95 shadow-sm z-10">
-              <div class="text-[9.5px] font-black text-amber-700 flex items-center justify-end gap-1">
-                <span>① 全瓷仿生牙冠</span>
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-              </div>
-              <div class="text-[8px] text-slate-500">德国威兰德全瓷 · 媲美真牙</div>
-            </div>
-
-            <div id="label-abutment" class="absolute top-[80px] left-2 pointer-events-none bg-white/95 backdrop-blur-sm border border-sky-300 px-2 py-0.5 rounded-lg text-left transition-all duration-500 opacity-95 shadow-sm z-10">
-              <div class="text-[9.5px] font-black text-sky-700 flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
-                <span>② 纯钛精密基台</span>
-              </div>
-              <div class="text-[8px] text-slate-500">0微米微缝固位 · 终身无松动</div>
-            </div>
-
-            <div id="label-implant" class="absolute bottom-2 right-2 pointer-events-none bg-white/95 backdrop-blur-sm border border-emerald-300 px-2 py-0.5 rounded-lg text-right transition-all duration-500 opacity-95 shadow-sm z-10">
-              <div class="text-[9.5px] font-black text-emerald-700 flex items-center justify-end gap-1">
-                <span>③ 亲骨微螺纹植体</span>
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              </div>
-              <div class="text-[8px] text-slate-500">四级纯钛SLA · 扎根稳固如真牙</div>
-            </div>
-          </div>
-
-          <!-- 3大结构一键点选大白话医嘱 (浅色适老化卡片) -->
-          <div class="grid grid-cols-3 gap-1.5 text-center mt-2">
-            <button onclick="highlight3DPart('crown')" class="p-1.5 rounded-xl bg-white hover:bg-amber-50/50 border border-amber-200 text-left transition-all active:scale-95 shadow-2xs">
-              <div class="text-[10px] font-black text-amber-800">① 牙冠层</div>
-              <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">天然真牙透光 啃排骨不崩瓷</div>
-            </button>
-            <button onclick="highlight3DPart('abutment')" class="p-1.5 rounded-xl bg-white hover:bg-sky-50/50 border border-sky-200 text-left transition-all active:scale-95 shadow-2xs">
-              <div class="text-[10px] font-black text-sky-800">② 基台连接</div>
-              <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">纳米锁紧 杜绝细菌塞牙异味</div>
-            </button>
-            <button onclick="highlight3DPart('implant')" class="p-1.5 rounded-xl bg-white hover:bg-emerald-50/50 border border-emerald-200 text-left transition-all active:scale-95 shadow-2xs">
-              <div class="text-[10px] font-black text-emerald-800">③ 亲骨植体</div>
-              <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">像树根扎入骨中 30年稳固相伴</div>
-            </button>
-          </div>
-
-          <!-- 白话解惑备忘 (彻底消除“打钢钉”恐惧) -->
-          <div class="mt-2.5 p-2 rounded-xl bg-orange-50 border border-orange-200/80 flex items-start gap-2 text-[10px] text-slate-700 leading-relaxed">
-            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-orange-600 shrink-0 mt-0.5"></i>
-            <div>
-              <strong class="text-orange-800 font-bold">刘院长数字化微创承诺：</strong>
-              “很多长辈以为种植牙是开刀打大铁钉，其实植体直径仅如米粒，德国数字化导板导航精微植入，出血少于拔牙，微痛局麻下舒适无感。”
-            </div>
-          </div>
-        </div>
-
         <!-- 步骤 3: 医生面诊 -->
         <div class="flex items-start gap-3 relative">
           <div class="w-6 h-6 rounded-full bg-sky-500 text-white text-[11px] font-black flex items-center justify-center shrink-0 z-10 shadow-sm shadow-sky-500/30">
@@ -738,6 +654,90 @@
             <i data-lucide="pill" class="w-3.5 h-3.5"></i> 慢病按医嘱用药
           </div>
           <div class="text-[10px] text-sky-700 mt-0.5">降压药清晨 06:30 正常服用</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🌟 核心增值独立卡片：【3D 仿生微创种植 · 结构与稳固原理解构】 -->
+    <section class="deluxe-card shadow-sm">
+      <!-- 头部标题与触控引导 -->
+      <div class="flex items-center justify-between pb-3 border-b border-orange-100">
+        <div class="flex items-center gap-2.5 min-w-0 pr-2">
+          <div class="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+            <i data-lucide="box" class="w-4.5 h-4.5"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-xs font-black text-slate-900 flex items-center gap-1.5 flex-wrap">
+              <span class="whitespace-nowrap">数字化微创种植 · 结构与稳固原理</span>
+              <span class="text-[8.5px] px-1.5 py-0.2 rounded-full bg-orange-100 text-orange-700 border border-orange-200 font-bold shrink-0">360°可旋转</span>
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5 truncate">手指滑动全景旋转 · 亲见骨结合与微创装配</div>
+          </div>
+        </div>
+        <button id="btn-toggle-explode" onclick="toggleImplantExplode()" class="px-2.5 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-[10.5px] font-bold flex items-center gap-1 active:scale-95 transition-all shrink-0 shadow-xs">
+          <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+          <span id="explode-btn-text">一键分层拆解</span>
+        </button>
+      </div>
+
+      <!-- 3D WebGL 交互画布容器（柔和温润透光背景） -->
+      <div class="relative w-full h-64 rounded-2xl overflow-hidden my-3 bg-gradient-to-b from-slate-100/70 via-orange-50/40 to-slate-100/90 border border-orange-200/50 flex items-center justify-center">
+        <canvas id="implant-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block"></canvas>
+
+        <!-- 旋转引导微提示信标 (交互一次后淡出) -->
+        <div id="hint-drag-rotate" class="pointer-events-none absolute bottom-2 left-2.5 px-2.5 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-orange-200 text-[8.5px] text-slate-600 flex items-center gap-1 shadow-sm transition-opacity duration-500 whitespace-nowrap z-10">
+          <i data-lucide="rotate-cw" class="w-2.5 h-2.5 text-orange-600 animate-spin" style="animation-duration: 3s;"></i>
+          <span>单指左右滑动 360° 旋转</span>
+        </div>
+
+        <!-- 3D 浮动定位锚点标签 (随拆解展开) -->
+        <div id="label-crown" class="absolute top-2.5 right-2.5 pointer-events-none bg-white/95 backdrop-blur-sm border border-amber-300 px-2.5 py-1 rounded-xl text-right transition-all duration-500 opacity-95 shadow-sm z-10">
+          <div class="text-[9.5px] font-black text-amber-700 flex items-center justify-end gap-1">
+            <span>① 全瓷仿生牙冠</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+          </div>
+          <div class="text-[8px] text-slate-500 mt-0.5">德国威兰德全瓷 · 媲美真牙</div>
+        </div>
+
+        <div id="label-abutment" class="absolute top-[82px] left-2.5 pointer-events-none bg-white/95 backdrop-blur-sm border border-sky-300 px-2.5 py-1 rounded-xl text-left transition-all duration-500 opacity-95 shadow-sm z-10">
+          <div class="text-[9.5px] font-black text-sky-700 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+            <span>② 纯钛精密基台</span>
+          </div>
+          <div class="text-[8px] text-slate-500 mt-0.5">0微米微缝固位 · 终身无松动</div>
+        </div>
+
+        <div id="label-implant" class="absolute bottom-2.5 right-2.5 pointer-events-none bg-white/95 backdrop-blur-sm border border-emerald-300 px-2.5 py-1 rounded-xl text-right transition-all duration-500 opacity-95 shadow-sm z-10">
+          <div class="text-[9.5px] font-black text-emerald-700 flex items-center justify-end gap-1">
+            <span>③ 亲骨微螺纹植体</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          </div>
+          <div class="text-[8px] text-slate-500 mt-0.5">四级纯钛SLA · 扎根稳固如真牙</div>
+        </div>
+      </div>
+
+      <!-- 3大结构一键点选大白话医嘱 (浅色适老化卡片) -->
+      <div class="grid grid-cols-3 gap-2 text-center mt-2.5">
+        <button onclick="highlight3DPart('crown')" class="p-2 rounded-xl bg-white hover:bg-amber-50/50 border border-amber-200 text-left transition-all active:scale-95 shadow-2xs">
+          <div class="text-[10.5px] font-black text-amber-800">① 牙冠层</div>
+          <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">天然真牙透光 啃排骨不崩瓷</div>
+        </button>
+        <button onclick="highlight3DPart('abutment')" class="p-2 rounded-xl bg-white hover:bg-sky-50/50 border border-sky-200 text-left transition-all active:scale-95 shadow-2xs">
+          <div class="text-[10.5px] font-black text-sky-800">② 基台连接</div>
+          <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">纳米锁紧 杜绝细菌塞牙异味</div>
+        </button>
+        <button onclick="highlight3DPart('implant')" class="p-2 rounded-xl bg-white hover:bg-emerald-50/50 border border-emerald-200 text-left transition-all active:scale-95 shadow-2xs">
+          <div class="text-[10.5px] font-black text-emerald-800">③ 亲骨植体</div>
+          <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">像树根扎入骨中 30年稳固相伴</div>
+        </button>
+      </div>
+
+      <!-- 白话解惑备忘 (彻底消除“打钢钉”恐惧) -->
+      <div class="mt-3 p-2.5 rounded-xl bg-orange-50/90 border border-orange-200 flex items-start gap-2 text-[10.5px] text-slate-700 leading-relaxed">
+        <i data-lucide="shield-check" class="w-4 h-4 text-orange-600 shrink-0 mt-0.5"></i>
+        <div>
+          <strong class="text-orange-900 font-bold">刘院长数字化微创承诺：</strong>
+          “很多长辈以为种植牙是开刀打大铁钉，其实植体直径仅如米粒，德国数字化导板导航精微植入，出血少于拔牙，微痛局麻下舒适无感。”
         </div>
       </div>
     </section>

@@ -437,10 +437,23 @@
 
     function confirmAppointment() {
       try {
-        confetti({ particleCount: 80, spread: 70, origin: { y: 0.7 } });
+        confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
       } catch(e) {}
 
-      alert('【松鼠口腔 · 感谢您的确认】\\n\\n尊敬的贵宾，我们已将您的回执同步给刘彦廷院长团队及专属医助！\\n\\n★ 明日专属接待医助：王敏 护士长\\n★ 昆明旗舰院 VIP 贵宾室与车位已正式锁定\\n\\n明早见，祝您生活愉快！');
+      showToast('正在为您出具贵宾就诊凭证...');
+
+      // 提取当前参数并顺滑跳转至专属确认结果凭证页
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get('name') || document.getElementById('card-name').textContent;
+      const time = params.get('time') || document.getElementById('card-time').textContent;
+      const item = params.get('item') || document.getElementById('card-item').textContent;
+      const car = params.get('car') || document.getElementById('card-car').textContent;
+
+      const targetURL = `confirmed.html?name=${encodeURIComponent(name)}&time=${encodeURIComponent(time)}&item=${encodeURIComponent(item)}&car=${encodeURIComponent(car)}&sn=202610-892`;
+
+      setTimeout(() => {
+        window.location.href = targetURL;
+      }, 700);
     }
 
     function shareToFamily() {

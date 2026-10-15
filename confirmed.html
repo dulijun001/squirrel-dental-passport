@@ -8,7 +8,7 @@
   <!-- iOS / 微信全屏沉浸配置 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#030712">
+  <meta name="theme-color" content="#070c18">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -29,43 +29,47 @@
       padding: 0;
       width: 100%;
       min-height: 100%;
-      background-color: #030712;
+      background-color: #070c18;
       color: #f8fafc;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       overflow-x: hidden;
     }
 
-    /* 成功确认大卡片质感 */
+    /* 方案 A: 成功确认大卡片质感 (森林绿履约 + 松鼠橙点缀) */
     .confirmed-card {
-      background: linear-gradient(145deg, rgba(16, 185, 129, 0.12), rgba(15, 23, 42, 0.95) 45%, rgba(30, 41, 59, 0.85));
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.96) 45%, rgba(26, 36, 56, 0.90));
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      box-shadow: 0 20px 50px -10px rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.25);
       position: relative;
     }
 
+    .success-pulse {
+      animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+
     .glass-card {
-      background: rgba(15, 23, 42, 0.82);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
     }
 
-    .gold-badge {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05));
-      border: 1px solid rgba(245, 158, 11, 0.35);
-    }
-
-    /* 微信 Toast */
     .wechat-toast {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.9);
       background: rgba(15, 23, 42, 0.96);
-      border: 1px solid rgba(16, 185, 129, 0.4);
+      border: 1px solid rgba(249, 115, 22, 0.4);
       padding: 14px 22px;
       border-radius: 16px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.8);
@@ -82,173 +86,178 @@
     }
   </style>
 </head>
-<body class="text-slate-100 antialiased selection:bg-emerald-500 selection:text-white pb-28">
+<body class="text-slate-100 antialiased selection:bg-orange-500 selection:text-white pb-16">
 
-  <!-- ==================== 顶部极简品牌导航 ==================== -->
-  <header class="sticky top-0 z-40 px-4 py-2.5 flex items-center justify-between bg-slate-950/80 backdrop-blur-md border-b border-white/5">
+  <!-- ==================== 顶部导航 ==================== -->
+  <header class="sticky top-0 z-40 px-4 py-2.5 flex items-center justify-between bg-[#070c18]/90 backdrop-blur-md border-b border-white/5">
     <div class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 p-0.5 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-        <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-          <span class="text-xs font-black text-emerald-400">松鼠</span>
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 p-0.5 flex items-center justify-center shadow-lg shadow-orange-500/25">
+        <div class="w-full h-full bg-[#070c18] rounded-[10px] flex items-center justify-center">
+          <span class="text-xs font-black text-orange-400">松鼠</span>
         </div>
       </div>
       <div>
         <div class="text-[13px] font-bold text-white tracking-tight flex items-center gap-1.5">
-          <span>松鼠口腔 · 贵宾履约确认中心</span>
-          <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">履约已生效</span>
+          <span>松鼠口腔 · 履约确认凭证</span>
+          <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">已生效</span>
         </div>
-        <div class="text-[10px] text-slate-400">系统已向主诊团队派发贵宾接待令</div>
+        <div class="text-[10px] text-slate-400">昆明双塔旁 · 锦粼天序二级口腔专科新院区</div>
       </div>
     </div>
 
-    <a href="javascript:history.back()" class="text-xs text-slate-400 hover:text-white flex items-center gap-0.5 active:scale-95 transition-all">
-      <i data-lucide="chevron-left" class="w-4 h-4"></i>
-      <span>返回</span>
-    </a>
+    <button onclick="window.history.back()" class="px-2 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 text-xs flex items-center gap-1 active:scale-95 transition-all">
+      <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-slate-400"></i>
+      <span class="text-[10px]">返回</span>
+    </button>
   </header>
 
-  <!-- ==================== 主体内容 ==================== -->
-  <main class="max-w-md mx-auto px-4 pt-3.5 space-y-4">
+  <main class="max-w-md mx-auto px-4 pt-4 space-y-4">
 
-    <!-- 1. 成功确认大卡片：尊贵、仪式感、给足安全感 -->
-    <section class="confirmed-card rounded-2xl p-4.5 overflow-hidden text-center relative">
-      <div class="absolute -right-10 -top-10 w-36 h-36 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-      <!-- 动态成功动效圆环 -->
-      <div class="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-emerald-500/30">
-        <i data-lucide="check" class="w-8 h-8 text-emerald-400 stroke-[3]"></i>
+    <!-- ==================== 核心确认凭证大卡 ==================== -->
+    <section class="confirmed-card rounded-2xl p-5 text-center overflow-hidden">
+      <!-- 动态成功徽章 (医疗健康翡翠绿呼吸光环) -->
+      <div class="relative w-20 h-20 mx-auto mt-2 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full bg-emerald-500/20 success-pulse"></div>
+        <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+          <i data-lucide="check-check" class="w-8 h-8 text-slate-950 stroke-[2.5]"></i>
+        </div>
       </div>
 
-      <span class="text-[10px] font-mono tracking-widest text-emerald-400 uppercase bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/60 inline-block mb-1">
-        CONFIRMED · 准时赴约回执已归档
-      </span>
-
-      <div class="text-xl font-black text-white tracking-tight mt-1">
-        赴约已确认 · 期待与您相遇
+      <div class="mt-4">
+        <div class="inline-flex items-center gap-1 text-[11px] font-mono tracking-widest text-emerald-400 uppercase bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/60 font-semibold">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>准时赴约回执已归档</span>
+        </div>
+        <div class="text-xl font-black text-white tracking-tight mt-2">
+          履约凭证已生成
+        </div>
+        <div class="text-xs text-slate-300 mt-1">
+          尊敬的 <span id="conf-name" class="font-bold text-orange-400">张建国 先生</span>，已锁定您的专属就诊通道
+        </div>
       </div>
 
-      <div class="text-xs text-slate-300 mt-2 px-2 leading-relaxed">
-        尊敬的 <strong id="conf-name" class="text-emerald-300 font-bold">张建国 先生</strong>，您的履约回执已实时同步至门诊值班总台与主刀院长专案组。
-      </div>
-
-      <!-- 履约详情框 -->
-      <div class="mt-4 p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 text-left space-y-2 text-xs">
+      <!-- 核心信息明细表 -->
+      <div class="mt-5 p-3.5 rounded-xl bg-slate-950/85 border border-slate-800 text-left space-y-2.5 text-xs">
         <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-          <span class="text-slate-400">贵宾专属通行档案：</span>
-          <span id="conf-sn" class="font-mono text-emerald-400 font-bold">SQ-PASS-202610-892</span>
+          <span class="text-slate-400">专属通行编号：</span>
+          <span class="font-mono text-orange-400 font-bold" id="conf-sn">SQ-PASS-202610-892</span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-slate-400">锁定就诊时间：</span>
-          <span id="conf-time" class="text-white font-bold text-sm">明日 (10月15日) 10:00</span>
+          <span class="text-slate-400">预约到院时间：</span>
+          <span class="font-bold text-white" id="conf-time">明日 (10月15日) 10:00</span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-slate-400">预约专享项目：</span>
-          <span id="conf-item" class="text-amber-300 font-bold truncate max-w-[190px]">单颗缺牙 3D 骨量精准评估</span>
+          <span class="text-slate-400">预约诊疗项目：</span>
+          <span class="font-bold text-white" id="conf-item">单颗缺牙 3D 骨量精准评估</span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-slate-400">专属贵宾泊位：</span>
-          <span id="conf-car" class="text-slate-200">地下 B1-08 (自动识别抬杆)</span>
+          <span class="text-slate-400">主诊专家团队：</span>
+          <span class="font-bold text-emerald-400 flex items-center gap-1">
+            <span>刘彦廷院长 MDT智囊组</span>
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+          </span>
         </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-400">地下专属泊位：</span>
+          <span class="font-bold text-slate-200" id="conf-car">地下 B1-08 (自动抬杆)</span>
+        </div>
+      </div>
+
+      <div class="mt-3.5 text-[11px] text-slate-400 leading-relaxed">
+        提示：您的专属档案已实时同步至门诊导医前台与刘彦廷院长工作台，明早到院直接报姓名即可。
       </div>
     </section>
 
-    <!-- 2. 专属接待医助直通卡（给患者极大的信任抓手） -->
-    <section class="glass-card rounded-2xl p-4 border border-slate-700/80">
-      <div class="flex items-center justify-between pb-2.5 border-b border-slate-800">
-        <span class="text-xs font-bold text-white flex items-center gap-1.5">
-          <i data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i>
-          <span>您的明日专属主理团队</span>
-        </span>
-        <span class="text-[10px] text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-500/30">已派发接待单</span>
-      </div>
-
-      <div class="flex items-center gap-3.5 mt-3">
-        <!-- 护士长头像 -->
-        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 p-0.5 shrink-0">
-          <div class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-emerald-300 font-bold text-sm">
-            王敏
+    <!-- ==================== 专属医助王敏直通接单卡 ==================== -->
+    <section class="glass-card rounded-2xl p-4 border border-orange-500/30">
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 p-0.5">
+            <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center overflow-hidden">
+              <span class="text-sm font-bold text-orange-300">王敏</span>
+            </div>
           </div>
+          <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-slate-900"></span>
         </div>
-        <div class="flex-1 min-w-0">
-          <div class="text-xs font-bold text-white flex items-center gap-1.5">
-            <span>王敏 护士长</span>
-            <span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold">1对1专属医助</span>
+
+        <div class="flex-1 min-w-0 text-left">
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-bold text-white">王敏 护士长</span>
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30 font-semibold">您的专属医助</span>
           </div>
-          <div class="text-[11px] text-slate-400 mt-0.5 leading-snug">
-            “明早我将在门诊 1 楼大厅静候您的到来，全程协助泊车与免排队接入。”
-          </div>
+          <div class="text-[11px] text-slate-400 mt-0.5">已为您预留明日接待贵宾室与热茶，明早全程陪同引导。</div>
         </div>
       </div>
 
-      <div class="mt-3 pt-3 border-t border-slate-800 flex items-center gap-2">
-        <a href="tel:087168888888" class="flex-1 py-2 px-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-          <i data-lucide="phone-call" class="w-3.5 h-3.5 text-emerald-400"></i>
-          <span>致电医助护士长</span>
-        </a>
-        <button onclick="showToast('已复制医助微信号：sq_oral_care')" class="flex-1 py-2 px-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-          <i data-lucide="message-square" class="w-3.5 h-3.5 text-sky-400"></i>
-          <span>微信直连医助</span>
+      <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-800 text-xs">
+        <button onclick="callAssistant()" class="py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+          <i data-lucide="phone" class="w-3.5 h-3.5 text-orange-400"></i>
+          <span>一键拨打医助电话</span>
+        </button>
+        <button onclick="showToast('已复制医助微信号：sqdc-care01')" class="py-2 rounded-xl bg-orange-500/20 border border-orange-500/40 text-orange-300 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+          <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+          <span>加医助微信备忘</span>
         </button>
       </div>
     </section>
 
-    <!-- 3. 到院 3 项礼遇已生效标签 -->
-    <section class="glass-card rounded-2xl p-4 border border-amber-500/30">
-      <div class="text-xs font-bold text-amber-300 mb-2.5 flex items-center gap-1.5">
-        <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
-        <span>明日到院 3 大绿色礼遇已锁定</span>
+    <!-- ==================== 专享 4 大就诊权益 ==================== -->
+    <section class="glass-card rounded-2xl p-4 border border-slate-800 text-xs">
+      <div class="font-bold text-white mb-2.5 flex items-center gap-1.5">
+        <i data-lucide="gem" class="w-4 h-4 text-orange-400"></i>
+        <span>初诊到院 · 凭此函专享 VIP 礼遇</span>
       </div>
 
-      <div class="space-y-2 text-xs">
-        <div class="p-2 rounded-xl bg-slate-900/70 border border-slate-800 flex items-center justify-between">
-          <span class="text-slate-300">① 德国卡瓦 3D-CBCT 全景骨量扫描</span>
-          <span class="text-emerald-400 font-bold text-[11px]">已免费预留机位</span>
+      <div class="grid grid-cols-2 gap-2 text-slate-300">
+        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5"></i>
+          <div>
+            <div class="font-bold text-white text-[11px]">免排队专属通道</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">免普通门诊排队叫号</div>
+          </div>
         </div>
-        <div class="p-2 rounded-xl bg-slate-900/70 border border-slate-800 flex items-center justify-between">
-          <span class="text-slate-300">② 刘彦廷院长 1对1 亲诊研判</span>
-          <span class="text-emerald-400 font-bold text-[11px]">已锁定专家会诊时间</span>
+
+        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5"></i>
+          <div>
+            <div class="font-bold text-white text-[11px]">0元卡瓦 CBCT</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">立省 580 元骨量全景片</div>
+          </div>
         </div>
-        <div class="p-2 rounded-xl bg-slate-900/70 border border-slate-800 flex items-center justify-between">
-          <span class="text-slate-300">③ 地下贵宾停车位免费停泊</span>
-          <span class="text-emerald-400 font-bold text-[11px]">车牌自动识别抬杆</span>
+
+        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5"></i>
+          <div>
+            <div class="font-bold text-white text-[11px]">MDT 智囊团研判</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">刘彦廷院长团队 1对1 研判</div>
+          </div>
+        </div>
+
+        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-2">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5"></i>
+          <div>
+            <div class="font-bold text-white text-[11px]">免费专属停车</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">地下专属车位无需缴费</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 4. 明日出行一键导航与提醒 -->
-    <section class="glass-card rounded-2xl p-3.5 border border-slate-800 text-xs">
-      <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-        <div>
-          <div class="font-bold text-white">昆明松鼠口腔旗舰门诊</div>
-          <div class="text-[10px] text-slate-400 mt-0.5">西山区环城南路 · 距地铁站步行约 200 米</div>
-        </div>
-        <button onclick="openNavigation()" class="px-2.5 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-semibold flex items-center gap-1 active:scale-95 transition-all shrink-0">
-          <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
-          <span>一键导航</span>
-        </button>
-      </div>
+    <!-- ==================== 快捷操作按钮 ==================== -->
+    <div class="space-y-2 pt-1">
+      <button onclick="shareToFamily()" class="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-orange-500/25 active:scale-95 transition-all">
+        <i data-lucide="share-2" class="w-4 h-4"></i>
+        <span>转发给老伴 / 儿女确认行程</span>
+      </button>
 
-      <div class="mt-2.5 text-[11px] text-slate-400 leading-relaxed">
-        💡 <strong>出行温馨提示</strong>：明天上午 09:30 前往路段车流平稳，建议提前 10-15 分钟出发，我们在贵宾室为您备好温热花草茶。
-      </div>
-    </section>
+      <button onclick="addToCalendar()" class="w-full py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+        <i data-lucide="calendar-plus" class="w-4 h-4 text-emerald-400"></i>
+        <span>添加手机日历提醒（明日 09:30 出发）</span>
+      </button>
+    </div>
 
   </main>
 
-  <!-- ==================== 底部固定行动底栏 ==================== -->
-  <div class="fixed bottom-0 left-0 right-0 z-50 p-3 bg-slate-950/90 backdrop-blur-xl border-t border-white/10 flex items-center gap-2 max-w-md mx-auto">
-    <button onclick="shareToFamily()" class="flex-1 py-3 px-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-      <i data-lucide="share-2" class="w-3.5 h-3.5 text-sky-400"></i>
-      <span>转发凭证给儿女</span>
-    </button>
-
-    <button onclick="addToCalendar()" class="flex-1 py-3 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 text-xs font-black flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all">
-      <i data-lucide="calendar" class="w-4 h-4"></i>
-      <span>添加到微信/手机日程</span>
-    </button>
-  </div>
-
-  <!-- 微信 Toast 提示 -->
   <div id="wechat-toast" class="wechat-toast">
     <div id="toast-text" class="text-xs font-semibold text-white">操作成功</div>
   </div>
@@ -256,13 +265,10 @@
   <script>
     lucide.createIcons();
 
-    // 进页面自动触发庆贺礼花
-    window.addEventListener('DOMContentLoaded', () => {
-      parseURLParams();
-      try {
-        confetti({ particleCount: 90, spread: 80, origin: { y: 0.35 } });
-      } catch(e) {}
-    });
+    // 自动喷射欢庆礼花
+    try {
+      confetti({ particleCount: 70, spread: 70, origin: { y: 0.4 } });
+    } catch(e) {}
 
     function showToast(msg) {
       const t = document.getElementById('wechat-toast');
@@ -287,17 +293,20 @@
     }
 
     function shareToFamily() {
-      showToast('请点击右上角「...」将本凭证转发给儿女');
+      showToast('请点击微信右上角「...」发送给老伴或儿女');
     }
 
     function addToCalendar() {
-      showToast('已生成日历提醒备忘！');
-      alert('【松鼠口腔 · 提醒已设置】\\n\\n就诊提醒已录入！明早 09:00 系统将再次提醒您准备出发，专属接待医助王敏护士长将在大厅等您。');
+      showToast('已添加到手机备忘日程！将在明早 09:30 提醒您');
     }
 
-    function openNavigation() {
-      alert('正在启动导航系统前往：【昆明松鼠口腔旗舰门诊】\\n地址：昆明市西山区环城南路\\n门诊地下车库车位已为您留妥。');
+    function callAssistant() {
+      window.location.href = 'tel:18088888888';
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      parseURLParams();
+    });
   </script>
 </body>
 </html>

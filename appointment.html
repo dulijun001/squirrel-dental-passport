@@ -647,9 +647,207 @@
     .generator-drawer.open {
       display: flex;
     }
+
+    /* ====================================================
+       🌟 高阶组件动效扩展：LightRays 晨曦天幕 + HoloCard 全息防伪 + ShinyText
+       ==================================================== */
+    /* 1. 晨曦丁达尔流光柔性天幕 (Soft Aurora & LightRays) */
+    .aurora-sky-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 480px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .aurora-beam {
+      position: absolute;
+      top: -120px;
+      width: 220px;
+      height: 550px;
+      filter: blur(48px);
+      border-radius: 50%;
+      opacity: 0.42;
+      transform-origin: top center;
+      mix-blend-mode: multiply;
+      animation: auroraFloat 14s ease-in-out infinite alternate;
+    }
+    .aurora-beam-1 {
+      left: -40px;
+      background: radial-gradient(ellipse at top, rgba(251, 146, 60, 0.45) 0%, rgba(254, 215, 170, 0.25) 50%, transparent 80%);
+      transform: rotate(-18deg);
+      animation-duration: 12s;
+    }
+    .aurora-beam-2 {
+      left: 35%;
+      width: 280px;
+      background: radial-gradient(ellipse at top, rgba(254, 240, 138, 0.4) 0%, rgba(253, 186, 116, 0.2) 55%, transparent 80%);
+      transform: rotate(6deg);
+      animation-duration: 16s;
+      animation-delay: -4s;
+    }
+    .aurora-beam-3 {
+      right: -60px;
+      background: radial-gradient(ellipse at top, rgba(251, 191, 36, 0.35) 0%, rgba(254, 215, 170, 0.2) 60%, transparent 80%);
+      transform: rotate(22deg);
+      animation-duration: 18s;
+      animation-delay: -8s;
+    }
+    @keyframes auroraFloat {
+      0% {
+        transform: rotate(-15deg) scaleY(1) translateY(0);
+        opacity: 0.35;
+      }
+      50% {
+        transform: rotate(-8deg) scaleY(1.08) translateY(18px);
+        opacity: 0.52;
+      }
+      100% {
+        transform: rotate(-2deg) scaleY(0.96) translateY(32px);
+        opacity: 0.38;
+      }
+    }
+
+    /* 2. 登机牌全息防伪彩虹衍射光栅 (HoloCard Rainbow Foil) */
+    .card-holo-foil {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      pointer-events: none;
+      z-index: 25;
+      mix-blend-mode: color-dodge;
+      opacity: var(--tc-holo-opacity, 0);
+      background: linear-gradient(
+        var(--tc-holo-angle, 135deg),
+        rgba(255, 0, 128, 0.28) 0%,
+        rgba(255, 154, 0, 0.28) 18%,
+        rgba(255, 237, 74, 0.28) 36%,
+        rgba(56, 193, 114, 0.28) 54%,
+        rgba(77, 192, 255, 0.28) 72%,
+        rgba(155, 89, 182, 0.28) 90%,
+        rgba(255, 0, 128, 0.28) 100%
+      );
+      background-size: 260% 260%;
+      background-position: var(--tc-holo-pos, 50% 50%);
+      transition: opacity 0.25s ease;
+    }
+
+    /* 局部徽章的全息微光特效 */
+    .badge-holo-foil {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .badge-holo-foil::after {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: linear-gradient(
+        115deg,
+        transparent 20%,
+        rgba(255, 110, 199, 0.35) 35%,
+        rgba(255, 230, 109, 0.45) 48%,
+        rgba(78, 205, 196, 0.35) 62%,
+        transparent 80%
+      );
+      transform: translateX(-120%) rotate(25deg);
+      animation: badgeHoloSweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+    }
+    @keyframes badgeHoloSweep {
+      0%, 40% {
+        transform: translateX(-130%) rotate(25deg);
+      }
+      70%, 100% {
+        transform: translateX(130%) rotate(25deg);
+      }
+    }
+
+    /* 3. 液态水银金字扫光 (ShinyText) */
+    .shiny-gold-text {
+      position: relative;
+      display: inline-block;
+      background: linear-gradient(
+        120deg,
+        #0f172a 0%,
+        #0f172a 35%,
+        #d97706 48%,
+        #fbbf24 52%,
+        #ffffff 55%,
+        #fbbf24 58%,
+        #0f172a 70%,
+        #0f172a 100%
+      );
+      background-size: 250% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shinySweep 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    .shiny-white-text {
+      position: relative;
+      display: inline-block;
+      background: linear-gradient(
+        120deg,
+        #ffffff 0%,
+        #ffffff 35%,
+        #fed7aa 48%,
+        #fef08a 52%,
+        #ffffff 55%,
+        #fed7aa 58%,
+        #ffffff 70%,
+        #ffffff 100%
+      );
+      background-size: 250% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shinySweep 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    @keyframes shinySweep {
+      0%, 45% {
+        background-position: 100% 0;
+      }
+      75%, 100% {
+        background-position: -100% 0;
+      }
+    }
+
+    /* 4. 磁吸聚光灯卡片体系 (MagicBento & SpotlightCard) */
+    .spotlight-card {
+      position: relative;
+      overflow: hidden;
+      --sp-x: 50%;
+      --sp-y: 50%;
+      --sp-opacity: 0;
+    }
+    .spotlight-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 1;
+      opacity: var(--sp-opacity, 0);
+      background: radial-gradient(
+        circle 180px at var(--sp-x, 50%) var(--sp-y, 50%),
+        rgba(251, 146, 60, 0.16) 0%,
+        rgba(254, 215, 170, 0.08) 45%,
+        transparent 75%
+      );
+      transition: opacity 0.3s ease;
+    }
   </style>
 </head>
-<body class="antialiased selection:bg-orange-500 selection:text-white pb-28">
+<body class="antialiased selection:bg-orange-500 selection:text-white pb-28 relative">
+
+  <!-- 🌟 顶层环境晨曦柔光天幕 (LightRays & SoftAurora) -->
+  <div class="aurora-sky-container" aria-hidden="true">
+    <div class="aurora-beam aurora-beam-1"></div>
+    <div class="aurora-beam aurora-beam-2"></div>
+    <div class="aurora-beam aurora-beam-3"></div>
+  </div>
 
   <!-- ==================== 顶部导航 ==================== -->
   <header class="sticky top-0 z-40 px-4 py-2.5 flex items-center justify-between bg-white/95 backdrop-blur-md border-b border-orange-100 shadow-sm">
@@ -683,8 +881,9 @@
     <!-- 🌟 组件 1：【爱马仕级航空头等舱·高定拟物登机牌】(6大极致细节 + 3D陀螺仪微视差与流动全息反光) -->
     <div class="boarding-pass-wrap stagger-spring stagger-1">
       <section id="vip-boarding-card" class="boarding-pass shadow-2xl relative overflow-hidden" style="background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF9 100%); border: 1px solid #FED7AA; box-shadow: 0 16px 36px -10px rgba(234, 88, 12, 0.12), 0 0 0 1px rgba(254, 215, 170, 0.6); border-radius: 24px;">
-        <!-- 动态全息高光反光层 (TiltedCard Glare) -->
+        <!-- 动态全息高光反光层 (TiltedCard Glare & HoloCard Rainbow Foil) -->
         <div class="card-specular-glare"></div>
+        <div class="card-holo-foil"></div>
         <div class="card-edge-glow"></div>
 
       <!-- 维度 1 & 2：登机牌头部 (航空头等舱金橙质感横条 + 绿宝石呼吸灯 + 防伪钢印) -->
@@ -700,7 +899,7 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
             </span>
-            <span class="text-[8.5px] tracking-wider font-black uppercase bg-black/30 px-1.5 py-0.5 rounded border border-white/20 shadow-inner shrink-0 whitespace-nowrap">VIP头等就诊</span>
+            <span class="text-[8.5px] tracking-wider font-black uppercase bg-black/30 px-1.5 py-0.5 rounded border border-white/20 shadow-inner shrink-0 whitespace-nowrap badge-holo-foil">VIP头等就诊</span>
             <span class="text-[9.5px] font-mono text-orange-100 font-bold tracking-tight truncate" id="card-sn">SQ-PASS-202610-892</span>
             <button onclick="replaySplitFlap()" title="重播翻牌器" class="w-4 h-4 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-[8px] active:scale-90 transition-transform ml-0.5 shrink-0">
               <i data-lucide="rotate-cw" class="w-2.5 h-2.5 text-white"></i>
@@ -726,7 +925,7 @@
               </span>
             </div>
             <div class="flex items-center gap-1.5 mt-0.5">
-              <span id="card-name" class="text-xl font-black tracking-tight text-white drop-shadow-sm truncate">张建国 先生</span>
+              <span id="card-name" class="text-xl font-black tracking-tight text-white drop-shadow-sm truncate shiny-white-text">张建国 先生</span>
               <!-- 红色名医亲诊专属小印章 (拟真印章) -->
               <span class="inline-flex items-center justify-center px-1.5 py-0.2 text-[8px] font-black text-rose-700 bg-white/95 border border-rose-300 rounded shadow-sm rotate-[-3deg] tracking-wider uppercase font-serif shrink-0 whitespace-nowrap">
                 名医亲诊
@@ -835,7 +1034,7 @@
               </div>
               <div class="min-w-0">
                 <div class="text-[8.5px] text-slate-400 font-bold tracking-wider uppercase">DOCTOR TEAM / 主理专家组</div>
-                <div id="card-doc" class="text-sm font-black text-slate-900 tracking-tight truncate mt-0.5">刘彦廷种植专家组</div>
+                <div id="card-doc" class="text-sm font-black text-slate-900 tracking-tight truncate mt-0.5 shiny-gold-text">刘彦廷种植专家组</div>
                 <div class="text-[9px] text-slate-500 font-medium truncate">原公立三甲骨干领衔 · 专属研判</div>
               </div>
             </div>
@@ -855,7 +1054,7 @@
               </div>
               <div class="min-w-0">
                 <div class="text-[8.5px] text-slate-400 font-bold tracking-wider uppercase">PROJECT / 明日研判项目</div>
-                <div id="card-project" class="text-sm font-black text-slate-900 tracking-tight truncate mt-0.5">种植牙</div>
+                <div id="card-project" class="text-sm font-black text-slate-900 tracking-tight truncate mt-0.5 shiny-gold-text">种植牙</div>
                 <div class="text-[9px] text-slate-500 font-medium truncate">德国卡瓦微剂量三维扫描 · 数字化微创评估</div>
               </div>
             </div>
@@ -881,7 +1080,7 @@
 
           <!-- 右侧：庄严金属质感官方核验印章 (替代杂乱二维码) -->
           <div class="shrink-0 pl-2 border-l border-orange-200 flex flex-col items-center justify-center">
-            <div class="px-2 py-1 rounded-lg bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 text-amber-900 text-center shadow-xs">
+            <div class="px-2 py-1 rounded-lg bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 text-amber-900 text-center shadow-xs badge-holo-foil">
               <div class="text-[7.5px] font-bold text-amber-700 tracking-wider">云南省二级口腔专科</div>
               <div class="text-[8.5px] font-black text-rose-700 tracking-tight mt-0.5">★ 官方质控保真 ★</div>
             </div>
@@ -977,7 +1176,7 @@
     </section>
 
 <!-- 🌟 组件 2：【明日到院就诊动线 · 6步全透明履约路线看板】 -->
-    <section class="deluxe-card shadow-sm stagger-spring stagger-4">
+    <section class="deluxe-card shadow-sm stagger-spring stagger-4 spotlight-card">
       <div class="flex items-center justify-between mb-3.5 pb-2.5 border-b border-orange-100">
         <div class="flex items-center gap-2">
           <div class="w-7 h-7 rounded-xl bg-orange-500/10 text-orange-600 flex items-center justify-center font-bold">
@@ -1126,7 +1325,7 @@
     </section>
 
     <!-- 🌟 核心增值独立卡片：【3D 仿生微创种植 · 结构与稳固原理解构】 -->
-    <section class="deluxe-card shadow-sm stagger-spring stagger-5">
+    <section class="deluxe-card shadow-sm stagger-spring stagger-5 spotlight-card">
       <!-- 头部标题与触控引导 -->
       <div class="flex items-center justify-between pb-3 border-b border-orange-100">
         <div class="flex items-center gap-2.5 min-w-0 pr-2">
@@ -2753,15 +2952,24 @@
         const energy = Math.min(1, Math.hypot(rx, ry) / MAX_ROTATION);
         const glareOpacity = (energy * 0.55 + (isTouching ? 0.25 : 0)).toFixed(3);
 
+        // HoloCard 全息防伪彩虹衍射计算 (角度随卡片倾斜旋转，光泽度随能量变化)
+        const holoAngle = (135 + ry * 4.5 + rx * 3.5).toFixed(1);
+        const holoPos = `${glareX.toFixed(1)}% ${glareY.toFixed(1)}%`;
+        const holoOpacity = (energy * 0.48 + (isTouching ? 0.22 : 0)).toFixed(3);
+
         card.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateZ(0)`;
         card.style.setProperty('--tc-gx', `${glareX.toFixed(1)}%`);
         card.style.setProperty('--tc-gy', `${glareY.toFixed(1)}%`);
         card.style.setProperty('--tc-glare', glareOpacity);
+        card.style.setProperty('--tc-holo-angle', `${holoAngle}deg`);
+        card.style.setProperty('--tc-holo-pos', holoPos);
+        card.style.setProperty('--tc-holo-opacity', holoOpacity);
 
         // 如果接近静止且未触摸，重置transform为空，彻底释放内联样式防止影响子元素层级
         if (!isTouching && Math.abs(targetRx - rx) < 0.05 && Math.abs(targetRy - ry) < 0.05) {
           card.style.transform = '';
           card.style.setProperty('--tc-glare', '0');
+          card.style.setProperty('--tc-holo-opacity', '0');
           rafId = null;
           isResting = true;
           return;
@@ -3180,6 +3388,67 @@
       }
     }
 
+    // ==========================================
+    // 💡 React Bits SpotlightCard & DecryptedText 高阶交互引擎
+    // ==========================================
+    function initSpotlightCardEngine() {
+      const cards = document.querySelectorAll('.spotlight-card');
+      cards.forEach(card => {
+        function updateSpotlight(x, y, active) {
+          const rect = card.getBoundingClientRect();
+          const relX = ((x - rect.left) / rect.width) * 100;
+          const relY = ((y - rect.top) / rect.height) * 100;
+          card.style.setProperty('--sp-x', `${relX.toFixed(1)}%`);
+          card.style.setProperty('--sp-y', `${relY.toFixed(1)}%`);
+          card.style.setProperty('--sp-opacity', active ? '1' : '0');
+        }
+
+        card.addEventListener('pointermove', (e) => {
+          updateSpotlight(e.clientX, e.clientY, true);
+        }, { passive: true });
+
+        card.addEventListener('pointerleave', () => {
+          card.style.setProperty('--sp-opacity', '0');
+        });
+      });
+    }
+
+    function initDecryptedTextEngine() {
+      // 针对关键专家名与重点项目进行开场密码破译字符收敛动效
+      const targetEls = [
+        { id: 'card-doc', text: '刘彦廷种植专家组', delay: 350 },
+        { id: 'card-project', text: '种植牙', delay: 500 }
+      ];
+      const CHARS = '0123456789ABCDEF!@#$%&*+=-';
+
+      targetEls.forEach(({ id, text, delay }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        setTimeout(() => {
+          let iteration = 0;
+          const totalFrames = text.length * 3;
+          const interval = setInterval(() => {
+            el.innerText = text
+              .split('')
+              .map((char, index) => {
+                if (index < iteration / 3) {
+                  return text[index];
+                }
+                return CHARS[Math.floor(Math.random() * CHARS.length)];
+              })
+              .join('');
+
+            if (iteration >= totalFrames) {
+              clearInterval(interval);
+              el.innerText = text;
+            }
+            iteration += 1;
+          }, 35);
+        }, delay);
+      });
+    }
+
     // 启动 3D WebGL 渲染与动效引擎
     setTimeout(() => {
       init3DImplantViewer();
@@ -3188,6 +3457,8 @@
       initSplitFlapEngine();
       initWeatherEngine();
       initHoldButtonEngine();
+      initSpotlightCardEngine();
+      initDecryptedTextEngine();
     }, 200);
   });
 </script>

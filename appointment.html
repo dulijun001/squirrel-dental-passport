@@ -262,6 +262,57 @@
       transition: opacity 0.3s ease;
     }
 
+    /* 仿真机场航显机械翻牌器动效 (SplitFlapText - 高精拟物物理翻牌) */
+    .split-flap-char {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      perspective: 240px;
+      -webkit-perspective: 240px;
+      transform-style: preserve-3d;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+      padding: 0 1px;
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 3px;
+      margin: 0 0.5px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+    .split-flap-char::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.25);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15);
+      pointer-events: none;
+      z-index: 5;
+    }
+    .split-flap-char.is-flipping {
+      animation: flapTileFlip 0.11s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    @keyframes flapTileFlip {
+      0% {
+        transform: rotateX(0deg);
+        filter: brightness(1);
+      }
+      50% {
+        transform: rotateX(-90deg);
+        filter: brightness(0.5);
+      }
+      51% {
+        transform: rotateX(90deg);
+        filter: brightness(0.5);
+      }
+      100% {
+        transform: rotateX(0deg);
+        filter: brightness(1);
+      }
+    }
+
     /* 物理撕票交互容器与动效 (TearTicket) */
     .tear-zone {
       position: relative;
@@ -525,6 +576,9 @@
             </span>
             <span class="text-[8.5px] tracking-wider font-black uppercase bg-black/30 px-1.5 py-0.5 rounded border border-white/20 shadow-inner shrink-0 whitespace-nowrap">VIP头等就诊</span>
             <span class="text-[9.5px] font-mono text-orange-100 font-bold tracking-tight truncate" id="card-sn">SQ-PASS-202610-892</span>
+            <button onclick="replaySplitFlap()" title="重播翻牌器" class="w-4 h-4 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-[8px] active:scale-90 transition-transform ml-0.5 shrink-0">
+              <i data-lucide="rotate-cw" class="w-2.5 h-2.5 text-white"></i>
+            </button>
           </div>
 
           <!-- 右侧金属防伪徽章 -->
@@ -599,7 +653,7 @@
                 <i data-lucide="door-closed" class="w-2.5 h-2.5 text-emerald-600"></i>
               </div>
               <div class="text-sm font-black text-slate-900 mt-0.5 flex items-center justify-end gap-1">
-                <span class="text-emerald-800 bg-emerald-100/90 px-1.5 py-0.5 rounded text-[11px] font-mono font-black">3F-VIP01</span>
+                <span id="card-gate" class="text-emerald-800 bg-emerald-100/90 px-1.5 py-0.5 rounded text-[11px] font-mono font-black">3F-VIP01</span>
               </div>
               <div id="card-item" class="text-[9.5px] font-bold text-slate-700 mt-0.5 truncate" title="种植牙">种植牙</div>
             </div>
@@ -2726,13 +2780,103 @@
         el.addEventListener('touchstart', () => triggerHaptic('light'), { passive: true });
       });
 
-      // 启动 3D WebGL 渲染与动效引擎
+    // ==================== 机场航显机械翻牌器动效 (移植自 react-bits SplitFlapText) ====================
+    const FLAP_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:';
+    function runSplitFlap(element, targetText, options = {}) {
+      if (!element || !targetText) return;
+      const speed = options.speed || 40; // 每次翻牌间隔毫秒
+      const totalSteps = options.steps || 7; // 每个字符翻转总次数
+      const delay = options.delay || 0;
+
       setTimeout(() => {
-        init3DImplantViewer();
-        initTiltedCardEngine();
-        initTearTicketEngine();
-      }, 200);
-    });
-  </script>
+        element.innerHTML = '';
+        const chars = targetText.split('');
+        const flapSpans = [];
+
+        chars.forEach((char) => {
+          const span = document.createElement('span');
+          if (char === ' ' || char === ':' || char === '-') {
+            span.className = 'inline-block opacity-80 mx-0.5';
+            span.textContent = char === ' ' ? ' ' : char;
+          } else {
+            span.className = 'split-flap-char';
+            span.textContent = char;
+            flapSpans.push({ span, target: char });
+          }
+          element.appendChild(span);
+        });
+
+        flapSpans.forEach((item, index) => {
+          if (item.target === ' ' || item.target === '·' || item.target === '组') return;
+          let step = 0;
+          // 按字符从左到右微错落延迟，产生波浪翻动感
+          const stagger = index * 35;
+          setTimeout(() => {
+            const timer = setInterval(() => {
+              step++;
+              if (step < totalSteps) {
+                const randomChar = FLAP_CHARSET.charAt(Math.floor(Math.random() * FLAP_CHARSET.length));
+                item.span.textContent = randomChar;
+                item.span.classList.remove('is-flipping');
+                void item.span.offsetWidth; // 触发重绘
+                item.span.classList.add('is-flipping');
+              } else {
+                item.span.textContent = item.target;
+                item.span.classList.remove('is-flipping');
+                void item.span.offsetWidth;
+                item.span.classList.add('is-flipping');
+                clearInterval(timer);
+                triggerHaptic('light');
+              }
+            }, speed);
+          }, stagger);
+        });
+      }, delay);
+    }
+
+    let isFlapping = false;
+    function initSplitFlapEngine() {
+      if (isFlapping) return;
+      isFlapping = true;
+
+      // 1. 翻牌档案编号 (SQ-PASS-202610-892)
+      const snEl = document.getElementById('card-sn');
+      if (snEl) {
+        const fullSn = snEl.textContent.trim();
+        runSplitFlap(snEl, fullSn, { speed: 38, steps: 7, delay: 350 });
+      }
+
+      // 2. 翻牌诊室门牌 (3F-VIP01)
+      const gateEl = document.getElementById('card-gate');
+      if (gateEl) {
+        const fullGate = gateEl.textContent.trim();
+        runSplitFlap(gateEl, fullGate, { speed: 45, steps: 8, delay: 500 });
+      }
+
+      // 3. 翻牌候诊时间 (明日 10:00)
+      const timeEl = document.getElementById('card-time');
+      if (timeEl) {
+        const fullTime = timeEl.textContent.trim();
+        runSplitFlap(timeEl, fullTime, { speed: 42, steps: 7, delay: 650 });
+      }
+
+      setTimeout(() => { isFlapping = false; }, 1800);
+    }
+
+    function replaySplitFlap() {
+      triggerHaptic('medium');
+      initSplitFlapEngine();
+      showToast('🔄 航显机械翻牌器已重新运行');
+    }
+
+    // 启动 3D WebGL 渲染与动效引擎
+    setTimeout(() => {
+      init3DImplantViewer();
+      initTiltedCardEngine();
+      initTearTicketEngine();
+      initSplitFlapEngine();
+    }, 200);
+  });
+</script>
 </body>
 </html>

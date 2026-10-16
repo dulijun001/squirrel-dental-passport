@@ -221,6 +221,47 @@
       25%, 100% { transform: translate(100%, 100%) rotate(30deg); }
     }
 
+    /* 登机牌 3D 微视差与流动全息高光容器 */
+    .boarding-pass-wrap {
+      perspective: 900px;
+      -webkit-perspective: 900px;
+      transform-style: preserve-3d;
+    }
+    .boarding-pass {
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease;
+      position: relative;
+    }
+    /* 拟真银行黑金/爱马仕卡片表面动态全息反光层 */
+    .card-specular-glare {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      pointer-events: none;
+      z-index: 25;
+      mix-blend-mode: soft-light;
+      opacity: var(--tc-glare, 0);
+      background: radial-gradient(
+        circle 320px at var(--tc-gx, 50%) var(--tc-gy, 50%),
+        rgba(255, 255, 255, 0.45) 0%,
+        rgba(255, 237, 213, 0.25) 35%,
+        rgba(255, 255, 255, 0) 70%
+      );
+      transition: opacity 0.3s ease;
+    }
+    /* 边框全息微亮边缘 */
+    .card-edge-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      pointer-events: none;
+      z-index: 26;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      opacity: var(--tc-glare, 0.15);
+      transition: opacity 0.3s ease;
+    }
+
     /* 动线发光呼吸引导导轨 (Pulse Track) */
     .pulse-track {
       position: absolute;
@@ -431,9 +472,12 @@
   <!-- ==================== 主内容区 ==================== -->
   <main class="max-w-md mx-auto px-4 pt-3.5 space-y-4">
 
-        
-<!-- 🌟 组件 1：【爱马仕级航空头等舱·高定拟物登机牌】(6大极致细节) -->
-    <section class="boarding-pass shadow-2xl relative overflow-hidden stagger-spring stagger-1" style="background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF9 100%); border: 1px solid #FED7AA; box-shadow: 0 16px 36px -10px rgba(234, 88, 12, 0.12), 0 0 0 1px rgba(254, 215, 170, 0.6); border-radius: 24px;">
+    <!-- 🌟 组件 1：【爱马仕级航空头等舱·高定拟物登机牌】(6大极致细节 + 3D陀螺仪微视差与流动全息反光) -->
+    <div class="boarding-pass-wrap stagger-spring stagger-1">
+      <section id="vip-boarding-card" class="boarding-pass shadow-2xl relative overflow-hidden" style="background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF9 100%); border: 1px solid #FED7AA; box-shadow: 0 16px 36px -10px rgba(234, 88, 12, 0.12), 0 0 0 1px rgba(254, 215, 170, 0.6); border-radius: 24px;">
+        <!-- 动态全息高光反光层 (TiltedCard Glare) -->
+        <div class="card-specular-glare"></div>
+        <div class="card-edge-glow"></div>
 
       <!-- 维度 1 & 2：登机牌头部 (航空头等舱金橙质感横条 + 绿宝石呼吸灯 + 防伪钢印) -->
       <div class="relative px-4 py-3.5 text-white overflow-hidden" style="background: linear-gradient(135deg, #EA580C 0%, #F97316 55%, #FB923C 100%);">
@@ -613,6 +657,7 @@
         </div>
       </div>
     </section>
+  </div>
 
 <!-- 🌟 组件 1.5：【iOS 手机天气与出行穿戴关怀胶囊微卡】 -->
     <section id="weather-section" class="weather-card stagger-spring stagger-2">
@@ -2313,6 +2358,127 @@
       }
     }
 
+    // ==================== 登机牌 3D 陀螺仪与全息扫光交互引擎 (移植自 react-bits TiltedCard) ====================
+    function initTiltedCardEngine() {
+      const card = document.getElementById('vip-boarding-card');
+      if (!card) return;
+
+      let rx = 0, ry = 0;
+      let targetRx = 0, targetRy = 0;
+      let isTouching = false;
+      let rafId = null;
+      let isResting = false;
+      const MAX_ROTATION = 12; // 最大倾斜角度，保持高级微视差
+
+      function updateCardTransform() {
+        // 阻尼回弹逼近
+        rx += (targetRx - rx) * 0.14;
+        ry += (targetRy - ry) * 0.14;
+
+        const glareX = 50 + (ry / MAX_ROTATION) * 45;
+        const glareY = 50 - (rx / MAX_ROTATION) * 45;
+        const energy = Math.min(1, Math.hypot(rx, ry) / MAX_ROTATION);
+        const glareOpacity = (energy * 0.55 + (isTouching ? 0.25 : 0)).toFixed(3);
+
+        card.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateZ(0)`;
+        card.style.setProperty('--tc-gx', `${glareX.toFixed(1)}%`);
+        card.style.setProperty('--tc-gy', `${glareY.toFixed(1)}%`);
+        card.style.setProperty('--tc-glare', glareOpacity);
+
+        // 如果接近静止且未触摸，重置transform为空，彻底释放内联样式防止影响子元素层级
+        if (!isTouching && Math.abs(targetRx - rx) < 0.05 && Math.abs(targetRy - ry) < 0.05) {
+          card.style.transform = '';
+          card.style.setProperty('--tc-glare', '0');
+          rafId = null;
+          isResting = true;
+          return;
+        }
+
+        rafId = requestAnimationFrame(updateCardTransform);
+      }
+
+      function wakeAnimation() {
+        isResting = false;
+        if (!rafId) {
+          rafId = requestAnimationFrame(updateCardTransform);
+        }
+      }
+
+      // 手指滑动 / 鼠标悬停微视差计算
+      function handlePointerMove(clientX, clientY) {
+        const rect = card.getBoundingClientRect();
+        const nx = ((clientX - rect.left) / rect.width - 0.5) * 2; // -1 ~ 1
+        const ny = ((clientY - rect.top) / rect.height - 0.5) * 2; // -1 ~ 1
+        targetRy = Math.min(Math.max(nx * MAX_ROTATION, -MAX_ROTATION), MAX_ROTATION);
+        targetRx = Math.min(Math.max(-ny * MAX_ROTATION, -MAX_ROTATION), MAX_ROTATION);
+        wakeAnimation();
+      }
+
+      function handlePointerReset() {
+        targetRx = 0;
+        targetRy = 0;
+        isTouching = false;
+        wakeAnimation();
+      }
+
+      // 触摸手势事件绑定
+      card.addEventListener('touchstart', (e) => {
+        isTouching = true;
+        if (e.touches.length > 0) {
+          handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      card.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      card.addEventListener('touchend', handlePointerReset, { passive: true });
+      card.addEventListener('touchcancel', handlePointerReset, { passive: true });
+
+      // 桌面鼠标事件绑定
+      card.addEventListener('mousemove', (e) => {
+        isTouching = true;
+        handlePointerMove(e.clientX, e.clientY);
+      });
+      card.addEventListener('mouseleave', handlePointerReset);
+
+      // 手机陀螺仪微视差（晃动手机卡片光泽自然流淌）
+      if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+        let baseGamma = null;
+        let baseBeta = null;
+        window.addEventListener('deviceorientation', (e) => {
+          if (isTouching || e.gamma === null || e.beta === null) return;
+          if (baseGamma === null) {
+            baseGamma = e.gamma;
+            baseBeta = e.beta;
+          }
+          const dg = Math.min(Math.max((e.gamma - baseGamma) * 0.6, -MAX_ROTATION), MAX_ROTATION);
+          const db = Math.min(Math.max((e.beta - baseBeta) * 0.6, -MAX_ROTATION), MAX_ROTATION);
+          targetRy = dg;
+          targetRx = -db;
+          wakeAnimation();
+        }, { passive: true });
+      }
+
+      // 入场初始呼吸扫光演示（进页面时优雅流动一次，吸引眼球）
+      setTimeout(() => {
+        targetRy = 8;
+        targetRx = -4;
+        wakeAnimation();
+        setTimeout(() => {
+          targetRy = -8;
+          targetRx = 4;
+          setTimeout(() => {
+            targetRy = 0;
+            targetRx = 0;
+          }, 400);
+        }, 500);
+      }, 400);
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       parseURLParams();
       try {
@@ -2329,6 +2495,7 @@
       // 启动 3D WebGL 渲染
       setTimeout(() => {
         init3DImplantViewer();
+        initTiltedCardEngine();
       }, 200);
     });
   </script>

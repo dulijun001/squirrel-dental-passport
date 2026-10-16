@@ -838,6 +838,146 @@
       );
       transition: opacity 0.3s ease;
     }
+
+    /* 5. 3D 种植体全息展示光台 (Halo Stage & Cyber Grid) */
+    .implant-stage-halo {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%) rotateX(68deg);
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(249, 115, 22, 0.45);
+      background: radial-gradient(circle, rgba(251, 146, 60, 0.22) 0%, rgba(254, 215, 170, 0.08) 50%, transparent 75%);
+      box-shadow: 0 0 35px rgba(249, 115, 22, 0.35);
+      pointer-events: none;
+      animation: stageRotate 20s linear infinite;
+    }
+    .implant-stage-halo::after {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      border-radius: 50%;
+      border: 1px solid rgba(251, 191, 36, 0.55);
+      box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.25);
+    }
+    @keyframes stageRotate {
+      from { transform: translateX(-50%) rotateX(68deg) rotate(0deg); }
+      to { transform: translateX(-50%) rotateX(68deg) rotate(360deg); }
+    }
+
+    /* 6. 名医智囊 3D 景深悬浮卡 (TiltedCard & BorderGlow) */
+    .doc-card-tilted {
+      perspective: 700px;
+      -webkit-perspective: 700px;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.22s ease;
+      position: relative;
+    }
+    .doc-card-tilted:active {
+      transform: scale(0.975);
+    }
+    /* 名医卡片微流光描边 (Electric Border Glow) */
+    .doc-card-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      pointer-events: none;
+      border: 1.5px solid transparent;
+      background: linear-gradient(135deg, rgba(251, 146, 60, 0.6) 0%, rgba(254, 215, 170, 0.1) 40%, rgba(249, 115, 22, 0.5) 100%) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0.85;
+    }
+    /* 明日亲诊激光光纤信标 */
+    .dr-badge-laser {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #FFEDD5 0%, #FEF3C7 100%);
+      box-shadow: 0 0 10px rgba(249, 115, 22, 0.25);
+    }
+    .dr-badge-laser::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(90deg, transparent, rgba(234, 88, 12, 0.7), #ffffff, transparent);
+      transform: translateX(-100%);
+      animation: laserSweep 2.2s infinite ease-in-out;
+    }
+    @keyframes laserSweep {
+      0% { transform: translateX(-100%); }
+      50%, 100% { transform: translateX(100%); }
+    }
+
+    /* 7. 新院全景 3D 景深卡片 (Carousel Depth & Ambient Aura) */
+    .gallery-card-3d {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      position: relative;
+    }
+    .gallery-card-3d:active {
+      transform: scale(0.975) translateY(2px);
+    }
+    .gallery-ambient-glow {
+      position: absolute;
+      inset: -4px;
+      border-radius: 22px;
+      filter: blur(12px);
+      opacity: 0.28;
+      pointer-events: none;
+      z-index: -1;
+      transition: opacity 0.3s ease;
+    }
+
+    /* 8. 感控安心力场脉冲 (Safety Forcefield & Shield Pulse) */
+    .shield-forcefield {
+      position: relative;
+    }
+    .shield-forcefield::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      border: 1.5px solid rgba(16, 185, 129, 0.4);
+      animation: shieldPulse 2.8s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
+      pointer-events: none;
+    }
+    @keyframes shieldPulse {
+      0% { transform: scale(0.95); opacity: 0.9; }
+      70% { transform: scale(1.35); opacity: 0; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+    .shield-forcefield-warn::after {
+      border-color: rgba(249, 115, 22, 0.5);
+      animation: shieldPulse 2.8s 0.8s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* 9. 一键导航极速光纤按钮 (Nav Beam) */
+    .nav-btn-stream {
+      position: relative;
+      overflow: hidden;
+    }
+    .nav-btn-stream::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent, rgba(255,255,255,0.4), transparent);
+      transform: rotate(25deg);
+      animation: navSweep 3s infinite linear;
+      pointer-events: none;
+    }
+    @keyframes navSweep {
+      0% { transform: translate(-100%, -100%) rotate(25deg); }
+      40%, 100% { transform: translate(100%, 100%) rotate(25deg); }
+    }
   </style>
 </head>
 <body class="antialiased selection:bg-orange-500 selection:text-white pb-28 relative">
@@ -1301,7 +1441,7 @@
           <div class="text-xs font-black text-slate-900 truncate">昆明松鼠口腔医院（锦粼天序独栋新院）</div>
           <div class="text-[10px] text-slate-600 mt-0.5">西山区希望路 · 地下 B1-08 专席自动抬杆 · 电梯直达 3F 贵宾室</div>
         </div>
-        <button onclick="openNavigation()" class="px-3 py-2 rounded-xl bg-orange-500 text-white text-xs font-bold flex items-center gap-1 shadow-md shadow-orange-500/25 active:scale-95 transition-all shrink-0">
+        <button onclick="openNavigation()" class="px-3 py-2 rounded-xl bg-orange-500 nav-btn-stream text-white text-xs font-bold flex items-center gap-1 shadow-md shadow-orange-500/25 active:scale-95 transition-all shrink-0">
           <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
           <span>一键导航</span>
         </button>
@@ -1348,7 +1488,9 @@
 
       <!-- 3D WebGL 交互画布容器（柔和温润透光背景） -->
       <div class="relative w-full h-64 rounded-2xl overflow-hidden my-3 bg-gradient-to-b from-slate-100/70 via-orange-50/40 to-slate-100/90 border border-orange-200/50 flex items-center justify-center">
-        <canvas id="implant-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block"></canvas>
+        <!-- 🌟 全息展示光台 (Halo Stage & Cyber Ring) -->
+        <div class="implant-stage-halo"></div>
+        <canvas id="implant-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block relative z-10"></canvas>
 
         <!-- 旋转引导微提示信标 (交互一次后淡出) -->
         <div id="hint-drag-rotate" class="pointer-events-none absolute bottom-2 left-2.5 px-2.5 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-orange-200 text-[8.5px] text-slate-600 flex items-center gap-1 shadow-sm transition-opacity duration-500 whitespace-nowrap z-10">
@@ -1429,13 +1571,13 @@
       <!-- 横滑名医卡片流 -->
       <div class="doc-pool -mx-1 px-1">
         <!-- 医生 1: 刘彦廷 院长 -->
-        <div class="doc-card" onclick="openDetailModal('doctor')">
+        <div class="doc-card doc-card-tilted" onclick="openDetailModal('doctor')"><div class="doc-card-glow"></div>
           <div class="flex items-start gap-3">
             <img src="data:image/jpeg;base64,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" class="w-16 h-20 rounded-xl object-cover border border-orange-300 shadow-sm shrink-0">
             <div class="flex-1 min-w-0">
               <div class="flex items-center justify-between">
                 <span class="text-sm font-black text-slate-900">刘彦廷</span>
-                <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-orange-100 text-orange-700 font-bold">明日亲诊</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded-full dr-badge-laser text-orange-800 font-black border border-orange-300">明日亲诊</span>
               </div>
               <div class="text-[10px] text-orange-600 font-semibold mt-0.5">医疗院长 / 20余年三甲骨干</div>
               <div class="text-[10px] text-slate-600 mt-1 line-clamp-2 leading-tight">超 35,000 例手术。专攻：高龄重度骨缺损微创植入、即刻负重。</div>
@@ -1448,7 +1590,7 @@
         </div>
 
         <!-- 医生 2: 韩峄 院长 -->
-        <div class="doc-card" onclick="openDetailModal('doctor')">
+        <div class="doc-card doc-card-tilted" onclick="openDetailModal('doctor')"><div class="doc-card-glow"></div>
           <div class="flex items-start gap-3">
             <img src="images/dr_han.jpg" class="w-16 h-20 rounded-xl object-cover border border-slate-200 shadow-sm shrink-0">
             <div class="flex-1 min-w-0">
@@ -1464,7 +1606,7 @@
         </div>
 
         <!-- 医生 3: 周剑 主任 -->
-        <div class="doc-card" onclick="openDetailModal('doctor')">
+        <div class="doc-card doc-card-tilted" onclick="openDetailModal('doctor')"><div class="doc-card-glow"></div>
           <div class="flex items-start gap-3">
             <img src="images/dr_zhou.jpg" class="w-16 h-20 rounded-xl object-cover border border-slate-200 shadow-sm shrink-0">
             <div class="flex-1 min-w-0">
@@ -1480,7 +1622,7 @@
         </div>
 
         <!-- 医生 4: 杨彬雁 主任 -->
-        <div class="doc-card" onclick="openDetailModal('doctor')">
+        <div class="doc-card doc-card-tilted" onclick="openDetailModal('doctor')"><div class="doc-card-glow"></div>
           <div class="flex items-start gap-3">
             <img src="images/dr_yang.jpg" class="w-16 h-20 rounded-xl object-cover border border-slate-200 shadow-sm shrink-0">
             <div class="flex-1 min-w-0">
@@ -1518,7 +1660,7 @@
       <!-- 横滑卡片流 -->
       <div class="scroll-gallery -mx-1 px-1">
         <!-- 卡片 1: 独栋大楼 -->
-        <div class="gallery-card" onclick="openDetailModal('hospital')">
+        <div class="gallery-card gallery-card-3d" onclick="openDetailModal('hospital')"><div class="gallery-ambient-glow bg-orange-500"></div>
           <div class="relative h-40">
             <img src="images/facade.jpg" alt="独栋医院大楼" class="w-full h-full object-cover">
             <span class="absolute top-2 left-2 text-[10px] font-bold bg-orange-600 text-white px-2 py-0.5 rounded-full shadow-md">
@@ -1536,7 +1678,7 @@
         </div>
 
         <!-- 卡片 2: 五星候诊大厅 -->
-        <div class="gallery-card" onclick="openDetailModal('hospital')">
+        <div class="gallery-card gallery-card-3d" onclick="openDetailModal('hospital')"><div class="gallery-ambient-glow bg-orange-500"></div>
           <div class="relative h-40">
             <img src="images/lobby.jpg" alt="五星大厅" class="w-full h-full object-cover">
             <span class="absolute top-2 left-2 text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded-full shadow-md">
@@ -1554,7 +1696,7 @@
         </div>
 
         <!-- 卡片 3: 德国卡瓦中心 -->
-        <div class="gallery-card" onclick="openDetailModal('hospital')">
+        <div class="gallery-card gallery-card-3d" onclick="openDetailModal('hospital')"><div class="gallery-ambient-glow bg-orange-500"></div>
           <div class="relative h-40">
             <img src="images/digital_center.jpg" alt="数字化中心" class="w-full h-full object-cover">
             <span class="absolute top-2 left-2 text-[10px] font-bold bg-sky-600 text-white px-2 py-0.5 rounded-full shadow-md">
@@ -1572,7 +1714,7 @@
         </div>
 
         <!-- 卡片 4: 独立VIP诊室 -->
-        <div class="gallery-card" onclick="openDetailModal('hospital')">
+        <div class="gallery-card gallery-card-3d" onclick="openDetailModal('hospital')"><div class="gallery-ambient-glow bg-orange-500"></div>
           <div class="relative h-40">
             <img src="images/vip_room.jpg" alt="VIP诊室" class="w-full h-full object-cover">
             <span class="absolute top-2 left-2 text-[10px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded-full shadow-md">
@@ -1596,7 +1738,7 @@
       <!-- 消毒供应 -->
       <div onclick="openDetailModal('sterilization')" class="deluxe-card flex flex-col justify-between cursor-pointer active:scale-95 transition-all">
         <div>
-          <div class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold mb-2">
+          <div class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold mb-2 shield-forcefield">
             <i data-lucide="shield-check" class="w-4 h-4"></i>
           </div>
           <div class="font-bold text-xs text-slate-900">8步无菌闭环</div>
@@ -1611,7 +1753,7 @@
       <!-- 6大底线承诺 -->
       <div onclick="openDetailModal('promise')" class="deluxe-card flex flex-col justify-between cursor-pointer active:scale-95 transition-all">
         <div>
-          <div class="w-7 h-7 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold mb-2">
+          <div class="w-7 h-7 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold mb-2 shield-forcefield shield-forcefield-warn">
             <i data-lucide="shield-alert" class="w-4 h-4"></i>
           </div>
           <div class="font-bold text-xs text-slate-900">6 大就诊铁律</div>
@@ -3391,6 +3533,27 @@
     // ==========================================
     // 💡 React Bits SpotlightCard & DecryptedText 高阶交互引擎
     // ==========================================
+    
+    // ==========================================
+    // 👨‍⚕️ 名医智囊卡 3D 微倾斜交互引擎 (TiltedCard Engine)
+    // ==========================================
+    function initDocCardTiltedEngine() {
+      const cards = document.querySelectorAll(".doc-card-tilted");
+      cards.forEach(card => {
+        card.addEventListener("pointermove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          const tiltX = (0.5 - y) * 14;
+          const tiltY = (x - 0.5) * 14;
+          card.style.transform = `rotateX(${tiltX.toFixed(1)}deg) rotateY(${tiltY.toFixed(1)}deg) translateY(-2px)`;
+        });
+        card.addEventListener("pointerleave", () => {
+          card.style.transform = "rotateX(0deg) rotateY(0deg) translateY(0px)";
+        });
+      });
+    }
+
     function initSpotlightCardEngine() {
       const cards = document.querySelectorAll('.spotlight-card');
       cards.forEach(card => {
@@ -3458,9 +3621,12 @@
       initWeatherEngine();
       initHoldButtonEngine();
       initSpotlightCardEngine();
+      initDocCardTiltedEngine();
       initDecryptedTextEngine();
     }, 200);
   });
 </script>
+
+  
 </body>
 </html>

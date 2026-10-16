@@ -262,50 +262,32 @@
       transition: opacity 0.3s ease;
     }
 
-    /* 仿真机场航显机械翻牌器动效 (SplitFlapText - 高精拟物物理翻牌) */
+    /* 仿真机场航显机械翻牌器动效 (SplitFlapText - 极度契合现有排版的精细化微动效) */
     .split-flap-char {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      display: inline-block;
       position: relative;
-      perspective: 240px;
-      -webkit-perspective: 240px;
+      perspective: 300px;
+      -webkit-perspective: 300px;
       transform-style: preserve-3d;
       font-variant-numeric: tabular-nums;
-      line-height: 1.1;
-      padding: 0 1px;
-      background: rgba(0, 0, 0, 0.08);
-      border-radius: 3px;
-      margin: 0 0.5px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.08);
-    }
-    .split-flap-char::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 50%;
-      height: 1px;
-      background: rgba(0, 0, 0, 0.25);
-      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15);
-      pointer-events: none;
-      z-index: 5;
+      line-height: 1;
+      vertical-align: baseline;
     }
     .split-flap-char.is-flipping {
-      animation: flapTileFlip 0.11s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation: flapLetterFlip 0.09s linear forwards;
     }
-    @keyframes flapTileFlip {
+    @keyframes flapLetterFlip {
       0% {
         transform: rotateX(0deg);
         filter: brightness(1);
       }
       50% {
         transform: rotateX(-90deg);
-        filter: brightness(0.5);
+        filter: brightness(0.6);
       }
       51% {
         transform: rotateX(90deg);
-        filter: brightness(0.5);
+        filter: brightness(0.6);
       }
       100% {
         transform: rotateX(0deg);
@@ -2795,9 +2777,12 @@
 
         chars.forEach((char) => {
           const span = document.createElement('span');
-          if (char === ' ' || char === ':' || char === '-') {
-            span.className = 'inline-block opacity-80 mx-0.5';
-            span.textContent = char === ' ' ? ' ' : char;
+          if (char === ' ') {
+            span.className = 'inline-block';
+            span.textContent = ' ';
+          } else if (char === ':' || char === '-') {
+            span.className = 'inline-block opacity-90';
+            span.textContent = char;
           } else {
             span.className = 'split-flap-char';
             span.textContent = char;
@@ -2843,24 +2828,24 @@
       const snEl = document.getElementById('card-sn');
       if (snEl) {
         const fullSn = snEl.textContent.trim();
-        runSplitFlap(snEl, fullSn, { speed: 38, steps: 7, delay: 350 });
+        runSplitFlap(snEl, fullSn, { speed: 45, steps: 10, delay: 200 });
       }
 
       // 2. 翻牌诊室门牌 (3F-VIP01)
       const gateEl = document.getElementById('card-gate');
       if (gateEl) {
         const fullGate = gateEl.textContent.trim();
-        runSplitFlap(gateEl, fullGate, { speed: 45, steps: 8, delay: 500 });
+        runSplitFlap(gateEl, fullGate, { speed: 50, steps: 11, delay: 350 });
       }
 
       // 3. 翻牌候诊时间 (明日 10:00)
       const timeEl = document.getElementById('card-time');
       if (timeEl) {
         const fullTime = timeEl.textContent.trim();
-        runSplitFlap(timeEl, fullTime, { speed: 42, steps: 7, delay: 650 });
+        runSplitFlap(timeEl, fullTime, { speed: 48, steps: 9, delay: 500 });
       }
 
-      setTimeout(() => { isFlapping = false; }, 1800);
+      setTimeout(() => { isFlapping = false; }, 2200);
     }
 
     function replaySplitFlap() {

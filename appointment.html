@@ -526,7 +526,7 @@
               <div class="text-sm font-black text-slate-900 mt-0.5 flex items-center justify-end gap-1">
                 <span class="text-emerald-800 bg-emerald-100/90 px-1.5 py-0.5 rounded text-[11px] font-mono font-black">3F-VIP01</span>
               </div>
-              <div id="card-item" class="text-[9.5px] font-bold text-slate-700 mt-0.5 truncate" title="单颗缺牙3D骨量精准评估">单颗缺牙3D骨量评估</div>
+              <div id="card-item" class="text-[9.5px] font-bold text-slate-700 mt-0.5 truncate" title="种植牙">种植牙</div>
             </div>
           </div>
         </div>
@@ -574,8 +574,8 @@
               </div>
               <div class="min-w-0">
                 <div class="text-[8.5px] text-slate-400 font-bold tracking-wider uppercase">PROJECT / 明日研判项目</div>
-                <div id="card-project" class="text-sm font-black text-slate-900 tracking-tight truncate mt-0.5">单颗缺牙 3D 骨量精准评估</div>
-                <div class="text-[9px] text-slate-500 font-medium truncate">德国卡瓦微剂量三维扫描 · 数字化微创种植评估</div>
+                <div id="card-project" class="text-sm font-black text-slate-900 tracking-tight truncate mt-0.5">种植牙</div>
+                <div class="text-[9px] text-slate-500 font-medium truncate">德国卡瓦微剂量三维扫描 · 数字化微创评估</div>
               </div>
             </div>
             <div class="shrink-0 text-right pl-2">
@@ -925,7 +925,7 @@
           </div>
           <div>
             <div class="text-xs font-bold text-slate-900">主理专家智囊库 · 三甲名医阵容</div>
-            <div class="text-[10px] text-slate-400">拒绝单一年轻医生独断，MDT 联合研判</div>
+            <div class="text-[10px] text-slate-400">拒绝单一年轻医生独断，专家组联合研判</div>
           </div>
         </div>
         <span class="text-[10px] text-orange-600 font-bold flex items-center">
@@ -1204,8 +1204,8 @@
           <input id="input-time" type="text" value="明日 (10月15日) 10:00" class="w-full px-3 py-2 rounded-lg bg-orange-50/50 border border-orange-200 text-slate-900 focus:outline-none focus:border-orange-500">
         </div>
         <div>
-          <label class="block text-slate-600 mb-1">预约项目（如：单颗缺牙 3D 骨量精准评估）：</label>
-          <input id="input-item" type="text" value="单颗缺牙 3D 骨量精准评估" class="w-full px-3 py-2 rounded-lg bg-orange-50/50 border border-orange-200 text-slate-900 focus:outline-none focus:border-orange-500">
+          <label class="block text-slate-600 mb-1">预约项目（如：种植牙）：</label>
+          <input id="input-item" type="text" value="种植牙" class="w-full px-3 py-2 rounded-lg bg-orange-50/50 border border-orange-200 text-slate-900 focus:outline-none focus:border-orange-500">
         </div>
         <div>
           <label class="block text-slate-600 mb-1">车位预留（如：地下 B1-08）：</label>
@@ -1656,7 +1656,7 @@
             </div>
 
             <div class="p-2.5 rounded-xl bg-orange-100/70 border border-orange-300 text-orange-900 text-[10px] leading-relaxed">
-              💡 <strong>松鼠 MDT 会诊承诺</strong>：初诊患者的每一套方案，均由刘彦廷院长团队 3 名副高及以上专家联合研讨出具，绝非单一新手决定。
+              💡 <strong>松鼠专家组联合会诊承诺</strong>：初诊患者的每一套方案，均由刘彦廷团队多名资深骨干专家联合研讨出具，绝非单一新手决定。
             </div>
           </div>
         `
@@ -1767,7 +1767,7 @@
       const car = document.getElementById('card-car') ? document.getElementById('card-car').textContent.trim() : '地下 B1-08';
       const url = window.location.href;
 
-      return `【松鼠口腔·名医亲诊孝心备忘】\n父母（${name}）已预约：${time}\n主理团队：刘彦廷院长 MDT种植专家组\n专属车位：${car}（系统已录入，地下车库自动抬杆）\n专属门牌：独栋新院 3F-VIP01\n权威承诺：0元卡瓦3D扫描评估，绝无隐形消费。\n请儿女放心查验专属凭证：${url}`;
+      return `【松鼠口腔·名医亲诊孝心备忘】\n父母（${name}）已预约：${time}\n主理团队：刘彦廷种植专家组\n专属车位：${car}（系统已录入，地下车库自动抬杆）\n专属门牌：独栋新院 3F-VIP01\n权威承诺：0元卡瓦3D扫描评估，绝无隐形消费。\n请儿女放心查验专属凭证：${url}`;
     }
 
     function shareToFamily() {

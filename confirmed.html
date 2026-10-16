@@ -16,6 +16,8 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Confetti 礼花动效 -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- html2canvas 用于一键保存高清长图凭证 -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <style>
     * {
@@ -199,9 +201,237 @@
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
     }
+  
+    /* ==============================================================
+       高定视觉与开源算法移植：极光天幕、全息光栅、扫光与雷达脉冲
+       ============================================================== */
+    
+    /* 1. 晨曦天幕极光 (Soft Aurora) */
+    .aurora-sky-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 460px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.7;
+    }
+    .aurora-beam {
+      position: absolute;
+      filter: blur(50px);
+      border-radius: 50%;
+      mix-blend-mode: multiply;
+      opacity: 0.42;
+      animation: auroraFloat 14s ease-in-out infinite alternate;
+    }
+    .aurora-beam-1 {
+      width: 320px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(251, 146, 60, 0.45) 0%, rgba(253, 230, 138, 0.22) 65%, transparent 80%);
+      top: -80px;
+      left: -40px;
+      animation-duration: 12s;
+    }
+    .aurora-beam-2 {
+      width: 340px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.28) 0%, rgba(52, 211, 153, 0.12) 60%, transparent 80%);
+      top: 20px;
+      right: -80px;
+      animation-duration: 16s;
+      animation-delay: -3s;
+    }
+    .aurora-beam-3 {
+      width: 260px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.3) 0%, transparent 70%);
+      top: 140px;
+      left: 20%;
+      animation-duration: 18s;
+      animation-delay: -6s;
+    }
+    @keyframes auroraFloat {
+      0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+      50% { transform: translate3d(25px, -18px, 0) scale(1.08) rotate(4deg); }
+      100% { transform: translate3d(-18px, 20px, 0) scale(0.94) rotate(-3deg); }
+    }
+
+    /* 2. 证书级主卡 3D 景深与全息彩虹光栅 (HoloCard) */
+    .certificate-card {
+      position: relative;
+      background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF9 100%);
+      border: 1.5px solid #FDE68A;
+      box-shadow: 0 16px 36px -10px rgba(249, 115, 22, 0.14), 0 0 0 1px rgba(217, 119, 6, 0.08);
+      transform-style: preserve-3d;
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+      touch-action: pan-y;
+      will-change: transform;
+    }
+    .certificate-card:active {
+      box-shadow: 0 24px 48px -12px rgba(249, 115, 22, 0.22), 0 0 0 1.5px rgba(245, 158, 11, 0.4);
+    }
+    .card-holo-foil {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 10;
+      opacity: var(--tc-holo-opacity, 0);
+      background-image: linear-gradient(
+        var(--tc-holo-angle, 135deg),
+        rgba(255, 0, 0, 0.2) 0%,
+        rgba(255, 154, 0, 0.25) 16%,
+        rgba(255, 255, 0, 0.25) 32%,
+        rgba(0, 255, 100, 0.28) 48%,
+        rgba(0, 200, 255, 0.28) 64%,
+        rgba(120, 0, 255, 0.22) 80%,
+        rgba(255, 0, 150, 0.2) 100%
+      );
+      background-size: 200% 200%;
+      background-position: var(--tc-holo-pos, 50% 50%);
+      mix-blend-mode: color-dodge;
+      transition: opacity 0.3s ease;
+    }
+    .card-specular-glare {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 11;
+      opacity: var(--tc-glare-opacity, 0);
+      background: radial-gradient(
+        circle at var(--tc-glare-x, 50%) var(--tc-glare-y, 50%),
+        rgba(255, 255, 255, 0.8) 0%,
+        rgba(255, 255, 255, 0.25) 35%,
+        transparent 70%
+      );
+      mix-blend-mode: overlay;
+      transition: opacity 0.25s ease;
+    }
+
+    /* 3. 激光全息防伪条 (Laser Barcode) */
+    .laser-barcode-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      padding: 5px 8px;
+      background: linear-gradient(135deg, rgba(254, 243, 199, 0.5) 0%, rgba(255, 237, 213, 0.6) 100%);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+    }
+    .laser-barcode-container::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 40px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), rgba(245, 158, 11, 0.8), transparent);
+      animation: laserSweep 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    @keyframes laserSweep {
+      0% { left: -50px; opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { left: calc(100% + 50px); opacity: 0; }
+    }
+
+    /* 4. 水银流金扫光文字 (Shiny Gold / Text) */
+    .shiny-gold-text {
+      background: linear-gradient(
+        110deg,
+        #78350F 0%,
+        #92400E 30%,
+        #D97706 45%,
+        #FDE68A 50%,
+        #D97706 55%,
+        #92400E 70%,
+        #78350F 100%
+      );
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shinySweep 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    @keyframes shinySweep {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    /* 5. 磁吸聚光灯卡片 (SpotlightCard) */
+    .spotlight-card {
+      position: relative;
+      overflow: hidden;
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+      --spotlight-opacity: 0;
+    }
+    .spotlight-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        260px circle at var(--mouse-x) var(--mouse-y),
+        rgba(249, 115, 22, 0.08) 0%,
+        transparent 80%
+      );
+      opacity: var(--spotlight-opacity);
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    /* 6. 医助雷达波纹与呼吸金圈 */
+    .butler-ring {
+      position: relative;
+      border-radius: 18px;
+    }
+    .butler-ring::before {
+      content: "";
+      position: absolute;
+      inset: -3px;
+      border-radius: 20px;
+      background: conic-gradient(from 0deg, #F59E0B, #10B981, #F97316, #F59E0B);
+      animation: rotateButler 6s linear infinite;
+      z-index: 0;
+      opacity: 0.85;
+      filter: blur(1.5px);
+    }
+    @keyframes rotateButler {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* 7. 安全微力场 (Safety Forcefield) */
+    .safety-forcefield {
+      position: relative;
+    }
+    .safety-forcefield::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(16, 185, 129, 0.5);
+      animation: forcefieldPulse 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+      pointer-events: none;
+    }
+    @keyframes forcefieldPulse {
+      0% { transform: scale(0.9); opacity: 0.9; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
   </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-orange-500 selection:text-white pb-20">
+  <!-- 晨曦天幕极光 (Soft Aurora) -->
+  <div class="aurora-sky-container" aria-hidden="true">
+    <div class="aurora-beam aurora-beam-1"></div>
+    <div class="aurora-beam aurora-beam-2"></div>
+    <div class="aurora-beam aurora-beam-3"></div>
+  </div>
 
   <!-- ==================== 顶部导航 ==================== -->
   <header class="sticky top-0 z-40 px-3 py-2 flex items-center justify-between bg-white/95 backdrop-blur-md border-b border-orange-100 shadow-xs">
@@ -229,7 +459,9 @@
   <main class="max-w-md mx-auto px-4 pt-4 space-y-4">
 
     <!-- ==================== 维度 1 & 2：国家专科级【履约确认主证书大卡】 ==================== -->
-    <section class="certificate-card rounded-2xl p-5 overflow-hidden text-center relative">
+    <section id="confirmed-cert-card" class="certificate-card rounded-2xl p-5 overflow-hidden text-center relative spotlight-card">
+      <div class="card-holo-foil"></div>
+      <div class="card-specular-glare"></div>
       
       <!-- 卡头状态栏 -->
       <div class="flex items-center justify-between pb-3 border-b border-amber-100/80">
@@ -258,7 +490,7 @@
           <span>专属名医席位已锁定</span>
         </h1>
         <p class="text-xs text-slate-600 mt-1">
-          尊敬的 <span id="conf-name" class="font-black text-orange-600 text-sm">张建国 先生</span>，三甲智囊组已就绪
+          尊敬的 <span id="conf-name" class="font-black text-orange-600 text-sm shiny-gold-text">张建国 先生</span>，三甲智囊组已就绪
         </p>
       </div>
 
@@ -328,9 +560,12 @@
 
       <!-- 动态核销防伪条 -->
       <div class="mt-3 pt-3 border-t border-dashed border-orange-200/80 flex items-center justify-between text-left">
-        <div>
-          <div class="text-[10px] text-slate-400 font-mono">VERIFICATION BARCODE</div>
-          <div class="text-[11px] font-mono font-bold text-slate-700 tracking-wider" id="conf-sn-full">SQ-PASS-202610-892</div>
+        <div class="laser-barcode-container">
+          <div class="text-[9px] text-amber-800/80 font-mono flex items-center gap-1 font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            VERIFICATION BARCODE
+          </div>
+          <div class="text-[11px] font-mono font-black text-slate-800 tracking-wider mt-0.5" id="conf-sn-full">SQ-PASS-202610-892</div>
         </div>
         <div class="flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-2 py-1 rounded border border-emerald-200 font-medium">
           <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
@@ -341,11 +576,11 @@
     </section>
 
     <!-- ==================== 维度 3：【专属医助 王敏 护士长】高定温感管家接待卡 ==================== -->
-    <section class="content-box rounded-2xl p-4">
+    <section class="content-box rounded-2xl p-4 spotlight-card">
       <div class="flex items-start gap-3">
         <!-- 医助真人拟物头像 -->
         <div class="relative shrink-0">
-          <div class="w-13 h-13 rounded-2xl bg-gradient-to-tr from-orange-400 to-amber-500 p-0.5 shadow-md shadow-orange-500/20">
+          <div class="butler-ring w-13 h-13 rounded-2xl bg-gradient-to-tr from-orange-400 to-amber-500 p-0.5 shadow-md shadow-orange-500/20 relative z-10">
             <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center overflow-hidden">
               <!-- 头像使用专业医助形象 -->
               <div class="w-full h-full bg-orange-100 flex items-center justify-center font-bold text-orange-700 text-sm">
@@ -385,11 +620,11 @@
 
       <!-- 快速联络双按钮 -->
       <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-orange-100 text-xs">
-        <button onclick="callAssistant()" class="py-2.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 flex items-center justify-center gap-1.5 active:scale-95 transition-all font-semibold">
+        <button onclick="triggerHaptic('medium'); callAssistant()" class="py-2.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 flex items-center justify-center gap-1.5 active:scale-95 transition-all font-semibold">
           <i data-lucide="phone-call" class="w-3.5 h-3.5 text-orange-600"></i>
           <span>拨打王敏电话</span>
         </button>
-        <button onclick="openWechatModal()" class="py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-sm shadow-orange-500/20 shimmer-btn">
+        <button onclick="triggerHaptic('light'); openWechatModal()" class="py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-sm shadow-orange-500/20 shimmer-btn">
           <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
           <span>加王敏微信备忘</span>
         </button>
@@ -397,10 +632,10 @@
     </section>
 
     <!-- ==================== 维度 4：【孝心代查 · 儿女免担忧路线卡】 ==================== -->
-    <section class="content-box rounded-2xl p-4 text-xs text-left">
+    <section class="content-box rounded-2xl p-4 text-xs text-left spotlight-card">
       <div class="flex items-center justify-between pb-2 border-b border-orange-100">
         <div class="font-bold text-slate-900 flex items-center gap-1.5 text-[12px]">
-          <i data-lucide="shield-alert" class="w-4 h-4 text-emerald-600"></i>
+          <div class="safety-forcefield flex items-center justify-center shrink-0"><i data-lucide="shield-alert" class="w-4 h-4 text-emerald-600"></i></div>
           <span>给儿女的透明承诺 · 家属安心把关</span>
         </div>
         <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-medium">
@@ -423,7 +658,7 @@
         </div>
       </div>
 
-      <button onclick="shareToFamily()" class="w-full mt-3 py-2.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+      <button onclick="triggerHaptic('light'); shareToFamily()" class="w-full mt-3 py-2.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
         <i data-lucide="share-2" class="w-3.5 h-3.5 text-orange-600"></i>
         <span>一键发送给儿女微信 · 附车位与路线</span>
       </button>
@@ -471,12 +706,18 @@
 
     <!-- ==================== 快捷操作底栏 ==================== -->
     <div class="space-y-2 pt-2">
+      <!-- 新增：黑卡级就诊凭证长图一键保存 -->
+      <button onclick="saveCertificateImage()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-md shadow-orange-500/20 active:scale-95 transition-all shimmer-btn">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span>一键保存黑卡凭证长图 (随身存照)</span>
+      </button>
+
       <button onclick="shareToFamily()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-orange-500/25 active:scale-95 transition-all shimmer-btn">
         <i data-lucide="share-2" class="w-4 h-4"></i>
         <span>转发给老伴 / 儿女微信留档</span>
       </button>
 
-      <button onclick="addToCalendar()" class="w-full py-3 rounded-xl bg-white border border-orange-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-xs">
+      <button onclick="triggerHaptic('success'); addToCalendar()" class="w-full py-3 rounded-xl bg-white border border-orange-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-xs">
         <i data-lucide="bell-ring" class="w-4 h-4 text-emerald-600"></i>
         <span>开启明日出发提醒 (明早 09:30 自动提醒)</span>
       </button>
@@ -715,8 +956,226 @@
       });
     }
 
+    
+    // ==============================================================
+    // 触觉与微交互引擎 (Haptics & Micro-Interactions)
+    // ==============================================================
+    function triggerHaptic(type) {
+      if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+        try {
+          if (type === 'light') navigator.vibrate(12);
+          else if (type === 'medium') navigator.vibrate(24);
+          else if (type === 'success') navigator.vibrate([15, 30, 20]);
+        } catch (e) {}
+      }
+    }
+
+    // 1. 证书卡 3D 景深与全息光栅手势跟随引擎 (HoloCard & TiltedCard)
+    function initConfirmedHoloEngine() {
+      const card = document.getElementById('confirmed-cert-card');
+      if (!card) return;
+
+      let isTouching = false;
+      let targetRx = 0, targetRy = 0;
+      let currentRx = 0, currentRy = 0;
+      let targetGlareX = 50, targetGlareY = 50;
+      let currentGlareX = 50, currentGlareY = 50;
+      let animFrameId = null;
+
+      function render() {
+        currentRx += (targetRx - currentRx) * 0.14;
+        currentRy += (targetRy - currentRy) * 0.14;
+        currentGlareX += (targetGlareX - currentGlareX) * 0.14;
+        currentGlareY += (targetGlareY - currentGlareY) * 0.14;
+
+        card.style.transform = "perspective(1000px) rotateX(" + currentRx.toFixed(2) + "deg) rotateY(" + currentRy.toFixed(2) + "deg)";
+        
+        const energy = (Math.abs(currentRx) + Math.abs(currentRy)) / 22;
+        const holoAngle = (135 + currentRy * 4 + currentRx * 3).toFixed(1);
+        const holoPos = currentGlareX.toFixed(1) + "% " + currentGlareY.toFixed(1) + "%";
+        const holoOpacity = (energy * 0.5 + (isTouching ? 0.25 : 0.05)).toFixed(3);
+        const glareOpacity = (energy * 0.4 + (isTouching ? 0.3 : 0)).toFixed(3);
+
+        card.style.setProperty('--tc-holo-angle', holoAngle + "deg");
+        card.style.setProperty('--tc-holo-pos', holoPos);
+        card.style.setProperty('--tc-holo-opacity', holoOpacity);
+
+        card.style.setProperty('--tc-glare-x', currentGlareX.toFixed(1) + "%");
+        card.style.setProperty('--tc-glare-y', currentGlareY.toFixed(1) + "%");
+        card.style.setProperty('--tc-glare-opacity', glareOpacity);
+
+        if (isTouching || Math.abs(currentRx) > 0.05 || Math.abs(currentRy) > 0.05) {
+          animFrameId = requestAnimationFrame(render);
+        } else {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+          card.style.setProperty('--tc-holo-opacity', '0.05');
+          card.style.setProperty('--tc-glare-opacity', '0');
+          animFrameId = null;
+        }
+      }
+
+      function handleMove(clientX, clientY) {
+        const rect = card.getBoundingClientRect();
+        const px = (clientX - rect.left) / rect.width;
+        const py = (clientY - rect.top) / rect.height;
+
+        targetRx = -((py - 0.5) * 16);
+        targetRy = (px - 0.5) * 16;
+        targetGlareX = px * 100;
+        targetGlareY = py * 100;
+
+        if (!animFrameId) {
+          animFrameId = requestAnimationFrame(render);
+        }
+      }
+
+      card.addEventListener('touchstart', (e) => {
+        isTouching = true;
+        triggerHaptic('light');
+        if (e.touches && e.touches[0]) {
+          handleMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      card.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) {
+          handleMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      const handleTouchEnd = () => {
+        isTouching = false;
+        targetRx = 0;
+        targetRy = 0;
+        targetGlareX = 50;
+        targetGlareY = 50;
+      };
+
+      card.addEventListener('touchend', handleTouchEnd, { passive: true });
+      card.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+
+      card.addEventListener('mousemove', (e) => {
+        isTouching = true;
+        handleMove(e.clientX, e.clientY);
+      });
+      card.addEventListener('mouseleave', () => {
+        isTouching = false;
+        targetRx = 0;
+        targetRy = 0;
+        targetGlareX = 50;
+        targetGlareY = 50;
+      });
+    }
+
+    // 2. 磁吸聚光灯引擎 (SpotlightCard Engine)
+    function initSpotlightCardEngine() {
+      const cards = document.querySelectorAll('.spotlight-card');
+      cards.forEach(card => {
+        const updateSpotlight = (x, y, opacity) => {
+          const rect = card.getBoundingClientRect();
+          const px = ((x - rect.left) / rect.width) * 100;
+          const py = ((y - rect.top) / rect.height) * 100;
+          card.style.setProperty('--mouse-x', px.toFixed(1) + "%");
+          card.style.setProperty('--mouse-y', py.toFixed(1) + "%");
+          card.style.setProperty('--spotlight-opacity', opacity);
+        };
+
+        card.addEventListener('mousemove', (e) => {
+          updateSpotlight(e.clientX, e.clientY, 1);
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.setProperty('--spotlight-opacity', 0);
+        });
+
+        card.addEventListener('touchstart', (e) => {
+          if (e.touches && e.touches[0]) {
+            updateSpotlight(e.touches[0].clientX, e.touches[0].clientY, 1);
+          }
+        }, { passive: true });
+        card.addEventListener('touchmove', (e) => {
+          if (e.touches && e.touches[0]) {
+            updateSpotlight(e.touches[0].clientX, e.touches[0].clientY, 1);
+          }
+        }, { passive: true });
+        card.addEventListener('touchend', () => {
+          card.style.setProperty('--spotlight-opacity', 0);
+        }, { passive: true });
+      });
+    }
+
+    // 3. 密码破译矩阵动效 (DecryptedText Engine)
+    function runDecryptedText(el, targetText, speed = 40) {
+      if (!el || !targetText) return;
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let iteration = 0;
+      const maxIterations = targetText.length;
+      
+      const interval = setInterval(() => {
+        el.textContent = targetText
+          .split("")
+          .map((char, index) => {
+            if (index < iteration) {
+              return targetText[index];
+            }
+            if (char === " " || char === "-") return char;
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("");
+
+        if (iteration >= maxIterations) {
+          clearInterval(interval);
+          el.textContent = targetText;
+        }
+        iteration += 0.5;
+      }, speed);
+    }
+
+    // 4. 一键保存黑卡凭证长图 (html2canvas)
+    async function saveCertificateImage() {
+      triggerHaptic('medium');
+      showToast('正在为您渲染高清存照凭证...');
+      
+      const card = document.getElementById('confirmed-cert-card');
+      if (!card) return;
+
+      try {
+        if (typeof html2canvas === 'undefined') {
+          showToast('请长按屏幕截屏保存凭证');
+          return;
+        }
+
+        const canvas = await html2canvas(card, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#FFFFFF',
+          logging: false
+        });
+
+        const image = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = '松鼠口腔-贵宾履约确认凭证.png';
+        link.href = image;
+        link.click();
+        triggerHaptic('success');
+        showToast('凭证已成功保存至您的相册/下载！');
+      } catch (err) {
+        showToast('长按当前卡片截屏即可随身保存');
+      }
+    }
+
+
     window.addEventListener('DOMContentLoaded', () => {
       parseURLParams();
+      initConfirmedHoloEngine();
+      initSpotlightCardEngine();
+      
+      // 破译矩阵动效
+      setTimeout(() => {
+        const snEl = document.getElementById('conf-sn-full');
+        if (snEl) {
+          runDecryptedText(snEl, snEl.textContent.trim(), 35);
+        }
+      }, 600);
     });
   </script>
 </body>

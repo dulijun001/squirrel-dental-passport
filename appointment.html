@@ -262,6 +262,37 @@
       transition: opacity 0.3s ease;
     }
 
+    /* 物理撕票交互容器与动效 (TearTicket) */
+    .tear-zone {
+      position: relative;
+      touch-action: pan-y;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .tear-stub-strip {
+      transition: box-shadow 0.2s ease;
+    }
+    .tear-stub-strip.is-dragging {
+      box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.35);
+      cursor: grabbing;
+    }
+    .tear-rip-particle {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      background: #F97316;
+      z-index: 50;
+    }
+    @keyframes verifiedStampIn {
+      0% { transform: scale(2.2) rotate(-15deg); opacity: 0; }
+      60% { transform: scale(0.92) rotate(4deg); opacity: 1; }
+      80% { transform: scale(1.04) rotate(-2deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .stamp-pop {
+      animation: verifiedStampIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
     /* 动线发光呼吸引导导轨 (Pulse Track) */
     .pulse-track {
       position: absolute;
@@ -575,17 +606,43 @@
           </div>
         </div>
 
-        <!-- 维度 4：物理齿孔撕裂线 (Perforated Rip Line) + 完美对齐的左右半圆咬口 -->
-        <div class="my-4 -mx-4 relative flex items-center justify-center">
-          <!-- 左右精准对齐半圆咬口 (咬入底色 #FFF7ED) -->
-          <div class="absolute -left-0 w-3 h-6 bg-[#FFF7ED] rounded-r-full border-y border-r border-[#FED7AA] shadow-inner z-10"></div>
-          <div class="absolute -right-0 w-3 h-6 bg-[#FFF7ED] rounded-l-full border-y border-l border-[#FED7AA] shadow-inner z-10"></div>
+        <!-- 维度 4：真·物理滑动撕票齿孔 (TearTicket 交互核销层) -->
+        <div id="tear-interactive-zone" class="tear-zone my-4 -mx-4 relative overflow-hidden py-2" style="min-height: 48px;">
+          <!-- 底层：撕开后露出的金色特批存证与防伪水印 (揭秘状态) -->
+          <div id="tear-revealed-layer" class="absolute inset-x-4 inset-y-1 rounded-xl bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-300/80 px-3 py-1.5 flex items-center justify-between opacity-0 pointer-events-none transition-all duration-300">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+              <div>
+                <div class="text-[9px] font-black text-amber-950 flex items-center gap-1 font-mono">
+                  <span>✓ VIP PASS VERIFIED · 凭证已实核</span>
+                </div>
+                <div class="text-[7.5px] text-amber-700/80 font-mono mt-0.5" id="tear-revealed-time">
+                  核销认证号: SQ-VRF-89201 · 尊享绿通
+                </div>
+              </div>
+            </div>
+            <!-- 金色特批钢印 -->
+            <div class="stamp-badge shrink-0 px-2 py-0.5 rounded border border-rose-600 bg-rose-50 text-rose-700 font-serif font-black text-[9px] rotate-[-4deg] shadow-sm tracking-wider">
+              ★ 特批已核 ★
+            </div>
+          </div>
 
-          <!-- 虚线与微缩印字 -->
-          <div class="w-full border-t border-dashed border-orange-300/80 mx-3"></div>
-          <span class="absolute bg-white px-2 text-[7.5px] font-mono tracking-widest text-slate-400 uppercase select-none border border-orange-100 rounded-full scale-90 shadow-2xs">
-            ★ SQUIRREL VIP PASS · 撕开核销 ★
-          </span>
+          <!-- 表层：可拖拽撕扯的实物纸质票根带 (撕票交互物) -->
+          <div id="tear-stub-strip" class="tear-stub-strip relative flex items-center justify-center w-full cursor-grab select-none">
+            <!-- 左右精准对齐半圆咬口 (咬入底色 #FFF7ED) -->
+            <div class="absolute -left-0 w-3 h-6 bg-[#FFF7ED] rounded-r-full border-y border-r border-[#FED7AA] shadow-inner z-10"></div>
+            <div class="absolute -right-0 w-3 h-6 bg-[#FFF7ED] rounded-l-full border-y border-l border-[#FED7AA] shadow-inner z-10"></div>
+
+            <!-- 虚线与齿孔 -->
+            <div id="tear-perforated-line" class="w-full border-t border-dashed border-orange-300/90 mx-3 transition-opacity duration-200"></div>
+
+            <!-- 滑动撕票手柄徽标 -->
+            <div id="tear-handle-pill" class="absolute bg-white px-3 py-1 text-[8px] font-mono tracking-widest text-slate-500 uppercase select-none border border-orange-200 rounded-full shadow-xs flex items-center gap-1.5 hover:border-orange-400 transition-colors">
+              <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+              <span id="tear-handle-text" class="font-bold text-slate-600">向右滑撕 · 物理核销</span>
+              <i data-lucide="arrow-right" class="w-3 h-3 text-orange-500 shrink-0"></i>
+            </div>
+          </div>
         </div>
 
         <!-- 维度 5：双核心专属履约联 (主理专家组 & 研判项目) -->
@@ -2423,6 +2480,8 @@
 
       // 触摸手势事件绑定
       card.addEventListener('touchstart', (e) => {
+        // 如果是在撕票区域内操作，优先保障撕票手势，不触发卡片大幅倾斜
+        if (e.target.closest('#tear-interactive-zone')) return;
         isTouching = true;
         if (e.touches.length > 0) {
           handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
@@ -2430,6 +2489,7 @@
       }, { passive: true });
 
       card.addEventListener('touchmove', (e) => {
+        if (e.target.closest('#tear-interactive-zone')) return;
         if (e.touches.length > 0) {
           handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
         }
@@ -2479,6 +2539,180 @@
       }, 400);
     }
 
+    // ==================== 物理撕票交互核销引擎 (移植自 react-bits TearTicket) ====================
+    function initTearTicketEngine() {
+      const zone = document.getElementById('tear-interactive-zone');
+      const strip = document.getElementById('tear-stub-strip');
+      const handle = document.getElementById('tear-handle-pill');
+      const line = document.getElementById('tear-perforated-line');
+      const revealed = document.getElementById('tear-revealed-layer');
+      const handleText = document.getElementById('tear-handle-text');
+      if (!zone || !strip || !handle || !revealed) return;
+
+      let isDragging = false;
+      let startX = 0;
+      let currentX = 0;
+      let isTorn = false;
+      const MAX_DRAG = 240; // 撕开所需物理拖拽像素
+      const TEAR_THRESHOLD = 150; // 撕裂阈值
+
+      // 生成纸纤维微撕裂粒子
+      function emitTearFibres(x, y) {
+        const count = 6;
+        for (let i = 0; i < count; i++) {
+          const p = document.createElement('div');
+          p.className = 'tear-rip-particle';
+          const size = Math.random() * 3 + 2;
+          p.style.width = `${size}px`;
+          p.style.height = `${size}px`;
+          p.style.left = `${x}px`;
+          p.style.top = `${y}px`;
+          p.style.backgroundColor = Math.random() > 0.5 ? '#EA580C' : '#F97316';
+          zone.appendChild(p);
+
+          const angle = (Math.random() - 0.5) * Math.PI * 0.8;
+          const dist = Math.random() * 40 + 20;
+          const tx = Math.cos(angle) * dist;
+          const ty = Math.sin(angle) * dist + 20;
+
+          p.animate([
+            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+            { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+          ], {
+            duration: 450 + Math.random() * 200,
+            easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
+          }).onfinish = () => p.remove();
+        }
+      }
+
+      function onStart(clientX, clientY) {
+        if (isTorn) return;
+        isDragging = true;
+        startX = clientX;
+        currentX = 0;
+        strip.classList.add('is-dragging');
+        handle.classList.add('scale-105');
+        triggerHaptic('light');
+      }
+
+      function onMove(clientX, clientY) {
+        if (!isDragging || isTorn) return;
+        const deltaX = clientX - startX;
+        if (deltaX < 0) {
+          currentX = deltaX * 0.2; // 向左拖拽给极高阻尼
+        } else {
+          // 向右拖拽带自然橡皮筋阻尼
+          currentX = Math.min(deltaX, MAX_DRAG);
+        }
+
+        const progress = Math.max(0, Math.min(1, currentX / TEAR_THRESHOLD));
+        const rot = progress * 6; // 轻微撕扯扭角
+        const stretchY = Math.sin(progress * Math.PI) * 4;
+
+        strip.style.transform = `translate3d(${currentX}px, ${stretchY}px, 0) rotate(${rot}deg)`;
+        
+        // 虚线随撕裂程度变浅
+        if (line) line.style.opacity = (1 - progress * 0.7).toFixed(2);
+
+        // 触感反馈阶梯
+        if (progress > 0.3 && progress < 0.35) triggerHaptic('light');
+        if (progress > 0.7 && progress < 0.75) triggerHaptic('medium');
+
+        // 露出底层微光提示
+        revealed.style.opacity = (progress * 0.55).toFixed(2);
+      }
+
+      function onEnd() {
+        if (!isDragging || isTorn) return;
+        isDragging = false;
+        strip.classList.remove('is-dragging');
+        handle.classList.remove('scale-105');
+
+        if (currentX >= TEAR_THRESHOLD) {
+          // 彻底撕开！
+          commitTear();
+        } else {
+          // 未达到阈值，弹簧回弹归位 (Spring Snap Back)
+          strip.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          strip.style.transform = '';
+          if (line) line.style.opacity = '1';
+          revealed.style.opacity = '0';
+          setTimeout(() => {
+            strip.style.transition = '';
+            currentX = 0;
+          }, 400);
+        }
+      }
+
+      function commitTear() {
+        if (isTorn) return;
+        isTorn = true;
+        triggerHaptic('heavy');
+
+        const rect = strip.getBoundingClientRect();
+        emitTearFibres(rect.width * 0.6, 24);
+
+        // 飘落飞出动画 (Drop & Fade)
+        strip.style.transition = 'transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease';
+        strip.style.transform = `translate3d(${window.innerWidth || 400}px, 40px, 0) rotate(22deg) scale(0.9)`;
+        strip.style.opacity = '0';
+        strip.style.pointerEvents = 'none';
+
+        // 揭秘层盖章弹出
+        revealed.style.pointerEvents = 'auto';
+        revealed.style.opacity = '1';
+        revealed.classList.remove('pointer-events-none');
+        revealed.classList.add('stamp-pop');
+
+        const timeStr = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+        const timeEl = document.getElementById('tear-revealed-time');
+        if (timeEl) timeEl.textContent = `核销时间: 今日 ${timeStr} · 专席通道已开启`;
+
+        // 喷射礼花 (Confetti)
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.35 },
+            colors: ['#EA580C', '#F59E0B', '#10B981', '#FFFFFF']
+          });
+        }
+
+        showToast('🎉 VIP 登机牌核销成功！专席研判通道已激活');
+      }
+
+      // 绑定触摸与鼠标事件
+      handle.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) onStart(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (isDragging && e.touches.length > 0) {
+          if (e.cancelable) e.preventDefault(); // 拖拽撕票时阻止页面原生纵向滚动
+          onMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: false });
+
+      window.addEventListener('touchend', onEnd, { passive: true });
+      window.addEventListener('touchcancel', onEnd, { passive: true });
+
+      // 桌面鼠标拖拽
+      handle.addEventListener('mousedown', (e) => {
+        onStart(e.clientX, e.clientY);
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (isDragging) onMove(e.clientX, e.clientY);
+      });
+      window.addEventListener('mouseup', onEnd);
+
+      // 单击备用触发：支持点击手柄直接一键撕票演示
+      handle.addEventListener('click', (e) => {
+        if (!isTorn && !isDragging) {
+          commitTear();
+        }
+      });
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       parseURLParams();
       try {
@@ -2492,10 +2726,11 @@
         el.addEventListener('touchstart', () => triggerHaptic('light'), { passive: true });
       });
 
-      // 启动 3D WebGL 渲染
+      // 启动 3D WebGL 渲染与动效引擎
       setTimeout(() => {
         init3DImplantViewer();
         initTiltedCardEngine();
+        initTearTicketEngine();
       }, 200);
     });
   </script>

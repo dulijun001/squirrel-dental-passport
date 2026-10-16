@@ -111,10 +111,56 @@
     /* 卡片通用 */
     .deluxe-card {
       background: #FFFFFF;
-      border: 1px solid #FED7AA;
-      border-radius: 20px;
+      border: 1px solid rgba(254, 215, 170, 0.8);
+      border-radius: 22px;
       padding: 16px;
-      box-shadow: 0 8px 24px -8px rgba(234, 88, 12, 0.08);
+      box-shadow: 
+        0 1px 1px rgba(255, 255, 255, 0.9) inset,
+        0 8px 24px -6px rgba(234, 88, 12, 0.08),
+        0 2px 6px -1px rgba(0, 0, 0, 0.02);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    }
+
+    /* 物理级交互微压感（触感阻尼反馈） */
+    .touch-spring {
+      transition: transform 0.16s cubic-bezier(0.2, 0, 0, 1), filter 0.16s ease;
+      will-change: transform;
+    }
+    .touch-spring:active {
+      transform: scale(0.975) translateY(1.2px) !important;
+      filter: brightness(0.97);
+    }
+
+    /* 苹果级物理弹簧进场阶梯动效 (iOS Spring Physics) */
+    .stagger-spring {
+      opacity: 0;
+      transform: translateY(18px);
+      animation: springSlideUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes springSlideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .stagger-1 { animation-delay: 0.04s; }
+    .stagger-2 { animation-delay: 0.12s; }
+    .stagger-3 { animation-delay: 0.20s; }
+    .stagger-4 { animation-delay: 0.28s; }
+    .stagger-5 { animation-delay: 0.36s; }
+    .stagger-6 { animation-delay: 0.44s; }
+
+    /* 动线发光呼吸引导导轨 (Pulse Track) */
+    .pulse-track {
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      bottom: 12px;
+      width: 2.5px;
+      background: linear-gradient(180deg, #F97316 0%, #38BDF8 40%, #10B981 75%, #F59E0B 100%);
+      border-radius: 999px;
+      opacity: 0.85;
+      box-shadow: 0 0 6px rgba(249, 115, 22, 0.25);
     }
 
     /* 仿真条形码 */
@@ -316,7 +362,7 @@
 
         
 <!-- 🌟 组件 1：【爱马仕级航空头等舱·高定拟物登机牌】(6大极致细节) -->
-    <section class="boarding-pass shadow-2xl relative overflow-hidden" style="background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF9 100%); border: 1px solid #FED7AA; box-shadow: 0 16px 36px -10px rgba(234, 88, 12, 0.12), 0 0 0 1px rgba(254, 215, 170, 0.6); border-radius: 24px;">
+    <section class="boarding-pass shadow-2xl relative overflow-hidden stagger-spring stagger-1" style="background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF9 100%); border: 1px solid #FED7AA; box-shadow: 0 16px 36px -10px rgba(234, 88, 12, 0.12), 0 0 0 1px rgba(254, 215, 170, 0.6); border-radius: 24px;">
 
       <!-- 维度 1 & 2：登机牌头部 (航空头等舱金橙质感横条 + 绿宝石呼吸灯 + 防伪钢印) -->
       <div class="relative px-4 py-3.5 text-white overflow-hidden" style="background: linear-gradient(135deg, #EA580C 0%, #F97316 55%, #FB923C 100%);">
@@ -498,7 +544,7 @@
     </section>
 
 <!-- 🌟 组件 2：【明日到院就诊动线 · 6步全透明履约路线看板】 -->
-    <section class="deluxe-card shadow-sm">
+    <section class="deluxe-card shadow-sm stagger-spring stagger-2">
       <div class="flex items-center justify-between mb-3.5 pb-2.5 border-b border-orange-100">
         <div class="flex items-center gap-2">
           <div class="w-7 h-7 rounded-xl bg-orange-500/10 text-orange-600 flex items-center justify-center font-bold">
@@ -515,7 +561,9 @@
       </div>
 
       <!-- 6 步纵向透明时间轴 (适老化大字号 + 权威标签 + 白话痛点消除) -->
-      <div class="space-y-3.5 relative before:absolute before:left-3.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-gradient-to-b before:from-orange-400 before:via-sky-400 before:to-emerald-500 pl-0.5">
+      <div class="space-y-3.5 relative pl-0.5">
+        <!-- 动态发光流光导轨 -->
+        <div class="pulse-track"></div>
         
         <!-- 步骤 1: 前台挂号签到 -->
         <div class="flex items-start gap-3 relative">
@@ -659,7 +707,7 @@
     </section>
 
     <!-- 🌟 核心增值独立卡片：【3D 仿生微创种植 · 结构与稳固原理解构】 -->
-    <section class="deluxe-card shadow-sm">
+    <section class="deluxe-card shadow-sm stagger-spring stagger-3">
       <!-- 头部标题与触控引导 -->
       <div class="flex items-center justify-between pb-3 border-b border-orange-100">
         <div class="flex items-center gap-2.5 min-w-0 pr-2">
@@ -743,7 +791,7 @@
     </section>
 
 <!-- 🌟 组件 3：【专家名片横滑池 MDT Expert Pool】(刘彦廷领衔 + 韩峄 + 周剑 + 杨彬雁) -->
-    <section class="deluxe-card">
+    <section class="deluxe-card stagger-spring stagger-4">
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
           <div class="w-6 h-6 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600 font-bold">
@@ -832,7 +880,7 @@
     </section>
 
 <!-- 🌟 组件 2：【手势横滑画廊 Story Carousel】(独栋大楼/五星大厅/德国卡瓦/无菌手术室) -->
-    <section class="deluxe-card">
+    <section class="deluxe-card stagger-spring stagger-5">
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
           <div class="w-6 h-6 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600 font-bold">
@@ -926,7 +974,7 @@
     </section>
 
 <!-- 🌟 组件 5：【感控消毒 + 6大铁律双栏安心盾牌】 -->
-    <section class="grid grid-cols-2 gap-3">
+    <section class="grid grid-cols-2 gap-3 stagger-spring stagger-6">
       <!-- 消毒供应 -->
       <div onclick="openDetailModal('sterilization')" class="deluxe-card flex flex-col justify-between cursor-pointer active:scale-95 transition-all">
         <div>
@@ -2088,7 +2136,19 @@
       });
     }
 
+    // ==================== 微动效与触感增强 ====================
+    function triggerHaptic(type = 'light') {
+      if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+        try {
+          if (type === 'light') navigator.vibrate(10);
+          else if (type === 'medium') navigator.vibrate(20);
+          else if (type === 'success') navigator.vibrate([12, 35, 18]);
+        } catch (e) {}
+      }
+    }
+
     function toggleImplantExplode() {
+      triggerHaptic('medium');
       isExploded = !isExploded;
       const btnText = document.getElementById('explode-btn-text');
       const crownLabel = document.getElementById('label-crown');
@@ -2111,6 +2171,7 @@
     }
 
     function highlight3DPart(part) {
+      triggerHaptic('light');
       if (!isExploded) toggleImplantExplode();
 
       if (part === 'crown') {
@@ -2131,6 +2192,12 @@
         const raw = localStorage.getItem('squirrel_reg_data');
         if (raw) applyRegistrationSuccess(JSON.parse(raw));
       } catch (e) {}
+
+      // 绑定全局按钮与卡片的触感微压动效
+      document.querySelectorAll('button, .doc-card, .gallery-card, .deluxe-card').forEach(el => {
+        el.classList.add('touch-spring');
+        el.addEventListener('touchstart', () => triggerHaptic('light'), { passive: true });
+      });
 
       // 启动 3D WebGL 渲染
       setTimeout(() => {

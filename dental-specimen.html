@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>松鼠口腔 · 3D数字化标本交互舱 (Dental 3D Specimen)</title>
+
+  <!-- Google Fonts & System Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <script src="implant_model_data.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      /* 松鼠口腔医疗生态白天色系 (Clinical Pristine Day) */
+      --bg: #f5f8f7;
+      --panel: #ffffff;
+      --line: #e1e9e6;
+      --ink: #13221e;
+      --muted: #5e726b;
+      --sage: #0d8267; /* 松鼠翡翠医疗绿 */
+      --sage-ink: #ffffff;
+      --sage-tint: #e6f4f0;
+      --chip: #ecf3f0;
+      --shadow: 19, 34, 30;
+      --accent-gold: #c29342;
+      --ease: cubic-bezier(.22,.8,.24,1);
+    }
+
+    .hero[data-light="dusk"] {
+      /* 数字化夜光诊所深色系 (Cyber Clinic Night) */
+      --bg: #0b1311;
+      --panel: #111e1b;
+      --line: #1c322d;
+      --ink: #eaf3f0;
+      --muted: #8aa39b;
+      --sage: #10b981;
+      --sage-ink: #071512;
+      --sage-tint: #16362e;
+      --chip: #152723;
+      --shadow: 0, 0, 0;
+      --accent-gold: #e5b358;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: "Nunito Sans", "Noto Serif SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      transition: background-color .6s var(--ease);
+    }
+
+    button {
+      font-family: inherit;
+      color: inherit;
+      border: none;
+      background: none;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 2px;
+    }
+
+    .svg-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.6;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* === 布局网格 === */
+    .hero {
+      position: relative;
+      height: 100vh;
+      height: 100dvh;
+      width: 100vw;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr) clamp(320px, 28vw, 380px);
+      background-color: var(--bg);
+      color: var(--ink);
+      transition: background-color .6s var(--ease), color .6s var(--ease);
+    }
+
+    /* 全局穿透三维画布 */
+    #gl {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* === 1) 左侧导航 (松鼠临床分类导航) === */
+    .sidebar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 14px 20px 22px;
+      border-right: 1px solid var(--line);
+      background: var(--bg);
+      user-select: none;
+      transition: transform .5s var(--ease), opacity .5s var(--ease), border-color .6s var(--ease);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--sage);
+      color: var(--sage-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-family: "Noto Serif SC", serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    .brand-subtitle {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .nav-list {
+      margin: 24px 0 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink);
+      transition: background-color .2s var(--ease);
+    }
+
+    .nav-item:hover {
+      background-color: var(--chip);
+    }
+
+    .nav-item[aria-current="page"] {
+      background-color: var(--sage-tint);
+      color: var(--sage);
+    }
+
+    .nav-item-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-item-content small {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    /* 门诊咨询背书卡片 (固定在左侧底部) */
+    .featured-card {
+      margin-top: auto;
+      background-color: var(--sage-tint);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border: 1px solid color-mix(in srgb, var(--sage) 25%, transparent);
+      transition: background-color .6s var(--ease);
+    }
+
+    .eyebrow {
+      font-size: 9.5px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--sage);
+    }
+
+    .featured-title {
+      font-family: "Noto Serif SC", serif;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    .featured-desc {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .featured-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--sage);
+      color: var(--sage-ink);
+      padding: 7px 10px;
+      border-radius: 6px;
+      margin-top: 4px;
+      text-align: center;
+      transition: opacity .2s var(--ease);
+    }
+
+    .featured-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* === 2) 中置展台 (section.main) === */
+    .main {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      padding: 36px 24px 18px 28px;
+      overflow: hidden;
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    /* 顶部标本切换 Tabs */
+    .tabs-row {
+      display: flex;
+      gap: 12px;
+      z-index: 10;
+      pointer-events: auto;
+      transition: transform .5s var(--ease), opacity .5s var(--ease);
+    }
+
+    .tab-btn {
+      width: 175px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(var(--shadow), .04);
+      transition: transform .2s var(--ease), background-color .3s var(--ease), border-color .3s var(--ease);
+    }
+
+    .tab-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .tab-btn[aria-selected="true"] {
+      background: var(--sage-tint);
+      border-color: var(--sage);
+      box-shadow: 0 4px 16px rgba(13, 130, 103, 0.12);
+    }
+
+    .tab-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--chip);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--sage);
+      flex-shrink: 0;
+    }
+
+    .tab-btn[aria-selected="true"] .tab-badge {
+      background: var(--sage);
+      color: var(--sage-ink);
+    }
+
+    .tab-btn-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tab-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+
+    .tab-latin {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* 3D 舞台交互层 */
+    #stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
+      pointer-events: auto;
+    }
+
+    #stage.is-dragging {
+      cursor: grabbing;
+    }
+
+    /* 地面柔和阴影 */
+    .ground-shadow {
+      position: absolute;
+      left: 50%;
+      bottom: 14%;
+      transform: translateX(-50%);
+      width: min(65%, 480px);
+      height: 48px;
+      background: radial-gradient(closest-side, rgba(var(--shadow), .28), transparent);
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity .5s var(--ease), transform .5s var(--ease);
+    }
+
+    .ground-shadow.switching {
+      opacity: 0;
+      transform: translateX(-50%) scaleX(.3);
+    }
+
+    /* 悬浮加载指示 */
+    .stage-loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      z-index: 7;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .35s var(--ease);
+    }
+
+    .stage-loader.active {
+      opacity: 1;
+    }
+
+    .spinner-ring {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      border-top-color: var(--sage);
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* 提示标 */
+    .stage-hint {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--muted);
+      background: var(--panel);
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+      z-index: 6;
+      transition: opacity .4s var(--ease);
+    }
+
+    .stage-hint.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* 快捷控制侧轨 (Icon Rail) */
+    .icon-rail {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      display: grid;
+      gap: 10px;
+      z-index: 6;
+    }
+
+    .rail-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(var(--shadow), .05);
+      transition: transform .15s var(--ease), border-color .2s var(--ease), background-color .2s var(--ease), color .2s var(--ease);
+    }
+
+    .rail-btn:hover {
+      border-color: var(--sage);
+      color: var(--sage);
+    }
+
+    .rail-btn:active {
+      transform: scale(.92);
+    }
+
+    .rail-btn.on {
+      background: var(--sage);
+      color: var(--sage-ink);
+      border-color: var(--sage);
+    }
+
+    /* 底部旋转胶囊 (Turn Pill) */
+    .turn-pill {
+      position: absolute;
+      bottom: 44px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 12.5px;
+      box-shadow: 0 4px 16px rgba(var(--shadow), .06);
+    }
+
+    .turn-pill button {
+      padding: 4px 10px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--ink);
+      transition: background-color .15s var(--ease);
+    }
+
+    .turn-pill button:hover {
+      background: var(--chip);
+    }
+
+    /* 展台底标诗意/医学语录 */
+    .stage-caption {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: "Noto Serif SC", serif;
+      font-size: clamp(15px, 1.4vw, 18px);
+      font-weight: 600;
+      color: var(--muted);
+      text-align: center;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    /* === 3) 右侧标本医疗详情档案 (section.info) === */
+    .info {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 16px;
+      padding: 24px 26px 18px 0;
+      z-index: 10;
+      overflow: hidden;
+      transition: transform .5s var(--ease), opacity .5s var(--ease);
+    }
+
+    .info-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 36px;
+    }
+
+    .top-search-wrap {
+      flex: 1;
+      height: 36px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .top-search-input {
+      border: none;
+      background: none;
+      font-size: 12px;
+      color: var(--ink);
+      width: 100%;
+      outline: none;
+    }
+
+    .top-action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+    }
+
+    /* 临床医疗卡片 */
+    .detail-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px 22px 18px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--line) transparent;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 20px rgba(var(--shadow), .03);
+      transition: background-color .6s var(--ease), border-color .6s var(--ease);
+    }
+
+    .detail-article {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .detail-article.animate-out > * {
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity .2s ease-in, transform .2s ease-in;
+    }
+
+    .detail-article.animate-in > * {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: childIn .6s var(--ease) forwards;
+    }
+
+    @keyframes childIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .specimen-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--sage);
+    }
+
+    .detail-name {
+      font-family: "Noto Serif SC", serif;
+      font-weight: 700;
+      font-size: clamp(28px, 2.5vw, 36px);
+      line-height: 1.15;
+      margin-top: 6px;
+      color: var(--ink);
+    }
+
+    .detail-latin {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .tag-pill {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: var(--chip);
+      color: var(--sage);
+    }
+
+    .detail-desc {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--ink);
+      margin-top: 14px;
+    }
+
+    /* 临床核心参数指标网格 */
+    .detail-section-title {
+      font-family: "Noto Serif SC", serif;
+      font-weight: 600;
+      font-size: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      margin-top: 20px;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .detail-section-title span.badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--sage-tint);
+      color: var(--sage);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .params-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .param-box {
+      background: var(--chip);
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+
+    .param-label {
+      font-size: 10.5px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .param-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: 3px;
+    }
+
+    .param-sub {
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    /* 临床优势列表 */
+    .advantage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .adv-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .adv-check {
+      color: var(--sage);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* 显微微观窥镜按钮 (Close-up Macro Lens) */
+    .close-up-btn {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: 68px 1fr 18px;
+      gap: 12px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      align-items: center;
+      cursor: pointer;
+      background: var(--panel);
+      transition: border-color .2s var(--ease), background-color .2s var(--ease);
+    }
+
+    .close-up-btn:hover, .close-up-btn[aria-pressed="true"] {
+      border-color: var(--sage);
+      background: var(--sage-tint);
+    }
+
+    .close-up-lens {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      border: 2px solid var(--sage);
+      box-shadow: 0 4px 12px rgba(13, 130, 103, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background-color: #1a2a24;
+      position: relative;
+    }
+
+    .lens-canvas-preview {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #10b981;
+      text-align: center;
+    }
+
+    .close-up-title {
+      font-family: "Noto Serif SC", serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .close-up-desc {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.35;
+      margin-top: 2px;
+    }
+
+    .close-up-chevron {
+      color: var(--muted);
+      transition: transform .3s var(--ease);
+    }
+
+    .close-up-btn[aria-pressed="true"] .close-up-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* 沉浸 Focus 模式 */
+    .hero.focus .sidebar {
+      transform: translateX(-24px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .hero.focus .info {
+      transform: translateX(24px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .hero.focus .tabs-row {
+      transform: translateY(-16px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* === 响应式规则 === */
+    @media (max-width: 1100px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr) clamp(300px, 35vw, 360px);
+      }
+      .sidebar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .hero {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        height: 100dvh;
+      }
+      .sidebar {
+        display: none;
+      }
+      .info {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 44dvh;
+        z-index: 8;
+        padding: 0;
+        grid-template-rows: 1fr;
+      }
+      .info-top {
+        display: none;
+      }
+      .detail-card {
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -8px 24px rgba(var(--shadow), .15);
+      }
+      .main {
+        flex: 1;
+        padding: 12px 14px 6px;
+      }
+      .tab-btn {
+        width: auto;
+        flex: 1;
+        padding: 8px 10px;
+      }
+      .turn-pill {
+        bottom: 24px;
+      }
+      .stage-caption {
+        font-size: 13px;
+        bottom: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SVG 图标库 -->
+  <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="icon-implant" viewBox="0 0 24 24">
+      <path d="M9 3h6v4H9zM7 7h10v3H7zM8 10h8v3H8zM9 13h6v3H9zM10 16h4v3h-4zM11 19h2v2h-2z"/>
+    </symbol>
+    <symbol id="icon-aligner" viewBox="0 0 24 24">
+      <path d="M4 14c1-4 4-7 8-7s7 3 8 7"/>
+      <path d="M6 14c1.5-2.5 3.5-4 6-4s4.5 1.5 6 4"/>
+      <circle cx="6" cy="14" r="2"/>
+      <circle cx="18" cy="14" r="2"/>
+      <circle cx="12" cy="10" r="1.5"/>
+    </symbol>
+    <symbol id="icon-scan" viewBox="0 0 24 24">
+      <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/>
+      <line x1="4" y1="12" x2="20" y2="12"/>
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <polyline points="20 6 9 17 4 12"/>
+    </symbol>
+    <symbol id="icon-search-plus" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      <line x1="11" y1="8" x2="11" y2="14"/>
+      <line x1="8" y1="11" x2="14" y2="11"/>
+    </symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </symbol>
+    <symbol id="icon-expand" viewBox="0 0 24 24">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2m0 16v2m-7.07-14.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"/>
+    </symbol>
+    <symbol id="icon-rotate-ccw" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+      <path d="M3 3v5h5"/>
+    </symbol>
+    <symbol id="icon-rotate-cw" viewBox="0 0 24 24">
+      <path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+      <path d="M21 3v5h-5"/>
+    </symbol>
+    <symbol id="icon-hand" viewBox="0 0 24 24">
+      <path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v7M10 10.5V6a2 2 0 0 0-4 0v8M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+    </symbol>
+    <symbol id="icon-chevron-right" viewBox="0 0 24 24">
+      <polyline points="9 18 15 12 9 6"/>
+    </symbol>
+    <symbol id="icon-award" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="7"/>
+      <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+    </symbol>
+  </svg>
+
+  <main class="hero" data-light="day" id="hero">
+    <!-- 穿透 3D Canvas -->
+    <canvas id="gl"></canvas>
+
+    <!-- 1) 左侧导航 -->
+    <aside class="sidebar">
+      <div class="brand-wrap">
+        <div class="brand-badge">松</div>
+        <div class="brand-text">
+          <span class="brand-title">松鼠口腔</span>
+          <span class="brand-subtitle">3D 数字化标本舱</span>
+        </div>
+      </div>
+
+      <nav class="nav-list" aria-label="临床数字化分类">
+        <button class="nav-item" aria-current="page">
+          <svg class="svg-icon"><use href="#icon-implant"/></svg>
+          <div class="nav-item-content">
+            种植外科
+            <small>生物结合标本</small>
+          </div>
+        </button>
+        <button class="nav-item" id="nav-btn-ortho">
+          <svg class="svg-icon"><use href="#icon-aligner"/></svg>
+          <div class="nav-item-content">
+            隐形正畸
+            <small>膜片微结构</small>
+          </div>
+        </button>
+        <button class="nav-item">
+          <svg class="svg-icon"><use href="#icon-scan"/></svg>
+          <div class="nav-item-content">
+            口扫三维重建
+            <small>全景解剖模型</small>
+          </div>
+        </button>
+        <button class="nav-item">
+          <svg class="svg-icon"><use href="#icon-award"/></svg>
+          <div class="nav-item-content">
+            微创美学修复
+            <small>超薄全瓷贴面</small>
+          </div>
+        </button>
+      </nav>
+
+      <!-- 门诊谈单背书卡片 -->
+      <div class="featured-card">
+        <span class="eyebrow">松鼠数字化医疗质保</span>
+        <div class="featured-title">瑞士 ITI 官方终生质保认证</div>
+        <div class="featured-desc">采用 0.01mm 数字化导板导航微创种植，即拔即种即刻负重，减少 80% 肿痛。</div>
+        <button class="featured-btn">
+          <span>预约数字化专家面诊</span>
+          <svg class="svg-icon" style="width:13px; height:13px;"><use href="#icon-chevron-right"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- 2) 中置 3D 展台 (section.main) -->
+    <section class="main">
+      <!-- 顶部切换 Tabs -->
+      <div class="tabs-row" role="tablist" aria-label="数字化标本切换">
+        <button class="tab-btn" id="tab-implant" role="tab" aria-selected="true" tabindex="0">
+          <div class="tab-badge">
+            <svg class="svg-icon"><use href="#icon-implant"/></svg>
+          </div>
+          <div class="tab-btn-text">
+            <span class="tab-name">瑞士亲水植体</span>
+            <span class="tab-latin">ITI Straumann SLA</span>
+          </div>
+        </button>
+
+        <button class="tab-btn" id="tab-aligner" role="tab" aria-selected="false" tabindex="-1">
+          <div class="tab-badge">
+            <svg class="svg-icon"><use href="#icon-aligner"/></svg>
+          </div>
+          <div class="tab-btn-text">
+            <span class="tab-name">时代天使隐形牙套</span>
+            <span class="tab-latin">masterControl Pro</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- 交互舞台 -->
+      <div id="stage" tabindex="0" aria-label="3D标本观察台。单指拖拽全向旋转，滚轮放大微观结构，双击回正。">
+        <!-- 地面柔光阴影 -->
+        <div class="ground-shadow" id="ground-shadow"></div>
+
+        <!-- 标本装配指示器 -->
+        <div class="stage-loader" id="stage-loader">
+          <div class="spinner-ring"></div>
+          <span class="loader-label">正在装载数字化三维高精解剖标本…</span>
+        </div>
+
+        <!-- 交互提示 -->
+        <div class="stage-hint" id="stage-hint">
+          <svg class="svg-icon" style="width:14px; height:14px;"><use href="#icon-hand"/></svg>
+          <span>拖拽 360° 透视 · 滚轮微距缩放</span>
+        </div>
+
+        <!-- 侧边功能胶囊 -->
+        <div class="icon-rail">
+          <button class="rail-btn on" id="btn-zoom-in" aria-label="放大" aria-pressed="true">
+            <svg class="svg-icon"><use href="#icon-search-plus"/></svg>
+          </button>
+          <button class="rail-btn" id="btn-zoom-out" aria-label="缩小" aria-pressed="false">
+            <svg class="svg-icon"><use href="#icon-search"/></svg>
+          </button>
+          <button class="rail-btn" id="btn-expand" aria-label="沉浸全景模式" aria-pressed="false">
+            <svg class="svg-icon"><use href="#icon-expand"/></svg>
+          </button>
+          <button class="rail-btn" id="btn-light" aria-label="日间/夜光诊所光影切换" aria-pressed="false">
+            <svg class="svg-icon"><use href="#icon-sun"/></svg>
+          </button>
+        </div>
+
+        <!-- 底部旋转控制器 -->
+        <div class="turn-pill">
+          <button id="btn-turn-ccw" aria-label="逆时针旋转 90 度">
+            <svg class="svg-icon"><use href="#icon-rotate-ccw"/></svg>
+          </button>
+          <button id="btn-turn-360" aria-label="360 度巡礼">360° 全景巡礼</button>
+          <button id="btn-turn-cw" aria-label="顺时针旋转 90 度">
+            <svg class="svg-icon"><use href="#icon-rotate-cw"/></svg>
+          </button>
+        </div>
+
+        <!-- 底部专业底标 -->
+        <div class="stage-caption" id="stage-caption">钛表面纳米级亲水微孔：骨结合速度提升 50%</div>
+      </div>
+    </section>
+
+    <!-- 3) 右侧档案详情 (section.info) -->
+    <section class="info" id="details">
+      <div class="info-top">
+        <div class="top-search-wrap">
+          <svg class="svg-icon" style="width:14px; height:14px;"><use href="#icon-search"/></svg>
+          <input type="text" class="top-search-input" placeholder="检索植体规格、膜片模量、临床禁忌…">
+        </div>
+        <button class="top-action-btn" aria-label="医疗质保">
+          <svg class="svg-icon" style="width:15px; height:15px;"><use href="#icon-award"/></svg>
+        </button>
+      </div>
+
+      <div class="detail-card">
+        <article class="detail-article" id="detail-article" aria-live="polite">
+          <div class="specimen-badge" id="specimen-badge">CLINICAL IMPLANT SYSTEM</div>
+          <h1 class="detail-name" id="detail-name">瑞士 ITI 亲水种植体</h1>
+          <div class="detail-latin" id="detail-latin">Straumann SLActive® Bone Level Tapered</div>
+
+          <div class="tag-row" id="detail-tags">
+            <span class="tag-pill">四级纯钛</span>
+            <span class="tag-pill">SLActive亲水</span>
+            <span class="tag-pill">3-4周骨结合</span>
+            <span class="tag-pill">全球终生质保</span>
+          </div>
+
+          <p class="detail-desc" id="detail-desc">
+            全球种植牙金标准。采用独特的亲水化学活性表面，将骨结合周期从传统的 6~8 周大幅缩短至 3~4 周。即便是高血糖、骨质疏松等复杂牙槽骨条件，也能实现超强初期稳定性。
+          </p>
+
+          <h2 class="detail-section-title">
+            <span>核心临床技术参数</span>
+            <span class="badge">原厂正品认证</span>
+          </h2>
+          <div class="params-grid" id="detail-params">
+            <div class="param-box">
+              <div class="param-label">表面处理技术</div>
+              <div class="param-value">SLActive® 亲水</div>
+              <div class="param-sub">加速血液微循环</div>
+            </div>
+            <div class="param-box">
+              <div class="param-label">骨结合周期</div>
+              <div class="param-value">3 ~ 4 周</div>
+              <div class="param-sub">普通植体需 8~12 周</div>
+            </div>
+            <div class="param-box">
+              <div class="param-label">基台连接方式</div>
+              <div class="param-value">CrossFit® 内锥锁</div>
+              <div class="param-sub">零微动防细菌侵入</div>
+            </div>
+            <div class="param-box">
+              <div class="param-label">临床成功率</div>
+              <div class="param-value">98.8%</div>
+              <div class="param-sub">十年以上循证随访</div>
+            </div>
+          </div>
+
+          <h2 class="detail-section-title">松鼠临床反制竞品优势</h2>
+          <div class="advantage-list" id="detail-advantages">
+            <div class="adv-item">
+              <svg class="svg-icon adv-check"><use href="#icon-check"/></svg>
+              <span><strong>0.01mm 数字化 3D 打印导板</strong>：避开下牙槽神经管与上颌窦，不翻瓣微创切口，仅出血数毫升。</span>
+            </div>
+            <div class="adv-item">
+              <svg class="svg-icon adv-check"><use href="#icon-check"/></svg>
+              <span><strong>拒绝竞品低价以次充好</strong>：配备一物一码原厂防伪芯片，随盒提供国际通用种植护照与原厂保卡。</span>
+            </div>
+            <div class="adv-item">
+              <svg class="svg-icon adv-check"><use href="#icon-check"/></svg>
+              <span><strong>全流程可视化透明</strong>：手术全程数字化监控，种牙如同拼积木，让患者直观安心。</span>
+            </div>
+          </div>
+
+          <!-- 微观显微窥镜交互 -->
+          <button class="close-up-btn" id="btn-closeup" aria-label="切换纳米微观特写视角" aria-pressed="false">
+            <div class="close-up-lens" id="closeup-lens">
+              <div class="lens-canvas-preview">520%<br>微孔特写</div>
+            </div>
+            <div class="close-up-content">
+              <div class="close-up-title" id="closeup-title">微观纳米特写 (Macro Close-up)</div>
+              <div class="close-up-desc" id="closeup-desc">点击立即放大 520%，查看钛螺纹表面 SLA 纳米亲水微孔涂层如何吸附骨细胞。</div>
+            </div>
+            <svg class="svg-icon close-up-chevron"><use href="#icon-chevron-right"/></svg>
+          </button>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Single Inline Three.js Engine -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+    // === 口腔标本数据源 ===
+    const SPECIMENS = [
+      {
+        id: "implant",
+        name: "瑞士 ITI 亲水种植体 (4层解构)",
+        model: window.DENTAL_IMPLANT_GLB_DATA || "dental_implant_3d_model.glb",
+        latin: "Straumann SLActive® Bone Level Tapered",
+        badge: "CLINICAL IMPLANT SYSTEM",
+        tags: ["四级纯钛", "SLActive亲水", "3-4周骨结合", "全球终生质保"],
+        desc: "全球种植牙金标准。采用独特的亲水化学活性表面，将骨结合周期从传统的 6~8 周大幅缩短至 3~4 周。即便是高血糖、骨质疏松等复杂牙槽骨条件，也能实现超强初期稳定性。",
+        caption: "钛表面纳米级亲水微孔：骨结合速度提升 50%",
+        closeupTitle: "微观纳米特写 (Macro Close-up)",
+        closeupDesc: "点击立即放大 520%，查看钛螺纹表面 SLA 纳米亲水微孔涂层如何吸附骨细胞。",
+        params: [
+          { label: "表面处理技术", val: "SLActive® 亲水", sub: "加速血液微循环" },
+          { label: "骨结合周期", val: "3 ~ 4 周", sub: "普通植体需 8~12 周" },
+          { label: "基台连接方式", val: "CrossFit® 内锥锁", sub: "零微动防细菌侵入" },
+          { label: "临床成功率", val: "98.8%", sub: "十年以上循证随访" }
+        ],
+        advantages: [
+          "<strong>0.01mm 数字化 3D 打印导板</strong>：避开下牙槽神经管与上颌窦，不翻瓣微创切口，仅出血数毫升。",
+          "<strong>拒绝竞品低价以次充好</strong>：配备一物一码原厂防伪芯片，随盒提供国际通用种植护照与原厂保卡。",
+          "<strong>全流程可视化透明</strong>：手术全程数字化监控，种牙如同拼积木，让患者直观安心。"
+        ],
+        color: 0x94a3b8, // 钛金属冷灰银
+        roughness: 0.28,
+        metalness: 0.88,
+        accentColor: 0x0ea5e9
+      },
+      {
+        id: "aligner",
+        name: "时代天使隐形矫治器",
+        latin: "Angelalign masterControl Pro Multi-layer",
+        badge: "DIGITAL ORTHODONTIC SYSTEM",
+        tags: ["医用高分子", "多层膜片", "刚柔兼济", "iOrtho精准控根"],
+        desc: "采用新一代 masterControl 医用高分子复合膜片，外层耐磨高弹性、内层自适应包裹牙齿。全天候提供轻柔而持久的生物正畸力，牙移动精准度提高 30%，佩戴几乎隐形无感。",
+        caption: "高回弹高分子纳米膜片：实现牙根三维精准控向移动",
+        closeupTitle: "膜片分子结构特写 (520% Macro)",
+        closeupDesc: "点击放大 520%，透视高分子多层交联网络，观察其如何释放持续恒定的微加力。",
+        params: [
+          { label: "膜片材料体系", val: "masterControl Pro", sub: "自适应多层复合膜片" },
+          { label: "应力衰减率", val: "< 18%", sub: "传统单层膜片衰减 >40%" },
+          { label: "隐形光学折射", val: "超低反射哑光", sub: "社交距离 0.5m 完全隐形" },
+          { label: "附件数字化控制", val: "立体力学优化", sub: "精准控制磨牙远移与扭转" }
+        ],
+        advantages: [
+          "<strong>松鼠 AI 口扫 5 分钟预览矫正效果</strong>：3Shape 高清激光扫描，当场在屏幕上看到自己未来整齐的牙齿。",
+          "<strong>双模交替加速方案</strong>：软膜启动移动 + 硬膜精准固位，比普通牙套疗程缩短约 3~6 个月。",
+          "<strong>告别传统钢丝磨嘴尴尬</strong>：无托槽不划口腔黏膜，吃东西随摘随戴，彻底告别复诊扎钢丝的痛苦。"
+        ],
+        color: 0xe0f2fe, // 透亮医用高分子晶莹色
+        roughness: 0.12,
+        metalness: 0.1,
+        transmission: 0.85,
+        opacity: 0.88
+      }
+    ];
+
+    let activeSpecimenIndex = 0;
+    let isDusk = false;
+    let isFocusMode = false;
+    let hasInteracted = false;
+    let idleTimer = 0;
+    let queueYaw = 0;
+
+    // DOM 元素引用
+    const heroEl = document.getElementById('hero');
+    const stageEl = document.getElementById('stage');
+    const canvas = document.getElementById('gl');
+    const stageLoader = document.getElementById('stage-loader');
+    const groundShadow = document.getElementById('ground-shadow');
+    const stageHint = document.getElementById('stage-hint');
+    const stageCaption = document.getElementById('stage-caption');
+
+    const tabImplant = document.getElementById('tab-implant');
+    const tabAligner = document.getElementById('tab-aligner');
+    const tabs = [tabImplant, tabAligner];
+
+    const btnZoomIn = document.getElementById('btn-zoom-in');
+    const btnZoomOut = document.getElementById('btn-zoom-out');
+    const btnExpand = document.getElementById('btn-expand');
+    const btnLight = document.getElementById('btn-light');
+
+    const btnTurnCCW = document.getElementById('btn-turn-ccw');
+    const btnTurn360 = document.getElementById('btn-turn-360');
+    const btnTurnCW = document.getElementById('btn-turn-cw');
+
+    // 档案字段
+    const detailArticle = document.getElementById('detail-article');
+    const specimenBadge = document.getElementById('specimen-badge');
+    const detailName = document.getElementById('detail-name');
+    const detailLatin = document.getElementById('detail-latin');
+    const detailTags = document.getElementById('detail-tags');
+    const detailDesc = document.getElementById('detail-desc');
+    const detailParams = document.getElementById('detail-params');
+    const detailAdvantages = document.getElementById('detail-advantages');
+    const btnCloseup = document.getElementById('btn-closeup');
+    const closeupTitle = document.getElementById('closeup-title');
+    const closeupDesc = document.getElementById('closeup-desc');
+
+    // === THREE.JS 渲染引擎 ===
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: true,
+      powerPreference: "high-performance"
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    renderer.toneMappingExposure = 1.15;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(26, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 5.2);
+    camera.lookAt(0, 0, 0);
+
+    // 诊所无菌高精环境光
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    const roomEnv = new RoomEnvironment();
+    const envTexture = pmremGenerator.fromScene(roomEnv, 0.04).texture;
+    scene.environment = envTexture;
+    scene.environmentIntensity = 1.1;
+
+    // 手术无影灯主光与轮廓冷光 (Day vs Dusk)
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    keyLight.position.set(3, 5, 4);
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(0x0d8267, 1.2);
+    rimLight.position.set(-4, -2, -3);
+    scene.add(rimLight);
+
+    const softFill = new THREE.DirectionalLight(0xe0f2fe, 0.8);
+    softFill.position.set(-2, 3, 2);
+    scene.add(softFill);
+
+    // === 3D 程序化高精度解剖标本建模生成器 ===
+    // 1) 瑞士 ITI 钛植体解剖模型 (螺纹+骨切槽+内锥锁基台+颈部环)
+    function createImplantMesh() {
+      const group = new THREE.Group();
+
+      const titaniumMat = new THREE.MeshStandardMaterial({
+        color: 0xa1a1aa,
+        roughness: 0.3,
+        metalness: 0.85
+      });
+
+      const goldCollarMat = new THREE.MeshStandardMaterial({
+        color: 0xd97706, // 黄金色穿龈基台环
+        roughness: 0.2,
+        metalness: 0.95
+      });
+
+      const SLA_ThreadMat = new THREE.MeshStandardMaterial({
+        color: 0x71717a, // 亲水喷砂喷涂微孔螺纹
+        roughness: 0.45,
+        metalness: 0.75
+      });
+
+      // 1. 基台连接头 (Abutment)
+      const abutmentGeo = new THREE.CylinderGeometry(0.38, 0.46, 0.65, 32);
+      const abutmentMesh = new THREE.Mesh(abutmentGeo, goldCollarMat);
+      abutmentMesh.position.y = 1.35;
+      group.add(abutmentMesh);
+
+      // 2. 颈部光滑抛光颈圈 (Polished Collar)
+      const collarGeo = new THREE.CylinderGeometry(0.48, 0.48, 0.25, 32);
+      const collarMesh = new THREE.Mesh(collarGeo, titaniumMat);
+      collarMesh.position.y = 0.95;
+      group.add(collarMesh);
+
+      // 3. 锥形植体主躯干 (Tapered Body)
+      const bodyGeo = new THREE.CylinderGeometry(0.48, 0.28, 2.0, 32);
+      const bodyMesh = new THREE.Mesh(bodyGeo, titaniumMat);
+      bodyMesh.position.y = -0.15;
+      group.add(bodyMesh);
+
+      // 4. 20圈精密微螺纹 (Micro & Macro Threads)
+      const threadCount = 14;
+      for (let i = 0; i < threadCount; i++) {
+        const t = i / (threadCount - 1);
+        const y = 0.8 - t * 1.7;
+        const r = 0.52 - t * 0.2;
+        const torusGeo = new THREE.TorusGeometry(r, 0.045, 12, 32);
+        torusGeo.rotateX(Math.PI / 2);
+        const torusMesh = new THREE.Mesh(torusGeo, SLA_ThreadMat);
+        torusMesh.position.y = y;
+        group.add(torusMesh);
+      }
+
+      // 5. 尖端骨切削槽 (Self-tapping flute)
+      const fluteGeo = new THREE.CylinderGeometry(0.26, 0.05, 0.5, 16);
+      const fluteMesh = new THREE.Mesh(fluteGeo, titaniumMat);
+      fluteMesh.position.y = -1.35;
+      group.add(fluteMesh);
+
+      // 标本定位归一化
+      group.scale.setScalar(0.75);
+      return group;
+    }
+
+    // 2) 隐形牙套牙列微结构模型 (全口解剖牙冠排列 + 贴附隐形膜片)
+    function createAlignerMesh() {
+      const group = new THREE.Group();
+
+      // 医用晶莹高分子膜片材质
+      const alignerMat = new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        roughness: 0.1,
+        metalness: 0.05,
+        transmission: 0.9,
+        thickness: 0.5,
+        ior: 1.48,
+        transparent: true,
+        opacity: 0.82
+      });
+
+      // 内部天然白垩牙本质模型
+      const enamelMat = new THREE.MeshStandardMaterial({
+        color: 0xfaf5ea, // 天然象牙白
+        roughness: 0.25,
+        metalness: 0.05
+      });
+
+      // 沿抛物线排列门牙、前磨牙与磨牙
+      const toothParams = [
+        { angle: 0.0, r: 1.15, scale: [0.35, 0.55, 0.25] },   // 中切牙
+        { angle: 0.22, r: 1.13, scale: [0.32, 0.50, 0.23] },  // 侧切牙
+        { angle: -0.22, r: 1.13, scale: [0.32, 0.50, 0.23] },
+        { angle: 0.46, r: 1.05, scale: [0.34, 0.52, 0.32] },  // 尖牙(虎牙)
+        { angle: -0.46, r: 1.05, scale: [0.34, 0.52, 0.32] },
+        { angle: 0.72, r: 0.92, scale: [0.38, 0.46, 0.38] },  // 第一前磨牙
+        { angle: -0.72, r: 0.92, scale: [0.38, 0.46, 0.38] },
+        { angle: 1.02, r: 0.76, scale: [0.46, 0.44, 0.48] },  // 第一磨牙
+        { angle: -1.02, r: 0.76, scale: [0.46, 0.44, 0.48] }
+      ];
+
+      toothParams.forEach(p => {
+        // 牙冠实体
+        const x = Math.sin(p.angle) * p.r * 1.5;
+        const z = (Math.cos(p.angle) - 1.0) * p.r * 1.3;
+
+        const toothGeo = new THREE.BoxGeometry(p.scale[0], p.scale[1], p.scale[2]);
+        const tooth = new THREE.Mesh(toothGeo, enamelMat);
+        tooth.position.set(x, 0, z);
+        tooth.rotation.y = -p.angle * 0.9;
+        group.add(tooth);
+
+        // 外层覆盖的 0.75mm 隐形高回弹膜片微结构
+        const alignerGeo = new THREE.BoxGeometry(p.scale[0] * 1.18, p.scale[1] * 1.15, p.scale[2] * 1.25);
+        const alMesh = new THREE.Mesh(alignerGeo, alignerMat);
+        alMesh.position.set(x, 0, z);
+        alMesh.rotation.y = -p.angle * 0.9;
+        group.add(alMesh);
+      });
+
+      // 时代天使优化力学附件 (Attachment)
+      const attachGeo = new THREE.BoxGeometry(0.12, 0.15, 0.08);
+      const attachMat = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.3 });
+      const att1 = new THREE.Mesh(attachGeo, attachMat);
+      att1.position.set(0.68, 0.05, -0.22);
+      group.add(att1);
+
+      group.scale.setScalar(0.9);
+      group.position.y = -0.1;
+      return group;
+    }
+
+    // === RIG 标本旋转与自转控制 ===
+        // GLTF Loader with Meshopt
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+
+const HOME_YAW = 0.65;
+    const HOME_PITCH = 0.18;
+    const homeQuat = new THREE.Quaternion().setFromEuler(new THREE.Euler(HOME_PITCH, HOME_YAW, 0, 'YXZ'));
+
+    class SpecimenRig {
+      constructor(data, index, meshCreator) {
+        this.data = data;
+        this.index = index;
+        this.pivot = new THREE.Group();
+        this.spin = new THREE.Group();
+        this.holder = new THREE.Group();
+
+        this.pivot.add(this.spin);
+        this.spin.add(this.holder);
+        scene.add(this.pivot);
+
+        this.spin.quaternion.copy(homeQuat);
+        this.spinVelocity = new THREE.Vector2(0, 0);
+        this.loaded = false;
+
+        if (data.model) {
+          stageLoader.classList.add("visible");
+          gltfLoader.load(
+            data.model,
+            (gltf) => {
+              const root = gltf.scene;
+              const box = new THREE.Box3().setFromObject(root);
+              const sphere = new THREE.Sphere();
+              box.getBoundingSphere(sphere);
+              root.position.sub(sphere.center);
+              const scale = 0.88 / Math.max(sphere.radius, 0.001);
+              root.scale.setScalar(scale);
+              root.position.y += 0.08;
+
+              root.traverse((child) => {
+                if (child.isMesh) {
+                  child.frustumCulled = false;
+                  if (child.material) {
+                    child.material.envMapIntensity = 1.6;
+                    child.material.needsUpdate = true;
+                  }
+                }
+              });
+
+              this.holder.add(root);
+              this.loaded = true;
+              stageLoader.classList.remove("visible");
+            },
+            undefined,
+            (err) => {
+              console.warn("Falling back to procedural mesh for", data.name, err);
+              const fallback = meshCreator();
+              this.holder.add(fallback);
+              this.loaded = true;
+              stageLoader.classList.remove("visible");
+            }
+          );
+        } else {
+          const model = meshCreator();
+          this.holder.add(model);
+          this.loaded = true;
+        }
+
+        this.pivot.visible = false;
+      }
+
+      resetOrientation() {
+        this.spin.quaternion.copy(homeQuat);
+        this.spinVelocity.set(0, 0);
+      }
+    }
+
+    const rigs = [
+      new SpecimenRig(SPECIMENS[0], 0, createImplantMesh),
+      new SpecimenRig(SPECIMENS[1], 1, createAlignerMesh)
+    ];
+
+    // === 动态相机视锥与像素偏移计算 ===
+    let heroW = window.innerWidth;
+    let heroH = window.innerHeight;
+    let stageRect = stageEl.getBoundingClientRect();
+
+    let targetCx = heroW * 0.5;
+    let targetCy = heroH * 0.44;
+    let currentCx = targetCx;
+    let currentCy = targetCy;
+
+    let targetPx = 180;
+    let currentPx = 180;
+
+    let targetZoom = 1.0;
+    let currentZoom = 1.0;
+
+    function updateFramingMetrics() {
+      heroW = heroEl.clientWidth || window.innerWidth;
+      heroH = heroEl.clientHeight || window.innerHeight;
+      stageRect = stageEl.getBoundingClientRect();
+
+      if (isFocusMode) {
+        targetCx = heroW * 0.5;
+        targetCy = heroH * 0.5;
+        targetPx = Math.min(heroW * 0.5, heroH * 0.6) * 1.18;
+      } else {
+        targetCx = stageRect.left + stageRect.width * 0.5;
+        targetCy = stageRect.top + stageRect.height * 0.44;
+        targetPx = Math.min(stageRect.width * 0.5, stageRect.height * 0.6) * 1.18;
+      }
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateFramingMetrics();
+      camera.aspect = heroW / heroH;
+      camera.updateProjectionMatrix();
+      renderer.setSize(heroW, heroH);
+    });
+    resizeObserver.observe(heroEl);
+    resizeObserver.observe(stageEl);
+
+    // === 标本平滑换装动画 (780ms OutBack) ===
+    let isSwitching = false;
+    let switchStartTime = 0;
+    let switchDuration = 0.78;
+    let switchFromRig = null;
+    let switchToRig = null;
+    let switchDir = 1;
+    let switchSlideDist = 2.0;
+
+    function outBack(t) {
+      const c = t - 1;
+      return 1 + 2.2 * (c ** 3) + 1.2 * (c ** 2);
+    }
+
+    function switchSpecimen(newIndex) {
+      if (newIndex === activeSpecimenIndex || isSwitching) return;
+      markInteraction();
+
+      const oldIndex = activeSpecimenIndex;
+      activeSpecimenIndex = newIndex;
+      switchDir = Math.sign(newIndex - oldIndex);
+
+      tabs.forEach((tab, idx) => {
+        const isSel = idx === newIndex;
+        tab.setAttribute('aria-selected', isSel);
+        tab.setAttribute('tabindex', isSel ? '0' : '-1');
+      });
+
+      groundShadow.classList.add('switching');
+      setTimeout(() => groundShadow.classList.remove('switching'), 600);
+
+      updateSideInfo(SPECIMENS[newIndex]);
+
+      switchFromRig = rigs[oldIndex];
+      switchToRig = rigs[newIndex];
+      switchSlideDist = (stageRect.width * 0.95) / Math.max(currentPx, 1);
+
+      switchToRig.resetOrientation();
+      targetZoom = 1.0;
+      btnCloseup.setAttribute('aria-pressed', 'false');
+
+      isSwitching = true;
+      switchStartTime = performance.now();
+      switchToRig.pivot.visible = true;
+    }
+
+    function updateSideInfo(specimen) {
+      detailArticle.classList.remove('animate-in');
+      detailArticle.classList.add('animate-out');
+
+      setTimeout(() => {
+        specimenBadge.textContent = specimen.badge;
+        detailName.textContent = specimen.name;
+        detailLatin.textContent = specimen.latin;
+        detailTags.innerHTML = specimen.tags.map(t => `<span class="tag-pill">${t}</span>`).join('');
+        detailDesc.textContent = specimen.desc;
+
+        detailParams.innerHTML = specimen.params.map(p => `
+          <div class="param-box">
+            <div class="param-label">${p.label}</div>
+            <div class="param-value">${p.val}</div>
+            <div class="param-sub">${p.sub}</div>
+          </div>
+        `).join('');
+
+        detailAdvantages.innerHTML = specimen.advantages.map(a => `
+          <div class="adv-item">
+            <svg class="svg-icon adv-check"><use href="#icon-check"/></svg>
+            <span>${a}</span>
+          </div>
+        `).join('');
+
+        stageCaption.textContent = specimen.caption;
+        closeupTitle.textContent = specimen.closeupTitle;
+        closeupDesc.textContent = specimen.closeupDesc;
+
+        detailArticle.classList.remove('animate-out');
+        detailArticle.classList.add('animate-in');
+        Array.from(detailArticle.children).forEach((el, idx) => {
+          el.style.animationDelay = `${idx * 40}ms`;
+        });
+      }, 200);
+    }
+
+    // === 交互事件监听 ===
+    function markInteraction() {
+      if (!hasInteracted) {
+        hasInteracted = true;
+        stageHint.classList.add('hidden');
+      }
+      idleTimer = 0;
+    }
+
+    let isPointerDown = false;
+    let prevPtrX = 0;
+    let prevPtrY = 0;
+    let lastDt = 0.016;
+
+    stageEl.addEventListener('pointerdown', (e) => {
+      isPointerDown = true;
+      stageEl.classList.add('is-dragging');
+      prevPtrX = e.clientX;
+      prevPtrY = e.clientY;
+      stageEl.setPointerCapture(e.pointerId);
+      markInteraction();
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isPointerDown) return;
+      markInteraction();
+
+      const dx = e.clientX - prevPtrX;
+      const dy = e.clientY - prevPtrY;
+      prevPtrX = e.clientX;
+      prevPtrY = e.clientY;
+
+      const k = Math.PI / Math.max(260, currentPx * 1.6);
+      const rotY = dx * k;
+      const rotX = dy * k;
+
+      const activeRig = rigs[activeSpecimenIndex];
+      const qDelta = new THREE.Quaternion();
+      const qY = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), rotY);
+      const qX = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), rotX);
+      qDelta.multiplyQuaternions(qY, qX);
+
+      activeRig.spin.quaternion.premultiply(qDelta);
+      activeRig.spinVelocity.set(rotY / Math.max(lastDt, 0.001), rotX / Math.max(lastDt, 0.001));
+    });
+
+    window.addEventListener('pointerup', (e) => {
+      if (isPointerDown) {
+        isPointerDown = false;
+        stageEl.classList.remove('is-dragging');
+      }
+    });
+
+    // 滚轮缩放
+    window.addEventListener('wheel', (e) => {
+      if (e.target.closest('.detail-card') || e.target.closest('.sidebar')) return;
+      e.preventDefault();
+      markInteraction();
+
+      const factor = e.ctrlKey ? 0.01 : 0.0016;
+      targetZoom *= Math.exp(-e.deltaY * factor);
+      targetZoom = Math.max(0.6, Math.min(3.6, targetZoom));
+    }, { passive: false });
+
+    // 双击回正
+    function resetHome() {
+      markInteraction();
+      targetZoom = 1.0;
+      const rig = rigs[activeSpecimenIndex];
+      rig.spinVelocity.set(0, 0);
+      rig.slerpingHome = true;
+    }
+    stageEl.addEventListener('dblclick', resetHome);
+
+    // 键盘操作
+    stageEl.addEventListener('keydown', (e) => {
+      markInteraction();
+      if (e.key === '0') resetHome();
+      else if (e.key === '+' || e.key === '=') targetZoom = Math.min(3.6, targetZoom * 1.25);
+      else if (e.key === '-' || e.key === '_') targetZoom = Math.max(0.6, targetZoom / 1.25);
+    });
+
+    // 切换 Tab 触发
+    tabImplant.addEventListener('click', () => switchSpecimen(0));
+    tabAligner.addEventListener('click', () => switchSpecimen(1));
+    document.getElementById('nav-btn-ortho').addEventListener('click', () => switchSpecimen(1));
+
+    // 旋转控制器
+    btnTurnCCW.addEventListener('click', () => { markInteraction(); queueYaw -= Math.PI * 0.5; });
+    btnTurn360.addEventListener('click', () => { markInteraction(); queueYaw += Math.PI * 2.0; });
+    btnTurnCW.addEventListener('click', () => { markInteraction(); queueYaw += Math.PI * 0.5; });
+
+    // 缩放按钮
+    btnZoomIn.addEventListener('click', () => {
+      markInteraction();
+      targetZoom = Math.min(3.6, targetZoom * 1.35);
+    });
+    btnZoomOut.addEventListener('click', () => {
+      markInteraction();
+      targetZoom = Math.max(0.6, targetZoom / 1.35);
+    });
+
+    // 沉浸模式
+    btnExpand.addEventListener('click', () => {
+      markInteraction();
+      isFocusMode = !isFocusMode;
+      heroEl.classList.toggle('focus', isFocusMode);
+      btnExpand.classList.toggle('on', isFocusMode);
+      btnExpand.setAttribute('aria-pressed', isFocusMode);
+      updateFramingMetrics();
+    });
+
+    // 昼夜光影切换
+    btnLight.addEventListener('click', () => {
+      markInteraction();
+      isDusk = !isDusk;
+      heroEl.dataset.light = isDusk ? "dusk" : "day";
+      btnLight.classList.toggle('on', isDusk);
+    });
+
+    // 显微特写 520% 放大穿梭
+    btnCloseup.addEventListener('click', () => {
+      markInteraction();
+      if (targetZoom > 2.2) {
+        targetZoom = 1.0;
+        btnCloseup.setAttribute('aria-pressed', 'false');
+      } else {
+        targetZoom = 2.8;
+        btnCloseup.setAttribute('aria-pressed', 'true');
+      }
+    });
+
+    // === 主渲染帧循环 ===
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const dt = Math.min(clock.getDelta(), 0.1);
+      lastDt = dt;
+      const t = clock.getElapsedTime();
+      idleTimer += dt;
+
+      // 1. 动态相机平滑计算 (camera.setViewOffset)
+      updateFramingMetrics();
+      const easeFactor = 1 - Math.exp(-dt * 7);
+      currentCx += (targetCx - currentCx) * easeFactor;
+      currentCy += (targetCy - currentCy) * easeFactor;
+      currentPx += (targetPx - currentPx) * easeFactor;
+
+      currentZoom += (targetZoom - currentZoom) * (1 - Math.exp(-dt * 6));
+
+      btnZoomIn.classList.toggle('on', currentZoom >= 1.0);
+      btnZoomOut.classList.toggle('on', currentZoom < 1.0);
+
+      const fovRad = THREE.MathUtils.degToRad(camera.fov);
+      camera.position.z = heroH / (2 * Math.tan(fovRad / 2) * currentPx * currentZoom);
+      camera.setViewOffset(heroW, heroH, heroW * 0.5 - currentCx, heroH * 0.5 - currentCy, heroW, heroH);
+
+      // 2. 消耗队列偏航角度
+      if (Math.abs(queueYaw) > 0.0001) {
+        const step = queueYaw * (1 - Math.exp(-dt * 4.2));
+        queueYaw -= step;
+        const qStep = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), step);
+        rigs[activeSpecimenIndex].spin.quaternion.premultiply(qStep);
+      }
+
+      // 3. 惯性衰减
+      const activeRig = rigs[activeSpecimenIndex];
+      if (!isPointerDown && activeRig.spinVelocity.lengthSq() > 0.000001) {
+        const vStepX = activeRig.spinVelocity.x * dt;
+        const vStepY = activeRig.spinVelocity.y * dt;
+        const qY = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), vStepX);
+        const qX = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), vStepY);
+        activeRig.spin.quaternion.premultiply(qY.multiply(qX));
+
+        activeRig.spinVelocity.multiplyScalar(Math.exp(-dt * 4.5));
+      }
+
+      // 回正插值
+      if (activeRig.slerpingHome) {
+        activeRig.spin.quaternion.slerp(homeQuat, 1 - Math.exp(-dt * 6));
+        if (activeRig.spin.quaternion.angleTo(homeQuat) < 0.005) {
+          activeRig.spin.quaternion.copy(homeQuat);
+          activeRig.slerpingHome = false;
+        }
+      }
+
+      // 4. 自然生态悬浮与微动呼吸
+      if (!isSwitching) {
+        const idleWeight = Math.min(1.0, Math.max(0, (idleTimer - 1.8) / 1.5));
+        rigs.forEach((r, idx) => {
+          if (r.pivot.visible) {
+            r.pivot.rotation.y = Math.sin(t * 0.5) * 0.12 * idleWeight;
+            r.pivot.rotation.x = Math.sin(t * 0.8) * 0.03 * idleWeight;
+            r.pivot.position.y = Math.sin(t * 1.2 + idx) * 0.024;
+          }
+        });
+      }
+
+      // 5. 换装插值 (780ms)
+      if (isSwitching) {
+        const elapsed = (performance.now() - switchStartTime) / 1000;
+        const progress = Math.min(1.0, elapsed / switchDuration);
+
+        // 出场
+        const outProgress = Math.min(1.0, progress / 0.6);
+        const eOut = outProgress * outProgress * outProgress;
+        switchFromRig.pivot.scale.setScalar(Math.max(0.0001, 1 - eOut));
+        switchFromRig.pivot.position.x = -switchDir * eOut * switchSlideDist;
+
+        if (outProgress >= 1.0) switchFromRig.pivot.visible = false;
+
+        // 进场
+        const eIn = 1 - Math.pow(1 - progress, 3);
+        const back = outBack(progress);
+        const inScale = back * (0.25 + 0.75 * eIn);
+
+        switchToRig.pivot.scale.setScalar(Math.max(0.0001, inScale));
+        switchToRig.pivot.position.x = switchDir * (1 - eIn) * switchSlideDist;
+
+        if (progress >= 1.0) {
+          isSwitching = false;
+          switchToRig.pivot.position.set(0, 0, 0);
+          switchToRig.pivot.scale.setScalar(1);
+          switchFromRig.pivot.visible = false;
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // 初始化
+    rigs[0].pivot.visible = true;
+    updateSideInfo(SPECIMENS[0]);
+    animate();
+  </script>
+</body>
+</html>

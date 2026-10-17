@@ -16,8 +16,11 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Confetti 礼花动效 -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-  <!-- Three.js 3D 渲染引擎 -->
+  <!-- Three.js 3D 渲染引擎 & GLTF 扩展 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/meshoptimizer@0.18.1/meshopt_decoder.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="implant_model_data.js"></script>
 
   <style>
     * {
@@ -2825,7 +2828,9 @@
 
     // ==================== 3D 仿生种植牙 WebGL / Three.js 交互引擎 (升级自 Feather Atlas 规范) ====================
     let scene3D, camera3D, renderer3D;
-    let crownMesh, abutmentMesh, screwLockMesh, screwMesh, boneMesh, implantGroup;
+    let crownMesh, abutmentMesh, screwLockMesh, screwMesh, boneMesh, implantGroup, gltfGroup, proceduralGroup;
+    let gltfLoaded = false;
+    let activeDisplayMode = 'gltf';
     let boneParticles, particleGeo, particleMat;
     let isExploded = false;
     let isDragging3D = false;
@@ -3023,6 +3028,11 @@
       // ==================== 1:1 CG级解剖结构建模 ====================
 
       // --- Part 1: 天然晶透全瓷冠 (Crown) ---
+      proceduralGroup = new THREE.Group();
+      implantGroup.add(proceduralGroup);
+      gltfGroup = new THREE.Group();
+      implantGroup.add(gltfGroup);
+
       crownMesh = new THREE.Group();
 
       // 底部微收口瓷领底座
@@ -3059,7 +3069,7 @@
       crownMesh.add(pit);
 
       crownMesh.position.y = 0.90;
-      implantGroup.add(crownMesh);
+      proceduralGroup.add(crownMesh);
 
       // --- Part 2: 高定钛金/氮化钛斜切黄金基台 (Gold Abutment) ---
       abutmentMesh = new THREE.Group();
@@ -3097,7 +3107,7 @@
       abutmentMesh.add(abJoint);
 
       abutmentMesh.position.y = 0.22;
-      implantGroup.add(abutmentMesh);
+      proceduralGroup.add(abutmentMesh);
 
       // --- Part 3: 中央精密固位螺丝 (Central Fixation Screw) ---
       screwLockMesh = new THREE.Group();
@@ -3136,7 +3146,7 @@
       }
 
       screwLockMesh.position.y = -0.10;
-      implantGroup.add(screwLockMesh);
+      proceduralGroup.add(screwLockMesh);
 
       // --- Part 4: 抛光颈圈 + SLA 变螺距纯钛螺纹植体根 (Titanium Fixture) ---
       screwMesh = new THREE.Group();
@@ -3184,7 +3194,7 @@
       screwMesh.add(apex);
 
       screwMesh.position.y = -0.68;
-      implantGroup.add(screwMesh);
+      proceduralGroup.add(screwMesh);
 
       // --- Part 5: 骨结合自愈微粒系统 (Osseointegration Micro-Particles) ---
       const particleCount = 140;
@@ -3219,7 +3229,88 @@
 
       boneParticles = new THREE.Points(particleGeo, particleMat);
       boneParticles.position.y = -0.68;
-      implantGroup.add(boneParticles);
+      proceduralGroup.add(boneParticles);
+
+      // ==================== Tripo AI 100万面高精 3D 解构种植体模型接入与双模引擎 ====================
+      
+
+      function update3DLabels(show) {
+        ['label-crown', 'label-abutment', 'label-screwlock', 'label-implant'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.style.opacity = show ? '1' : '0';
+            el.style.pointerEvents = show ? 'auto' : 'none';
+          }
+        });
+      }
+
+      window.set3DDisplayMode = function(mode) {
+        activeDisplayMode = mode;
+        const btnText = document.getElementById('explode-btn-text');
+        if (mode === "gltf" && gltfLoaded) {
+          gltfGroup.visible = true;
+          proceduralGroup.visible = false;
+          update3DLabels(true);
+          if (btnText) btnText.textContent = '切换装配态';
+        } else {
+          gltfGroup.visible = false;
+          proceduralGroup.visible = true;
+          if (isExploded) {
+            update3DLabels(true);
+            if (btnText) btnText.textContent = '聚合复原装配';
+          } else {
+            update3DLabels(false);
+            if (btnText) btnText.textContent = '一键分层拆解';
+          }
+        }
+      };
+
+      if (typeof THREE.GLTFLoader !== "undefined") {
+        const gltfLoader = new THREE.GLTFLoader();
+        if (typeof MeshoptDecoder !== "undefined") {
+          gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+        }
+        const modelSrc = (typeof window.DENTAL_IMPLANT_GLB_DATA !== "undefined" && window.DENTAL_IMPLANT_GLB_DATA.length > 100)
+          ? window.DENTAL_IMPLANT_GLB_DATA
+          : "./dental_implant_3d_model.glb";
+
+        gltfLoader.load(
+          modelSrc,
+          (gltf) => {
+            const root = gltf.scene;
+            const box = new THREE.Box3().setFromObject(root);
+            const sphere = new THREE.Sphere();
+            box.getBoundingSphere(sphere);
+            root.position.sub(sphere.center);
+
+            const sizeY = box.max.y - box.min.y;
+            const scale = 3.35 / Math.max(sizeY, 0.001);
+            root.scale.setScalar(scale);
+            root.position.y += 0.06;
+
+            root.traverse((child) => {
+              if (child.isMesh) {
+                child.frustumCulled = false;
+                if (child.material) {
+                  child.material.envMapIntensity = 1.35;
+                  child.material.needsUpdate = true;
+                }
+              }
+            });
+
+            gltfGroup.add(root);
+            gltfLoaded = true;
+            window.set3DDisplayMode("gltf");
+          },
+          undefined,
+          (err) => {
+            console.warn("GLTF load failed, fallback to procedural", err);
+            window.set3DDisplayMode("procedural");
+          }
+        );
+      } else {
+        window.set3DDisplayMode("procedural");
+      }
 
       // 5. Feather Atlas 高阶手势物理与四元数阻尼旋转引擎
       function markInteraction() {
@@ -3413,31 +3504,43 @@
 
     function toggleImplantExplode() {
       triggerHaptic('medium');
-      isExploded = !isExploded;
-      const btnText = document.getElementById('explode-btn-text');
-      const crownLabel = document.getElementById('label-crown');
-      const abLabel = document.getElementById('label-abutment');
-      const screwLockLabel = document.getElementById('label-screwlock');
-      const scLabel = document.getElementById('label-implant');
-
-      if (isExploded) {
-        if (btnText) btnText.textContent = '聚合复原装配';
-        [crownLabel, abLabel, screwLockLabel, scLabel].forEach(l => {
-          if (l) {
-            l.style.opacity = '1';
-            l.style.pointerEvents = 'auto';
-          }
-        });
-        showToast('已展开四层旗舰解构：全瓷冠、黄金基台、固位螺丝、纯钛植体');
+      if (typeof window.set3DDisplayMode === "function") {
+        if (activeDisplayMode === "gltf") {
+          isExploded = false;
+          window.set3DDisplayMode("procedural");
+          if (typeof showToast === "function") showToast("已切换至种植体【精密咬合完整装配态】");
+        } else {
+          isExploded = true;
+          window.set3DDisplayMode("gltf");
+          if (typeof showToast === "function") showToast("已展开【高精 4 层三维解构标本】：全瓷冠、黄金基台、固位微螺、纯钛螺根");
+        }
       } else {
-        if (btnText) btnText.textContent = '一键分层拆解';
-        [crownLabel, abLabel, screwLockLabel, scLabel].forEach(l => {
-          if (l) {
-            l.style.opacity = '0';
-            l.style.pointerEvents = 'none';
-          }
-        });
-        showToast('已精密聚合复原为种植体完整形态');
+        isExploded = !isExploded;
+        const btnText = document.getElementById('explode-btn-text');
+        const crownLabel = document.getElementById('label-crown');
+        const abLabel = document.getElementById('label-abutment');
+        const screwLockLabel = document.getElementById('label-screwlock');
+        const scLabel = document.getElementById('label-implant');
+
+        if (isExploded) {
+          if (btnText) btnText.textContent = '聚合复原装配';
+          [crownLabel, abLabel, screwLockLabel, scLabel].forEach(l => {
+            if (l) {
+              l.style.opacity = '1';
+              l.style.pointerEvents = 'auto';
+            }
+          });
+          if (typeof showToast === "function") showToast('已展开四层旗舰解构：全瓷冠、黄金基台、固位螺丝、纯钛植体');
+        } else {
+          if (btnText) btnText.textContent = '一键分层拆解';
+          [crownLabel, abLabel, screwLockLabel, scLabel].forEach(l => {
+            if (l) {
+              l.style.opacity = '0';
+              l.style.pointerEvents = 'none';
+            }
+          });
+          if (typeof showToast === "function") showToast('已精密聚合复原为种植体完整形态');
+        }
       }
     }
 

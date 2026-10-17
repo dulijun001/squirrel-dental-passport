@@ -1506,7 +1506,7 @@
       </div>
 
       <!-- 3D WebGL 交互画布容器（柔和温润透光背景） -->
-      <div id="implant-stage-box" class="relative w-full h-64 rounded-2xl overflow-hidden my-3 bg-gradient-to-b from-slate-100/70 via-orange-50/40 to-slate-100/90 border border-orange-200/50 flex items-center justify-center select-none" style="touch-action: none;">
+      <div id="implant-stage-box" class="relative w-full h-80 rounded-2xl overflow-hidden my-3 bg-gradient-to-b from-slate-100/70 via-orange-50/40 to-slate-100/90 border border-orange-200/50 flex items-center justify-center select-none" style="touch-action: none;">
         <!-- 🌟 全息展示光台 (Halo Stage & Cyber Ring) -->
         <div class="implant-stage-halo"></div>
         <canvas id="implant-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block relative z-10"></canvas>
@@ -1548,44 +1548,56 @@
         </div>
 
         <!-- 3D 浮动定位锚点标签 (随拆解展开) -->
-        <div id="label-crown" class="absolute top-2.5 right-2.5 pointer-events-none bg-white/95 backdrop-blur-sm border border-amber-300 px-2.5 py-1 rounded-xl text-right transition-all duration-500 opacity-95 shadow-sm z-10">
-          <div class="text-[9.5px] font-black text-amber-700 flex items-center justify-end gap-1">
-            <span>① 全瓷仿生牙冠</span>
+        <div id="label-crown" class="absolute top-2.5 right-2 pointer-events-none bg-white/95 backdrop-blur-sm border border-amber-300 px-2 py-0.5 rounded-xl text-right transition-all duration-500 opacity-0 pointer-events-none shadow-xs z-10">
+          <div class="text-[9px] font-black text-amber-700 flex items-center justify-end gap-1">
+            <span>① 晶透全瓷仿生牙冠</span>
             <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
           </div>
-          <div class="text-[8px] text-slate-500 mt-0.5">德国威兰德全瓷 · 媲美真牙</div>
+          <div class="text-[7.5px] text-slate-500 mt-0.5">德国威兰德全瓷 · 天然牙釉透光</div>
         </div>
 
-        <div id="label-abutment" class="absolute top-[82px] left-2.5 pointer-events-none bg-white/95 backdrop-blur-sm border border-sky-300 px-2.5 py-1 rounded-xl text-left transition-all duration-500 opacity-95 shadow-sm z-10">
-          <div class="text-[9.5px] font-black text-sky-700 flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
-            <span>② 纯钛精密基台</span>
+        <div id="label-abutment" class="absolute top-[82px] left-2 pointer-events-none bg-white/95 backdrop-blur-sm border border-yellow-400 px-2 py-0.5 rounded-xl text-left transition-all duration-500 opacity-0 pointer-events-none shadow-xs z-10">
+          <div class="text-[9px] font-black text-yellow-700 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+            <span>② 氮化钛黄金基台</span>
           </div>
-          <div class="text-[8px] text-slate-500 mt-0.5">0微米微缝固位 · 终身无松动</div>
+          <div class="text-[7.5px] text-slate-500 mt-0.5">TiN微米镀层 · 仿生斜切穿龈导角</div>
         </div>
 
-        <div id="label-implant" class="absolute bottom-2.5 right-2.5 pointer-events-none bg-white/95 backdrop-blur-sm border border-emerald-300 px-2.5 py-1 rounded-xl text-right transition-all duration-500 opacity-95 shadow-sm z-10">
-          <div class="text-[9.5px] font-black text-emerald-700 flex items-center justify-end gap-1">
-            <span>③ 亲骨微螺纹植体</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        <div id="label-screwlock" class="absolute top-[152px] right-2 pointer-events-none bg-white/95 backdrop-blur-sm border border-orange-300 px-2 py-0.5 rounded-xl text-right transition-all duration-500 opacity-0 pointer-events-none shadow-xs z-10">
+          <div class="text-[9px] font-black text-orange-700 flex items-center justify-end gap-1">
+            <span>③ 中央精密微螺丝</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
           </div>
-          <div class="text-[8px] text-slate-500 mt-0.5">四级纯钛SLA · 扎根稳固如真牙</div>
+          <div class="text-[7.5px] text-slate-500 mt-0.5">中空内六角 · 35Ncm高抗扭锁定</div>
+        </div>
+
+        <div id="label-implant" class="absolute bottom-8 left-2 pointer-events-none bg-white/95 backdrop-blur-sm border border-slate-300 px-2 py-0.5 rounded-xl text-left transition-all duration-500 opacity-0 pointer-events-none shadow-xs z-10">
+          <div class="text-[9px] font-black text-slate-700 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+            <span>④ 抛光颈圈+变螺距钛植体</span>
+          </div>
+          <div class="text-[7.5px] text-slate-500 mt-0.5">镜面颈圈防菌 · SLA冷钛骨结合</div>
         </div>
       </div>
 
-      <!-- 3大结构一键点选大白话医嘱 (浅色适老化卡片) -->
-      <div class="grid grid-cols-3 gap-2 text-center mt-2.5">
-        <button onclick="highlight3DPart('crown')" class="p-2 rounded-xl bg-white hover:bg-amber-50/50 border border-amber-200 text-left transition-all active:scale-95 shadow-2xs">
-          <div class="text-[10.5px] font-black text-amber-800">① 牙冠层</div>
-          <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">天然真牙透光 啃排骨不崩瓷</div>
+      <!-- 4大结构一键点选大白话医嘱 (浅色适老化卡片) -->
+      <div class="grid grid-cols-4 gap-1.5 text-center mt-2.5">
+        <button onclick="highlight3DPart('crown')" class="p-1.5 rounded-xl bg-white hover:bg-amber-50/50 border border-amber-200 text-left transition-all active:scale-95 shadow-2xs">
+          <div class="text-[9.5px] font-black text-amber-800">① 仿生全瓷</div>
+          <div class="text-[7.5px] text-slate-500 mt-0.5 leading-tight">天然釉质微黄 啃骨不崩瓷</div>
         </button>
-        <button onclick="highlight3DPart('abutment')" class="p-2 rounded-xl bg-white hover:bg-sky-50/50 border border-sky-200 text-left transition-all active:scale-95 shadow-2xs">
-          <div class="text-[10.5px] font-black text-sky-800">② 基台连接</div>
-          <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">纳米锁紧 杜绝细菌塞牙异味</div>
+        <button onclick="highlight3DPart('abutment')" class="p-1.5 rounded-xl bg-white hover:bg-yellow-50/50 border border-yellow-200 text-left transition-all active:scale-95 shadow-2xs">
+          <div class="text-[9.5px] font-black text-yellow-800">② 黄金基台</div>
+          <div class="text-[7.5px] text-slate-500 mt-0.5 leading-tight">钛金斜切 密合牙龈无异味</div>
         </button>
-        <button onclick="highlight3DPart('implant')" class="p-2 rounded-xl bg-white hover:bg-emerald-50/50 border border-emerald-200 text-left transition-all active:scale-95 shadow-2xs">
-          <div class="text-[10.5px] font-black text-emerald-800">③ 亲骨植体</div>
-          <div class="text-[8.5px] text-slate-500 mt-0.5 leading-tight">像树根扎入骨中 30年稳固相伴</div>
+        <button onclick="highlight3DPart('screwlock')" class="p-1.5 rounded-xl bg-white hover:bg-orange-50/50 border border-orange-200 text-left transition-all active:scale-95 shadow-2xs">
+          <div class="text-[9.5px] font-black text-orange-800">③ 固位螺丝</div>
+          <div class="text-[7.5px] text-slate-500 mt-0.5 leading-tight">中央精密抗扭 永不脱落</div>
+        </button>
+        <button onclick="highlight3DPart('implant')" class="p-1.5 rounded-xl bg-white hover:bg-slate-50/50 border border-slate-200 text-left transition-all active:scale-95 shadow-2xs">
+          <div class="text-[9.5px] font-black text-slate-800">④ 纯钛螺根</div>
+          <div class="text-[7.5px] text-slate-500 mt-0.5 leading-tight">镜圈防菌 30年扎根如真牙</div>
         </button>
       </div>
 
@@ -2813,7 +2825,7 @@
 
     // ==================== 3D 仿生种植牙 WebGL / Three.js 交互引擎 (升级自 Feather Atlas 规范) ====================
     let scene3D, camera3D, renderer3D;
-    let crownMesh, abutmentMesh, screwMesh, boneMesh, implantGroup;
+    let crownMesh, abutmentMesh, screwLockMesh, screwMesh, boneMesh, implantGroup;
     let boneParticles, particleGeo, particleMat;
     let isExploded = false;
     let isDragging3D = false;
@@ -2864,180 +2876,318 @@
       const width = container.clientWidth || 340;
       const height = container.clientHeight || 224;
 
-      // 1. Scene & Camera
+      // 1. Scene & Camera (适配全新 4 层垂直解构宏伟比例)
       scene3D = new THREE.Scene();
       camera3D = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
-      camera3D.position.set(0, 0.1, 6.2);
+      camera3D.position.set(0, 0, 7.5);
 
       // 2. Renderer
       renderer3D = new THREE.WebGLRenderer({
         canvas: canvas,
         antialias: true,
         alpha: true,
-        powerPreference: 'high-performance'
+        powerPreference: "high-performance"
       });
       renderer3D.setSize(width, height);
       renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer3D.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer3D.toneMappingExposure = 1.05;
+      renderer3D.toneMappingExposure = 1.08;
 
-      // 3. Lighting (柔和温润的自然漫反射照影，去除死黑，强化全瓷与金属高光)
-      const ambientLight = new THREE.AmbientLight(0xf8fafc, 1.4);
+      // 3. Studio Lighting & PMREM HDRI Environment (顶级工业 CG 镜面反射光照系统)
+      const ambientLight = new THREE.AmbientLight(0xfffcf7, 1.3);
       scene3D.add(ambientLight);
 
-      const keyLight = new THREE.DirectionalLight(0xffedd5, 1.5);
-      keyLight.position.set(4, 6, 5);
+      const keyLight = new THREE.DirectionalLight(0xfff5ea, 1.8);
+      keyLight.position.set(4, 7, 5);
       scene3D.add(keyLight);
 
-      const softFill = new THREE.DirectionalLight(0xe0f2fe, 1.0);
-      softFill.position.set(-4, 2, 4);
+      const softFill = new THREE.DirectionalLight(0xe0f2fe, 1.2);
+      softFill.position.set(-4, 3, 4);
       scene3D.add(softFill);
 
-      const bottomRim = new THREE.DirectionalLight(0xfef3c7, 0.8);
-      bottomRim.position.set(0, -5, -2);
-      scene3D.add(bottomRim);
+      const warmRim = new THREE.DirectionalLight(0xfef08a, 1.0);
+      warmRim.position.set(3, -4, -3);
+      scene3D.add(warmRim);
+
+      // 采用 PMREM 离屏动态烘焙高定医美工作室反射天幕 (赋予黄金与纯钛高奢金属反射流光)
+      try {
+        const pmrem = new THREE.PMREMGenerator(renderer3D);
+        const envCanvas = document.createElement("canvas");
+        envCanvas.width = 512;
+        envCanvas.height = 256;
+        const eCtx = envCanvas.getContext("2d");
+
+        const bgGrad = eCtx.createLinearGradient(0, 0, 0, 256);
+        bgGrad.addColorStop(0, "#475569");
+        bgGrad.addColorStop(0.5, "#0f172a");
+        bgGrad.addColorStop(1, "#020617");
+        eCtx.fillStyle = bgGrad;
+        eCtx.fillRect(0, 0, 512, 256);
+
+        // 顶部温润漫射聚光
+        const topLight = eCtx.createRadialGradient(256, 30, 5, 256, 30, 160);
+        topLight.addColorStop(0, "#ffffff");
+        topLight.addColorStop(0.5, "rgba(255,255,255,0.8)");
+        topLight.addColorStop(1, "rgba(255,255,255,0)");
+        eCtx.fillStyle = topLight;
+        eCtx.fillRect(0, 0, 512, 160);
+
+        // 金属高亮边缘切光带 (暖金与冷钛高反光拉丝)
+        eCtx.fillStyle = "rgba(255, 205, 50, 0.95)";
+        eCtx.fillRect(35, 15, 60, 226);
+        eCtx.fillStyle = "rgba(255, 255, 255, 0.95)";
+        eCtx.fillRect(160, 30, 35, 196);
+        eCtx.fillStyle = "rgba(180, 235, 255, 0.95)";
+        eCtx.fillRect(415, 15, 60, 226);
+
+        const envTex = new THREE.CanvasTexture(envCanvas);
+        envTex.mapping = THREE.EquirectangularReflectionMapping;
+        const envRT = pmrem.fromEquirectangular(envTex);
+        scene3D.environment = envRT.texture;
+        pmrem.dispose();
+        envTex.dispose();
+      } catch (e) {
+        console.warn("PMREM HDRI setup fallback:", e);
+      }
 
       // 4. Model Group Rig (仿照 Feather Atlas: pivot > spin > implantGroup)
       pivotGroup = new THREE.Group();
       spinGroup = new THREE.Group();
       implantGroup = new THREE.Group();
 
-      // 默认优雅 3/4 俯仰展示角 (Euler YXZ)
+      // 默认优雅 3/4 俯仰展示黄金视角
       homeQuat = new THREE.Quaternion().setFromEuler(new THREE.Euler(0.12, 0.38, 0, "YXZ"));
       spinGroup.quaternion.copy(homeQuat);
 
       scene3D.add(pivotGroup);
       pivotGroup.add(spinGroup);
       spinGroup.add(implantGroup);
+      implantGroup.position.y = 0.05; // 整体竖向黄金视觉居中
 
-      // Materials (真实仿生牙医质感)
-      // 牙冠：天然真牙牙釉质材质，乳白温润，边缘透光，带有自然微黄象牙质底色
+      // ==================== 1:1 CG级高奢材质体系 ====================
+      // A. 天然晶透全瓷仿生牙冠材质 (天然真牙透光牙釉质 + 温润微黄象牙质反光 + 镜面清漆)
       const crownMat = new THREE.MeshPhysicalMaterial({
-        color: 0xfffcf7,
-        roughness: 0.15,
+        color: 0xfffaf0,
+        emissive: 0x3d2810,
+        emissiveIntensity: 0.16,
+        roughness: 0.10,
         metalness: 0.02,
         transmission: 0.35,
         transparent: true,
-        opacity: 0.98,
-        ior: 1.48,
-        reflectivity: 0.7,
-        clearcoat: 0.95,
-        clearcoatRoughness: 0.12
+        opacity: 0.99,
+        ior: 1.55,
+        reflectivity: 0.9,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.05
       });
 
-      // 牙合面窝沟深色细微材质
+      // 牙合面微深自然窝沟
       const crownGrooveMat = new THREE.MeshStandardMaterial({
-        color: 0xeadbc8,
-        roughness: 0.35,
-        metalness: 0.05
+        color: 0xb57c38,
+        roughness: 0.40,
+        metalness: 0.12
       });
 
-      // 基台：医用四级纯钛金属质感，冷银高光
-      const abutmentMat = new THREE.MeshStandardMaterial({
-        color: 0x94a3b8,
-        metalness: 0.92,
-        roughness: 0.22
+      // B. 氮化钛 (TiN) 高定奢华黄金基台材质 (镜面金属光泽与深邃暖金拉丝)
+      const goldAbutmentMat = new THREE.MeshStandardMaterial({
+        color: 0xe5a308,
+        metalness: 0.98,
+        roughness: 0.13,
+        envMapIntensity: 2.6
       });
 
-      // 植体：SLA 喷砂酸蚀生物纯钛微螺纹，微暗冷钛金属质感
-      const titaniumScrewMat = new THREE.MeshStandardMaterial({
-        color: 0x64748b,
-        metalness: 0.88,
-        roughness: 0.28
+      // C. 中央精密固位螺丝材质 (金钛合金高强度抗扭微螺牙)
+      const screwLockMat = new THREE.MeshStandardMaterial({
+        color: 0xd97706,
+        metalness: 0.96,
+        roughness: 0.18,
+        envMapIntensity: 2.3
       });
 
-      // 牙槽骨：温馨半透明牙周软硬组织结构提示轮廓
-      const boneMat = new THREE.MeshStandardMaterial({
-        color: 0xfbbf24,
-        metalness: 0.05,
-        roughness: 0.6,
-        transparent: true,
-        opacity: 0.22
+      // D. 植体顶部高精镜面抛光颈圈材质 (银亮镜面冷钛，防止菌斑粘附)
+      const polishedTitaniumMat = new THREE.MeshStandardMaterial({
+        color: 0xf1f5f9,
+        metalness: 0.98,
+        roughness: 0.08,
+        envMapIntensity: 2.7
       });
 
-      // --- Part 1: Crown (真牙仿生第一磨牙臼齿形态) ---
+      // E. SLA 喷砂大颗粒酸蚀生物纯钛微螺纹主体材质 (微暗冷钛色、亚光粗糙微多孔)
+      const slaTitaniumMat = new THREE.MeshStandardMaterial({
+        color: 0x475569,
+        metalness: 0.86,
+        roughness: 0.40,
+        envMapIntensity: 1.5
+      });
+
+      // ==================== 1:1 CG级解剖结构建模 ====================
+
+      // --- Part 1: 天然晶透全瓷冠 (Crown) ---
       crownMesh = new THREE.Group();
-      // 牙冠主体：具有解剖学收腰与倒角形态
-      const crownBodyGeo = new THREE.CylinderGeometry(0.56, 0.44, 0.82, 32);
-      const crownBody = new THREE.Mesh(crownBodyGeo, crownMat);
-      crownMesh.add(crownBody);
 
-      // 牙冠顶部咬合面：4个微凸的仿生咬合牙尖（Cusps）与窝沟
-      const cuspGeo = new THREE.SphereGeometry(0.25, 20, 16);
-      const cuspPositions = [
-        { x: 0.2, z: 0.2, y: 0.42 },
-        { x: -0.2, z: 0.2, y: 0.42 },
-        { x: 0.2, z: -0.2, y: 0.42 },
-        { x: -0.2, z: -0.2, y: 0.42 }
+      // 底部微收口瓷领底座
+      const crownBaseGeo = new THREE.CylinderGeometry(0.72, 0.58, 0.35, 36);
+      const crownBase = new THREE.Mesh(crownBaseGeo, crownMat);
+      crownBase.position.y = -0.40;
+      crownMesh.add(crownBase);
+
+      // 牙冠主体 (解剖学优雅收腰与微膨隆体态)
+      const crownMainGeo = new THREE.CylinderGeometry(0.96, 0.72, 0.85, 36);
+      const crownMain = new THREE.Mesh(crownMainGeo, crownMat);
+      crownMain.position.y = 0.12;
+      crownMesh.add(crownMain);
+
+      // 4个圆润天然咬合牙尖 (Cusps)
+      const cuspGeo = new THREE.SphereGeometry(0.38, 24, 20);
+      const cusps = [
+        { x: 0.32, z: 0.30, y: 0.52, sy: 0.72 },
+        { x: -0.32, z: 0.30, y: 0.52, sy: 0.70 },
+        { x: 0.32, z: -0.30, y: 0.52, sy: 0.75 },
+        { x: -0.32, z: -0.30, y: 0.52, sy: 0.68 }
       ];
-      cuspPositions.forEach(pos => {
-        const cusp = new THREE.Mesh(cuspGeo, crownMat);
-        cusp.position.set(pos.x, pos.y, pos.z);
-        cusp.scale.set(1.05, 0.75, 1.05);
-        crownMesh.add(cusp);
+      cusps.forEach(c => {
+        const m = new THREE.Mesh(cuspGeo, crownMat);
+        m.position.set(c.x, c.y, c.z);
+        m.scale.set(1.15, c.sy, 1.15);
+        crownMesh.add(m);
       });
-      // 咬合中心窝
-      const grooveGeo = new THREE.CylinderGeometry(0.24, 0.05, 0.1, 16);
-      const groove = new THREE.Mesh(grooveGeo, crownGrooveMat);
-      groove.position.y = 0.44;
-      crownMesh.add(groove);
 
-      crownMesh.position.y = 1.02;
+      // 咬合中心点隙裂沟 (Central Fossa / Pit)
+      const pitGeo = new THREE.CylinderGeometry(0.36, 0.10, 0.16, 20);
+      const pit = new THREE.Mesh(pitGeo, crownGrooveMat);
+      pit.position.y = 0.50;
+      crownMesh.add(pit);
+
+      crownMesh.position.y = 0.90;
       implantGroup.add(crownMesh);
 
-      // --- Part 2: Abutment (高精密钛合金八角基台) ---
+      // --- Part 2: 高定钛金/氮化钛斜切黄金基台 (Gold Abutment) ---
       abutmentMesh = new THREE.Group();
-      // 基台穿龈颈圈（平滑穿龈轮廓）
-      const abCollarGeo = new THREE.CylinderGeometry(0.38, 0.26, 0.36, 32);
-      const abCollar = new THREE.Mesh(abCollarGeo, abutmentMat);
-      // 基台顶部固位芯轴（进入牙冠内部锁定）
-      const abCoreGeo = new THREE.CylinderGeometry(0.24, 0.25, 0.4, 24);
-      const abCore = new THREE.Mesh(abCoreGeo, abutmentMat);
-      abCore.position.y = 0.32;
-      // 基台底部莫氏锥度锁定接头
-      const abTaperGeo = new THREE.CylinderGeometry(0.25, 0.16, 0.22, 24);
-      const abTaper = new THREE.Mesh(abTaperGeo, abutmentMat);
-      abTaper.position.y = -0.24;
 
-      abutmentMesh.add(abCollar);
+      // 顶部斜切穿龈导角圆台 (进入牙冠内部精密受力锁定)
+      const abCoreGeo = new THREE.CylinderGeometry(0.30, 0.38, 0.72, 32);
+      const abCore = new THREE.Mesh(abCoreGeo, goldAbutmentMat);
+      abCore.rotation.z = -0.14;
+      abCore.position.set(0.05, 0.44, 0);
       abutmentMesh.add(abCore);
-      abutmentMesh.add(abTaper);
-      abutmentMesh.position.y = 0.34;
+
+      // 仿生咬合斜切受力剖面
+      const abCutGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.48, 24);
+      const abCut = new THREE.Mesh(abCutGeo, goldAbutmentMat);
+      abCut.position.set(0.08, 0.48, 0);
+      abCut.rotation.z = 0.35;
+      abutmentMesh.add(abCut);
+
+      // 穿龈扩颈平台 (Flaring Gingival Collar)
+      const abFlareGeo = new THREE.CylinderGeometry(0.52, 0.66, 0.42, 32);
+      const abFlare = new THREE.Mesh(abFlareGeo, goldAbutmentMat);
+      abFlare.position.y = 0.02;
+      abutmentMesh.add(abFlare);
+
+      // 下部倒锥形定位肩台 (Tapered Shoulder)
+      const abShoulderGeo = new THREE.CylinderGeometry(0.66, 0.40, 0.36, 32);
+      const abShoulder = new THREE.Mesh(abShoulderGeo, goldAbutmentMat);
+      abShoulder.position.y = -0.30;
+      abutmentMesh.add(abShoulder);
+
+      // 底部精密莫氏连接圆台
+      const abJointGeo = new THREE.CylinderGeometry(0.34, 0.34, 0.22, 32);
+      const abJoint = new THREE.Mesh(abJointGeo, goldAbutmentMat);
+      abJoint.position.y = -0.56;
+      abutmentMesh.add(abJoint);
+
+      abutmentMesh.position.y = 0.22;
       implantGroup.add(abutmentMesh);
 
-      // --- Part 3: Implant Screw (亲骨微螺纹纯钛植体 - 仿真解剖结构) ---
-      screwMesh = new THREE.Group();
-      // 根尖微锥形主体
-      const screwBodyGeo = new THREE.CylinderGeometry(0.32, 0.16, 1.45, 32);
-      const screwBody = new THREE.Mesh(screwBodyGeo, titaniumScrewMat);
-      screwMesh.add(screwBody);
+      // --- Part 3: 中央精密固位螺丝 (Central Fixation Screw) ---
+      screwLockMesh = new THREE.Group();
 
-      // 6层梯形微螺纹，间距自上而下递减，模拟德国精工变螺距
-      for (let i = 0; i < 6; i++) {
-        const ringGeo = new THREE.TorusGeometry(0.34 - i * 0.026, 0.038, 14, 32);
-        const ring = new THREE.Mesh(ringGeo, titaniumScrewMat);
-        ring.rotation.x = Math.PI / 2;
-        ring.position.y = 0.52 - i * 0.20;
-        screwMesh.add(ring);
+      // 螺丝六角/平顶头
+      const headGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.18, 24);
+      const headMesh = new THREE.Mesh(headGeo, screwLockMat);
+      headMesh.position.y = 0.18;
+      screwLockMesh.add(headMesh);
+
+      // 螺丝中央内六角中空驱动槽
+      const holeGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.10, 16);
+      const holeMat = new THREE.MeshBasicMaterial({ color: 0x1e1b18 });
+      const holeMesh = new THREE.Mesh(holeGeo, holeMat);
+      holeMesh.position.y = 0.25;
+      screwLockMesh.add(holeMesh);
+
+      // 螺丝光滑过渡颈部
+      const neckGeo = new THREE.CylinderGeometry(0.17, 0.17, 0.15, 24);
+      const neckMesh = new THREE.Mesh(neckGeo, screwLockMat);
+      neckMesh.position.y = 0.04;
+      screwLockMesh.add(neckMesh);
+
+      // 螺丝精密细微螺纹身 (5层细螺纹)
+      const threadShaftGeo = new THREE.CylinderGeometry(0.14, 0.13, 0.46, 24);
+      const threadShaft = new THREE.Mesh(threadShaftGeo, screwLockMat);
+      threadShaft.position.y = -0.24;
+      screwLockMesh.add(threadShaft);
+
+      for (let i = 0; i < 5; i++) {
+        const microRingGeo = new THREE.TorusGeometry(0.16, 0.024, 10, 24);
+        const microRing = new THREE.Mesh(microRingGeo, screwLockMat);
+        microRing.rotation.x = Math.PI / 2;
+        microRing.position.y = -0.08 - i * 0.085;
+        screwLockMesh.add(microRing);
       }
-      // 根尖球形圆钝安全收口（防止刺穿下颌神经管）
-      const apexGeo = new THREE.SphereGeometry(0.16, 20, 16);
-      const apex = new THREE.Mesh(apexGeo, titaniumScrewMat);
-      apex.position.y = -0.72;
+
+      screwLockMesh.position.y = -0.10;
+      implantGroup.add(screwLockMesh);
+
+      // --- Part 4: 抛光颈圈 + SLA 变螺距纯钛螺纹植体根 (Titanium Fixture) ---
+      screwMesh = new THREE.Group();
+
+      // A. 顶部高光镜面抛光颈圈 (Polished Mirror Collar - 防止牙龈边缘菌斑附着)
+      const collarGeo = new THREE.CylinderGeometry(0.58, 0.56, 0.28, 36);
+      const collarMesh = new THREE.Mesh(collarGeo, polishedTitaniumMat);
+      collarMesh.position.y = 0.72;
+      screwMesh.add(collarMesh);
+
+      // 顶端内部内六方/莫氏锥腔
+      const innerChamberGeo = new THREE.CylinderGeometry(0.38, 0.20, 0.30, 32);
+      const innerChamberMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.3 });
+      const innerChamber = new THREE.Mesh(innerChamberGeo, innerChamberMat);
+      innerChamber.position.y = 0.80;
+      screwMesh.add(innerChamber);
+
+      // B. SLA 喷砂酸蚀冷钛螺纹主锥体
+      const slaBodyGeo = new THREE.CylinderGeometry(0.55, 0.28, 1.55, 36);
+      const slaBody = new THREE.Mesh(slaBodyGeo, slaTitaniumMat);
+      slaBody.position.y = -0.16;
+      screwMesh.add(slaBody);
+
+      // 8层深凹变螺距钛螺牙 (模拟德国变螺距渐进骨挤压设计)
+      for (let i = 0; i < 8; i++) {
+        const threadRadius = 0.58 - i * 0.032;
+        const threadGeo = new THREE.TorusGeometry(threadRadius, 0.052, 14, 36);
+        const thread = new THREE.Mesh(threadGeo, slaTitaniumMat);
+        thread.rotation.x = Math.PI / 2;
+        thread.position.y = 0.48 - i * 0.175;
+        screwMesh.add(thread);
+      }
+
+      // 根尖部自攻排屑导向切槽 (Flute) 几何刻画
+      const fluteGeo = new THREE.BoxGeometry(0.16, 0.50, 0.40);
+      const fluteMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5, metalness: 0.8 });
+      const flute = new THREE.Mesh(fluteGeo, fluteMat);
+      flute.position.set(0.15, -0.74, 0);
+      screwMesh.add(flute);
+
+      // C. 根尖圆钝安全顶球 (Apex Dome - 避让下颌神经管)
+      const apexGeo = new THREE.SphereGeometry(0.26, 24, 16);
+      const apex = new THREE.Mesh(apexGeo, slaTitaniumMat);
+      apex.position.y = -0.92;
       screwMesh.add(apex);
 
-      screwMesh.position.y = -0.66;
+      screwMesh.position.y = -0.68;
       implantGroup.add(screwMesh);
 
-      // --- Part 4: Bone Socket (透光牙槽骨床) ---
-      const boneGeo = new THREE.CylinderGeometry(0.76, 0.58, 1.65, 32);
-      boneMesh = new THREE.Mesh(boneGeo, boneMat);
-      boneMesh.position.y = -0.72;
-      implantGroup.add(boneMesh);
-
       // --- Part 5: 骨结合自愈微粒系统 (Osseointegration Micro-Particles) ---
-      // 模拟骨细胞成骨贴附于钛金属微螺纹表面，散发纳米级生机光晕
-      const particleCount = 120;
+      const particleCount = 140;
       particleGeo = new THREE.BufferGeometry();
       const pPositions = new Float32Array(particleCount * 3);
       const pInitialRadius = new Float32Array(particleCount);
@@ -3047,21 +3197,20 @@
 
       for (let i = 0; i < particleCount; i++) {
         pAngles[i] = Math.random() * Math.PI * 2;
-        pInitialRadius[i] = 0.38 + Math.random() * 0.42; // 环绕在植体螺纹外侧
+        pInitialRadius[i] = 0.62 + Math.random() * 0.45;
         pSpeeds[i] = 0.008 + Math.random() * 0.015;
-        pY[i] = -0.05 - Math.random() * 1.35; // 位于植体与骨接触带
+        pY[i] = -0.15 - Math.random() * 1.55;
 
         pPositions[i * 3] = Math.cos(pAngles[i]) * pInitialRadius[i];
         pPositions[i * 3 + 1] = pY[i];
         pPositions[i * 3 + 2] = Math.sin(pAngles[i]) * pInitialRadius[i];
       }
 
-      particleGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+      particleGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
 
-      // 粒子材质：荧光淡绿/香槟金亲和生物微粒
       particleMat = new THREE.PointsMaterial({
         color: 0x34d399,
-        size: 0.065,
+        size: 0.07,
         transparent: true,
         opacity: 0.85,
         blending: THREE.AdditiveBlending,
@@ -3069,7 +3218,7 @@
       });
 
       boneParticles = new THREE.Points(particleGeo, particleMat);
-      boneParticles.position.y = -0.66;
+      boneParticles.position.y = -0.68;
       implantGroup.add(boneParticles);
 
       // 5. Feather Atlas 高阶手势物理与四元数阻尼旋转引擎
@@ -3207,16 +3356,17 @@
           pivotGroup.position.y = Math.sin(t * 1.3) * 0.025;
         }
 
-        // E. Smooth Explode Animation (分层拆解间距插值)
-        const targetCrownY = isExploded ? 1.65 : 1.02;
-        const targetAbutmentY = isExploded ? 0.65 : 0.34;
-        const targetScrewY = isExploded ? -0.82 : -0.66;
-        const targetBoneY = isExploded ? -0.92 : -0.72;
+        // E. Smooth Explode Animation (全新 4 层垂直解构间距平滑插值)
+        // 拆解时：呈现标杆图的完美等距垂直悬浮；聚合时：精密咬合入位
+        const targetCrownY = isExploded ? 1.82 : 0.82;
+        const targetAbutmentY = isExploded ? 0.62 : 0.22;
+        const targetScrewLockY = isExploded ? -0.32 : -0.10;
+        const targetScrewY = isExploded ? -1.48 : -0.68;
 
-        if (crownMesh) crownMesh.position.y += (targetCrownY - crownMesh.position.y) * 0.12;
-        if (abutmentMesh) abutmentMesh.position.y += (targetAbutmentY - abutmentMesh.position.y) * 0.12;
-        if (screwMesh) screwMesh.position.y += (targetScrewY - screwMesh.position.y) * 0.12;
-        if (boneMesh) boneMesh.position.y += (targetBoneY - boneMesh.position.y) * 0.12;
+        if (crownMesh) crownMesh.position.y += (targetCrownY - crownMesh.position.y) * 0.14;
+        if (abutmentMesh) abutmentMesh.position.y += (targetAbutmentY - abutmentMesh.position.y) * 0.14;
+        if (screwLockMesh) screwLockMesh.position.y += (targetScrewLockY - screwLockMesh.position.y) * 0.14;
+        if (screwMesh) screwMesh.position.y += (targetScrewY - screwMesh.position.y) * 0.14;
 
         // F. 骨结合微粒绕植体自旋与动态生机浮动
         if (boneParticles && particleGeo && screwMesh) {
@@ -3267,20 +3417,27 @@
       const btnText = document.getElementById('explode-btn-text');
       const crownLabel = document.getElementById('label-crown');
       const abLabel = document.getElementById('label-abutment');
+      const screwLockLabel = document.getElementById('label-screwlock');
       const scLabel = document.getElementById('label-implant');
 
       if (isExploded) {
-        if (btnText) btnText.textContent = '聚合复原模型';
-        if (crownLabel) crownLabel.style.transform = 'translateY(-12px)';
-        if (abLabel) abLabel.style.transform = 'translateY(-6px)';
-        if (scLabel) scLabel.style.transform = 'translateY(12px)';
-        showToast('已完成三层仿生拆解：牙冠、基台、亲骨植体');
+        if (btnText) btnText.textContent = '聚合复原装配';
+        [crownLabel, abLabel, screwLockLabel, scLabel].forEach(l => {
+          if (l) {
+            l.style.opacity = '1';
+            l.style.pointerEvents = 'auto';
+          }
+        });
+        showToast('已展开四层旗舰解构：全瓷冠、黄金基台、固位螺丝、纯钛植体');
       } else {
         if (btnText) btnText.textContent = '一键分层拆解';
-        if (crownLabel) crownLabel.style.transform = 'translateY(0)';
-        if (abLabel) abLabel.style.transform = 'translateY(0)';
-        if (scLabel) scLabel.style.transform = 'translateY(0)';
-        showToast('已复原完整植入体形态');
+        [crownLabel, abLabel, screwLockLabel, scLabel].forEach(l => {
+          if (l) {
+            l.style.opacity = '0';
+            l.style.pointerEvents = 'none';
+          }
+        });
+        showToast('已精密聚合复原为种植体完整形态');
       }
     }
 
@@ -3289,20 +3446,20 @@
       if (!isExploded) toggleImplantExplode();
 
       if (part === 'crown') {
-        targetRotationX = 0.25;
         if (particleMat) particleMat.opacity = 0.2;
-        showToast('【全瓷仿生牙冠】：耐磨通透，与真牙硬度色泽 1:1 媲美');
+        showToast('【① 晶透全瓷仿生牙冠】：德国威兰德全瓷，微黄温润，媲美真牙牙釉质');
       } else if (part === 'abutment') {
-        targetRotationX = 0.05;
         if (particleMat) particleMat.opacity = 0.3;
-        showToast('【纯钛精密基台】：医用四级钛，连接紧密绝无松动摇晃');
+        showToast('【② 氮化钛黄金基台】：钛金穿龈斜切导角，高度密合牙龈，杜绝塞牙与异味');
+      } else if (part === 'screwlock') {
+        if (particleMat) particleMat.opacity = 0.35;
+        showToast('【③ 中央精密固位螺丝】：中空内六角，35Ncm高抗扭锁定，终身稳固防脱');
       } else if (part === 'implant') {
-        targetRotationX = -0.25;
         if (particleMat) {
           particleMat.opacity = 1.0;
           particleMat.color.setHex(0x10b981);
         }
-        showToast('【亲骨微螺纹植体】：纳米级骨结合微粒生长，扎根稳如天然牙');
+        showToast('【④ 抛光颈圈+SLA钛螺根】：镜圈防菌附着，大颗粒酸蚀钛螺纹扎根骨组织');
       }
     }
 

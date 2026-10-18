@@ -98,27 +98,46 @@
       transform: scale(0.92) rotate(-3deg);
     }
 
+    
     /* Premium Kid Pass Card - Boarding Pass Style */
     .kid-pass-card {
       background: #FFFFFF;
-      border-radius: 32px;
-      border: 2.5px solid #FCD34D;
+      border-radius: 28px;
+      border: 2px solid #FCD34D;
       position: relative;
-      box-shadow: 0 16px 40px -8px rgba(245, 158, 11, 0.18), 0 8px 20px -4px rgba(255, 112, 166, 0.12);
+      box-shadow: 0 16px 36px -8px rgba(245, 158, 11, 0.18), 0 8px 20px -4px rgba(255, 112, 166, 0.12);
     }
 
-    /* Real Boarding Pass Scallop Notches (left & right) */
+    /* Scallop Notches positioned exactly at tear zone */
     .pass-scallop-l, .pass-scallop-r {
       position: absolute;
-      width: 28px;
-      height: 28px;
+      width: 22px;
+      height: 22px;
       background: #FFF9EE;
       border-radius: 50%;
-      top: 198px;
-      z-index: 20;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 25;
     }
-    .pass-scallop-l { left: -15px; box-shadow: inset -2.5px 0 0 #FCD34D; }
-    .pass-scallop-r { right: -15px; box-shadow: inset 2.5px 0 0 #FCD34D; }
+    .pass-scallop-l { left: -11px; box-shadow: inset -2.5px 0 0 #FCD34D; }
+    .pass-scallop-r { right: -11px; box-shadow: inset 2.5px 0 0 #FCD34D; }
+
+    /* Tear Zone Styles */
+    .tear-zone {
+      position: relative;
+      overflow: hidden;
+      min-height: 48px;
+    }
+    .tear-stub-strip {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      cursor: grab;
+      user-select: none;
+      touch-action: pan-y;
+    }
 
     /* Holographic Candy Foil Banner */
     .candy-holo-banner {
@@ -287,122 +306,208 @@
   <main class="max-w-[420px] mx-auto px-3.5 pt-3 space-y-4 relative z-10">
 
     <!-- ========================================== -->
-    <!-- 🎫 1. THE KID PASS: 小勇士护齿探险通行证 -->
+    <!-- 🎫 1. THE KID PASS: 小勇士护齿探险通行证 (皮克斯探险航空 · 经典双联登机牌架构) -->
     <!-- ========================================== -->
-    <div class="kid-pass-card p-4 relative overflow-hidden">
-      <!-- Cutout Scallop Notches -->
-      <div class="pass-scallop-l"></div>
-      <div class="pass-scallop-r"></div>
+    <div class="kid-pass-card relative overflow-hidden">
+      <!-- Top Rainbow Candy Holographic Header -->
+      <div class="candy-holo-banner px-4 py-3.5 text-white relative overflow-hidden">
+        <!-- Background light blur spheres -->
+        <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-white/15 rounded-full blur-xl pointer-events-none"></div>
+        <div class="absolute left-1/3 -top-10 w-24 h-24 bg-amber-200/25 rounded-full blur-lg pointer-events-none"></div>
 
-      <!-- Top Banner with Rainbow Holographic Foil -->
-      <div class="candy-holo-banner -mx-4 -mt-4 px-4 py-3 text-white flex items-center justify-between relative overflow-hidden">
-        <div class="flex items-center gap-2 relative z-10">
-          <span class="text-2xl cute-sticker">🎖️</span>
-          <div>
-            <div class="text-[9.5px] font-black tracking-widest uppercase opacity-95">KIDS ADVENTURE BOARDING PASS</div>
-            <div class="text-[14.5px] font-black tracking-tight drop-shadow-xs flex items-center gap-1 whitespace-nowrap">
-              <span>小勇士护齿探险通行证</span>
-              <span class="text-[9.5px] bg-white/30 backdrop-blur-sm px-1.5 py-0.2 rounded-md font-bold">头等舱</span>
-            </div>
+        <div class="relative z-10 flex items-center justify-between gap-1">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <!-- Green Emerald Pulse Beacon -->
+            <span class="relative flex h-2 w-2 shrink-0">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-80"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+            </span>
+            <span class="text-[8.5px] tracking-wider font-black uppercase bg-black/25 px-1.5 py-0.5 rounded border border-white/25 shadow-inner shrink-0 whitespace-nowrap">儿牙探险头等舱</span>
+            <span class="text-[9.5px] font-mono text-amber-100 font-bold tracking-tight truncate">SQ-KID-8820-XX</span>
           </div>
-        </div>
-        <div class="text-right relative z-10">
-          <span class="bg-white text-rose-500 text-[10px] font-black px-2.5 py-1 rounded-full shadow-xs whitespace-nowrap">
-            特工编号 No.01
-          </span>
-          <div class="text-[9px] text-white/95 font-mono mt-0.5 font-bold tracking-wider">SQ-KID-8820</div>
-        </div>
-        <!-- Decorative Star Sparkles -->
-        <span class="absolute right-14 top-2 text-yellow-200 text-sm twinkle-star">✨</span>
-        <span class="absolute left-36 bottom-1 text-white/70 text-xs twinkle-star" style="animation-delay: 1.2s;">⭐</span>
-      </div>
 
-      <!-- Passenger Kid & Mission Row -->
-      <div class="py-3.5 grid grid-cols-2 gap-3 items-center">
-        <!-- Passenger Kid Card -->
-        <div class="bg-gradient-to-br from-amber-50 to-orange-50/70 p-3 rounded-2xl border-2 border-amber-200 relative overflow-hidden shadow-2xs">
-          <div class="text-[10.5px] font-bold text-amber-800 flex items-center gap-1 mb-1">
-            <span>👦</span> 护齿小特工
-          </div>
-          <div class="text-2xl font-black text-slate-800 tracking-tight flex items-baseline gap-1.5 font-cute">
-            <span id="kid-name">轩轩</span>
-            <span class="text-[10px] font-bold text-amber-900 bg-amber-200/90 px-1.5 py-0.5 rounded-lg border border-amber-300 font-sans">6岁半</span>
-          </div>
-          <div class="text-[10px] text-emerald-700 mt-1.5 flex items-center gap-1 font-bold">
-            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i>
-            首次探险 · 0哭闹勋章
-          </div>
-          <!-- Cute Mini Squirrel Stamp -->
-          <div class="absolute -right-2 -bottom-2 opacity-25 text-3xl pointer-events-none">
-            🐿️
+          <!-- Right: 0哭闹特批勋章 -->
+          <div class="text-[8.5px] bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full font-bold flex items-center gap-1 border border-white/30 text-white shadow-xs shrink-0 whitespace-nowrap">
+            <span class="cute-sticker">🎖️</span>
+            <span>0哭闹特批通道 · 温阿姨亲诊</span>
           </div>
         </div>
 
-        <!-- Mission Project Card -->
-        <div class="bg-gradient-to-br from-sky-50 to-blue-50/70 p-3 rounded-2xl border-2 border-sky-200 relative overflow-hidden shadow-2xs">
-          <div class="text-[10.5px] font-bold text-sky-800 flex items-center gap-1 mb-1">
-            <span>🚀</span> 今日探险任务
-          </div>
-          <div class="text-base font-black text-slate-800 tracking-tight" id="kid-mission">
-            泡泡护齿防蛀涂氟
-          </div>
-          <div class="text-[10px] text-sky-700 mt-1.5 flex items-center gap-1 font-bold">
-            <span>🍓</span> 瑞士香甜草莓慕斯味
-          </div>
-          <div class="absolute -right-2 -bottom-2 opacity-20 text-3xl pointer-events-none">
-            🦷
-          </div>
-        </div>
-      </div>
-
-      <!-- Time & Secret Base Row -->
-      <div class="grid grid-cols-2 gap-3 pb-3.5 border-b-2 border-dashed border-amber-200">
-        <div class="bg-rose-50/90 p-3 rounded-2xl border-2 border-rose-200">
-          <div class="text-[10.5px] font-bold text-rose-600 flex items-center gap-1 mb-1">
-            <i data-lucide="clock" class="w-3.5 h-3.5"></i> 赴约集合时间
-          </div>
-          <div class="text-lg font-black text-slate-800 font-cute" id="kid-time">明日 10:30</div>
-          <div class="text-[10px] text-rose-500 font-medium mt-0.5">建议提前10分玩积木滑梯</div>
-        </div>
-
-        <div class="bg-purple-50/90 p-3 rounded-2xl border-2 border-purple-200">
-          <div class="text-[10.5px] font-bold text-purple-700 flex items-center gap-1 mb-1">
-            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> 奇趣诊室
-          </div>
-          <div class="text-lg font-black text-slate-800">3F 恐龙童梦舱</div>
-          <div class="text-[10px] text-purple-600 font-medium mt-0.5">吸顶汪汪队动画大屏 📺</div>
-        </div>
-      </div>
-
-      <!-- Doctor Angel & Reserved Seal -->
-      <div class="pt-3.5 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-400 via-pink-400 to-amber-200 flex items-center justify-center text-2xl shadow-xs border-2 border-white cute-sticker">
-            👩‍⚕️
-          </div>
-          <div>
+        <!-- Passenger Kid Name & Destination Banner -->
+        <div class="mt-3.5 flex items-start justify-between relative z-10 gap-2">
+          <div class="min-w-0 flex-1">
             <div class="flex items-center gap-1.5">
-              <span class="font-black text-xs text-slate-800">温巧玲 主治医师</span>
-              <span class="bg-rose-100 text-rose-600 text-[9.5px] font-bold px-2 py-0.5 rounded-full border border-rose-200">哄娃大师</span>
+              <span class="text-[9px] text-white/90 font-medium tracking-wider uppercase">PASSENGER / 护齿小勇士</span>
+              <span class="inline-flex items-center gap-1 px-1.5 py-0.2 text-[7.5px] font-bold text-amber-900 bg-amber-200/90 rounded-full border border-amber-300/60 shadow-2xs">
+                <span>👦</span>
+                <span id="kid-age">6岁半</span>
+              </span>
             </div>
-            <p class="text-[10px] text-slate-400 font-medium mt-0.5">国家儿牙专委会 · 12,000+萌娃好评</p>
+            <div class="flex items-center gap-2 mt-1">
+              <span id="kid-name" class="text-2xl font-black tracking-tight text-white drop-shadow-sm truncate font-cute">轩轩 小勇士</span>
+              <span class="inline-flex items-center justify-center px-1.5 py-0.5 text-[8px] font-black text-rose-700 bg-white/95 border border-rose-300 rounded shadow-xs rotate-[-3deg] tracking-wider uppercase shrink-0 whitespace-nowrap">
+                首次探险 · 0哭闹
+              </span>
+            </div>
           </div>
-        </div>
-
-        <!-- Official Passport Stamp Badge -->
-        <div class="px-2.5 py-1 rounded-full bg-emerald-50 border-2 border-emerald-300 text-emerald-700 text-[10.5px] font-black flex items-center gap-1 shadow-2xs cute-sticker">
-          <span>🌟</span> 专席与车位已锁定
+          <div class="text-right shrink-0 pl-1">
+            <div class="text-[9px] text-white/90 font-medium tracking-wider uppercase">DESTINATION / 探险舱</div>
+            <div class="text-xs font-black text-white mt-1 flex items-center gap-1 justify-end">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-200"></i>
+              <span>3F 恐龙童梦舱</span>
+            </div>
+            <div class="text-[8.5px] text-amber-100/90 font-medium mt-0.5">吸顶汪汪队动画 📺</div>
+          </div>
         </div>
       </div>
 
-      <!-- Decorative Barcode Perforation Footer -->
-      <div class="mt-3.5 pt-3 border-t border-dashed border-slate-200 flex items-center justify-between gap-3">
-        <div class="flex-1">
-          <div class="barcode-strip"></div>
-          <div class="text-[8.5px] text-slate-400 font-mono tracking-widest text-center mt-1">OFFICIAL PEDIATRIC PASSPORT · VERIFIED</div>
+      <!-- Core FIDS Flight Board: Boarding Time -> Rocket Pulse -> Dino Gate -->
+      <div class="p-4 bg-gradient-to-b from-amber-50/40 via-white to-white relative">
+        <!-- Subtle Cute Squirrel Watermark -->
+        <div class="absolute right-3 top-3 opacity-[0.04] pointer-events-none text-amber-950 font-black text-6xl tracking-tighter select-none font-serif">
+          SQUIRREL
         </div>
-        <div class="w-9 h-9 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-xs font-mono font-bold text-amber-800 shrink-0">
-          QR
+
+        <div class="p-3.5 rounded-2xl bg-gradient-to-r from-amber-50/90 via-orange-50/50 to-pink-50/70 border border-amber-200/90 shadow-2xs relative overflow-hidden">
+          <div class="grid grid-cols-12 items-center gap-1.5">
+            <!-- Left: Boarding Time -->
+            <div class="col-span-5 min-w-0">
+              <div class="text-[8.5px] text-slate-400 font-bold tracking-wider uppercase flex items-center gap-1">
+                <i data-lucide="clock" class="w-2.5 h-2.5 text-amber-500"></i>
+                <span>BOARDING TIME / 赴约时间</span>
+              </div>
+              <div id="kid-time" class="text-lg font-black text-slate-800 mt-0.5 tracking-tight truncate font-cute">明日 10:30</div>
+              <div class="text-[8px] text-rose-500 font-bold mt-0.5 truncate">建议提前10分到院玩积木</div>
+            </div>
+
+            <!-- Center: Cute Rocket Direct Line -->
+            <div class="col-span-2 flex flex-col items-center justify-center">
+              <span class="text-[7.5px] font-black text-amber-600 bg-amber-100 px-1 py-0.2 rounded uppercase tracking-tighter scale-90">DIRECT</span>
+              <div class="w-full flex items-center justify-center my-0.5 relative">
+                <div class="w-full border-t border-dashed border-amber-300"></div>
+                <span class="text-[10px] text-amber-500 absolute -right-0.5">🚀</span>
+              </div>
+              <span class="text-[7px] font-bold text-slate-400 scale-90 whitespace-nowrap">探险直达</span>
+            </div>
+
+            <!-- Right: Gate & Clinic Room -->
+            <div class="col-span-5 text-right min-w-0">
+              <div class="text-[8.5px] text-slate-400 font-bold tracking-wider uppercase flex items-center justify-end gap-1">
+                <span>GATE / 探索舱号</span>
+                <i data-lucide="door-closed" class="w-2.5 h-2.5 text-emerald-600"></i>
+              </div>
+              <div class="text-sm font-black text-slate-900 mt-0.5 flex items-center justify-end gap-1">
+                <span class="text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded text-[11px] font-black">3F-DINO-01</span>
+              </div>
+              <div id="kid-mission-badge" class="text-[9.5px] font-bold text-slate-700 mt-0.5 truncate">防蛀涂氟 · 恐龙舱</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🎟️ Real Sliding Tear Ticket Perforation Zone -->
+        <div id="kid-tear-zone" class="tear-zone my-3.5 -mx-4 relative overflow-hidden py-1.5" style="min-height: 44px;">
+          <!-- Left and right cutout scallop notches -->
+          <div class="pass-scallop-l"></div>
+          <div class="pass-scallop-r"></div>
+
+          <!-- Bottom: Revealed layer after tearing -->
+          <div id="kid-tear-revealed" class="absolute inset-x-2 inset-y-0.5 rounded-xl bg-gradient-to-r from-amber-50 via-pink-50 to-amber-50 border border-amber-300 px-3 py-1 flex items-center justify-between opacity-0 pointer-events-none transition-all duration-300 z-10">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+              <div>
+                <div class="text-[9.5px] font-black text-amber-950 flex items-center gap-1">
+                  <span>✓ 探险凭证已核销 · 领取扭蛋币</span>
+                </div>
+                <div class="text-[7.5px] text-amber-700 font-mono mt-0.5">
+                  认证号: SQ-KID-PASS-8820 · 恐龙特护舱已锁定
+                </div>
+              </div>
+            </div>
+            <div class="stamp-badge shrink-0 px-2 py-0.5 rounded border border-rose-500 bg-rose-50 text-rose-700 font-serif font-black text-[9px] rotate-[-4deg] shadow-xs tracking-wider">
+              ★ 小勇士已核 ★
+            </div>
+          </div>
+
+          <!-- Top: draggable sliding stub strip -->
+          <div id="kid-tear-stub" class="tear-stub-strip relative flex items-center justify-center w-full cursor-grab select-none z-20 py-2">
+            <div id="kid-tear-line" class="w-full border-t border-dashed border-amber-300 mx-4 transition-opacity duration-200"></div>
+            <div id="kid-tear-pill" class="absolute bg-white px-3 py-1 text-[8.5px] tracking-widest text-slate-600 uppercase border border-amber-300 rounded-full shadow-xs flex items-center gap-1.5 hover:border-amber-400 transition-colors">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+              <span id="kid-tear-text" class="font-bold text-slate-700">向右滑撕 · 领取探险扭蛋币</span>
+              <span class="text-xs">👉</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Double Core Couplets: Doctor Angel & Mission Detail -->
+        <div class="space-y-2 mt-1">
+          <!-- Couplet 1: Doctor Team -->
+          <div class="p-3 rounded-2xl bg-gradient-to-r from-rose-50/90 via-pink-50/40 to-amber-50/70 border border-rose-200 flex items-center justify-between shadow-2xs">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-rose-400 via-pink-400 to-amber-200 flex items-center justify-center text-xl text-white shrink-0 shadow-2xs border border-white cute-sticker">
+                👩‍⚕️
+              </div>
+              <div class="min-w-0">
+                <div class="text-[8.5px] text-slate-400 font-bold tracking-wider uppercase">DOCTOR TEAM / 主理温阿姨专家组</div>
+                <div class="text-sm font-black text-slate-900 tracking-tight truncate mt-0.5 flex items-center gap-1.5">
+                  <span>温巧玲 主治医师</span>
+                  <span class="bg-rose-100 text-rose-600 text-[9px] font-bold px-1.5 py-0.2 rounded-full border border-rose-200">哄娃大师</span>
+                </div>
+                <div class="text-[9px] text-slate-500 font-medium truncate">国家儿牙专委会 · 12,000+萌娃零哭闹好评</div>
+              </div>
+            </div>
+            <div class="shrink-0 text-right pl-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[8.5px] font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>专席已锁定</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Couplet 2: Kid Adventure Mission -->
+          <div class="p-3 rounded-2xl bg-gradient-to-r from-sky-50/90 via-blue-50/40 to-indigo-50/60 border border-sky-200 flex items-center justify-between shadow-2xs">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-sky-400 to-blue-500 flex items-center justify-center text-xl text-white shrink-0 shadow-2xs border border-white cute-sticker">
+                🦷
+              </div>
+              <div class="min-w-0">
+                <div class="text-[8.5px] text-slate-400 font-bold tracking-wider uppercase">MISSION / 今日探险任务</div>
+                <div id="kid-mission" class="text-sm font-black text-slate-900 tracking-tight truncate mt-0.5">瑞士草莓慕斯高频涂氟</div>
+                <div class="text-[9px] text-sky-700 font-medium truncate">香甜果味 · 1分钟快速成膜穿上防蛀钻石铠甲</div>
+              </div>
+            </div>
+            <div class="shrink-0 text-right pl-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[8.5px] font-bold">
+                <span>🍓</span>
+                <span>果味无酸</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Barcode & Official Certificate Stamp -->
+        <div class="mt-3.5 pt-2.5 border-t border-amber-200/80 flex items-center justify-between gap-3 bg-white p-2.5 rounded-xl border border-amber-200/70 shadow-2xs">
+          <!-- Wide precision barcode -->
+          <div class="flex-1 min-w-0">
+            <div class="barcode-strip"></div>
+            <div class="flex items-center justify-between mt-1 text-[8px] font-mono text-slate-400">
+              <span class="tracking-widest">SQ-KID-8820-202610-XX</span>
+              <span class="text-emerald-700 font-bold bg-emerald-50 px-1 rounded border border-emerald-200/50">官方存证锁定</span>
+            </div>
+          </div>
+
+          <!-- Official Stamp Seal Badge -->
+          <div class="shrink-0 pl-2.5 border-l border-amber-200 flex flex-col items-center justify-center">
+            <div class="px-2 py-1 rounded-lg bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 text-amber-900 text-center shadow-2xs">
+              <div class="text-[7.5px] font-bold text-amber-700 tracking-wider">云南省二级专科</div>
+              <div class="text-[8.5px] font-black text-rose-600 tracking-tight mt-0.5">★ 儿童齿科保真 ★</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Minor Copyright/Security Note -->
+        <div class="mt-2 text-center text-[7.5px] text-slate-400 font-mono tracking-wider">
+          松鼠口腔儿童专科中心认证 · 恐龙童梦舱专席 · 预约当日有效
         </div>
       </div>
     </div>
@@ -429,14 +534,14 @@
             <span class="text-3xl font-black text-slate-900 tracking-tight font-cute">23°C</span>
             <span class="text-xs font-bold text-slate-400">/ 14°C</span>
           </div>
-          <div class="text-[11px] font-bold text-amber-900 mt-1 flex items-center gap-1.5">
-            <span class="text-rose-500">👕 萌宝出行贴士：</span>
-            <span>早晚有微风，穿帅气短袖+配薄小外套哦！</span>
+          <div class="flex items-center gap-1.5 mt-2">
+            <span class="text-rose-500 font-bold shrink-0 text-[10.5px]">👕 贴士:</span>
+            <span class="text-[10px] font-bold text-amber-900 truncate">早晚微风，穿短袖+配薄小外套！</span>
           </div>
         </div>
 
-        <!-- Animated Cartoon Sun with Blinking Face -->
-        <div class="sun-character shrink-0">
+          <!-- Sun Character -->
+          <div class="sun-character shrink-0 ml-2">
           <!-- Spinning Rays -->
           <svg class="sun-rays" viewBox="0 0 100 100">
             <g fill="#FBBF24">
@@ -1373,6 +1478,95 @@
 
     window.addEventListener('load', () => {
       init3DToothBuddy();
+
+    // Sliding Tear Ticket Perforation Interaction
+    (function initKidTearTicket() {
+      const stub = document.getElementById('kid-tear-stub');
+      const pill = document.getElementById('kid-tear-pill');
+      const text = document.getElementById('kid-tear-text');
+      const line = document.getElementById('kid-tear-line');
+      const revealed = document.getElementById('kid-tear-revealed');
+      if (!stub || !pill) return;
+
+      let startX = 0;
+      let currentX = 0;
+      let isTearing = false;
+      const maxDrag = 160;
+      let torn = false;
+
+      function onStart(x) {
+        if (torn) return;
+        isTearing = true;
+        startX = x;
+        stub.style.cursor = 'grabbing';
+      }
+
+      function onMove(x) {
+        if (!isTearing || torn) return;
+        currentX = Math.max(0, Math.min(x - startX, maxDrag));
+        pill.style.transform = `translateX(${currentX}px)`;
+        line.style.opacity = (1 - (currentX / maxDrag)).toString();
+
+        if (currentX > maxDrag * 0.75) {
+          finishTear();
+        }
+      }
+
+      function onEnd() {
+        if (!isTearing || torn) return;
+        isTearing = false;
+        stub.style.cursor = 'grab';
+        if (!torn) {
+          pill.style.transition = 'transform 0.3s ease';
+          line.style.transition = 'opacity 0.3s ease';
+          pill.style.transform = 'translateX(0px)';
+          line.style.opacity = '1';
+          setTimeout(() => {
+            pill.style.transition = '';
+            line.style.transition = '';
+          }, 300);
+        }
+      }
+
+      function finishTear() {
+        torn = true;
+        isTearing = false;
+        pill.style.transition = 'all 0.35s ease';
+        pill.style.transform = `translateX(${maxDrag + 40}px) scale(0.9)`;
+        pill.style.opacity = '0';
+        line.style.opacity = '0';
+        stub.style.pointerEvents = 'none';
+
+        revealed.style.pointerEvents = 'auto';
+        revealed.style.opacity = '1';
+
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.35 },
+          colors: ['#F59E0B', '#10B981', '#EC4899', '#3B82F6']
+        });
+
+        if (navigator.vibrate) {
+          try { navigator.vibrate([40, 60, 40]); } catch(e){}
+        }
+
+        if (typeof setSpeech === 'function') {
+          setSpeech('哇！已领取探险扭蛋币，温阿姨在恐龙舱等您！', '🎁');
+        }
+      }
+
+      // Touch events
+      stub.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
+      window.addEventListener('touchmove', e => { if (isTearing) onMove(e.touches[0].clientX); }, { passive: true });
+      window.addEventListener('touchend', onEnd);
+
+      // Mouse events
+      stub.addEventListener('mousedown', e => onStart(e.clientX));
+      window.addEventListener('mousemove', e => { if (isTearing) onMove(e.clientX); });
+      window.addEventListener('mouseup', onEnd);
+    })();
+
     });
   </script>
 </body>

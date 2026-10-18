@@ -593,8 +593,8 @@
             </div>
           </div>
         </div>
-        <button onclick="triggerKidPassport()" class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[11px] font-black rounded-xl shadow-xs active:scale-95 transition-all shrink-0 flex items-center gap-1 btn-jelly whitespace-nowrap">
-          <span>点播动画</span>
+        <button onclick="openAnimePickerModal()" class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[11px] font-black rounded-xl shadow-xs active:scale-95 transition-all shrink-0 flex items-center gap-1 btn-jelly whitespace-nowrap">
+          <span id="btn-anime-text">点播动画</span>
           <i data-lucide="sparkles" class="w-3 h-3 text-yellow-200"></i>
         </button>
       </div>
@@ -1051,6 +1051,110 @@
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- 🎬 动画点播个性化弹窗 (Modal) -->
+  <!-- ========================================== -->
+  <div id="anime-picker-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-3xl p-5 w-full max-w-xs text-center space-y-3.5 shadow-2xl border-2 border-amber-300">
+      <div class="flex items-center justify-between pb-2 border-b border-amber-100">
+        <div class="flex items-center gap-1.5">
+          <span class="text-xl">📺</span>
+          <span class="text-sm font-black text-slate-800">3F 躺看动画定制</span>
+        </div>
+        <button onclick="closeAnimePickerModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center text-xs">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-500 text-left">请为轩轩挑选最喜欢的动画片，护士阿姨将在宝贝躺下前提前在吸顶巨幕加载好：</p>
+
+      <div class="grid grid-cols-2 gap-2 text-left">
+        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-amber-200 bg-amber-50/50 cursor-pointer">
+          <input type="radio" name="anime_choice" value="汪汪队立大功" checked class="text-orange-500">
+          <span class="text-xs font-bold text-slate-800">🐶 汪汪队立大功</span>
+        </label>
+        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-amber-200 bg-amber-50/50 cursor-pointer">
+          <input type="radio" name="anime_choice" value="小猪佩奇" class="text-orange-500">
+          <span class="text-xs font-bold text-slate-800">🐷 小猪佩奇</span>
+        </label>
+        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-amber-200 bg-amber-50/50 cursor-pointer">
+          <input type="radio" name="anime_choice" value="奥特曼特摄" class="text-orange-500">
+          <span class="text-xs font-bold text-slate-800">⚡ 宇宙奥特曼</span>
+        </label>
+        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-amber-200 bg-amber-50/50 cursor-pointer">
+          <input type="radio" name="anime_choice" value="冰雪奇缘" class="text-orange-500">
+          <span class="text-xs font-bold text-slate-800">❄️ 冰雪奇缘</span>
+        </label>
+      </div>
+
+      <button onclick="confirmAnimeChoice()" class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-xs rounded-xl shadow-xs active:scale-95 transition-all">
+        锁定专属动画并同步至诊室
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 🏰 森林童梦城堡实景漫游抽屉 (Drawer Modal) -->
+  <!-- ========================================== -->
+  <div id="castle-roam-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-3xl p-5 w-full max-w-sm text-left space-y-3.5 shadow-2xl border-2 border-sky-300 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-2 border-b border-sky-100">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🏰</span>
+          <div>
+            <div class="text-sm font-black text-slate-900">松鼠森林童梦城堡 · 3D实景漫游</div>
+            <div class="text-[10px] text-slate-400">西山锦粼天序独栋 · 云南省二级专科</div>
+          </div>
+        </div>
+        <button onclick="closeCastleModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center text-xs">✕</button>
+      </div>
+
+      <!-- 实景楼层卡片 1 -->
+      <div class="rounded-2xl border border-amber-200 overflow-hidden bg-amber-50/30">
+        <img src="images/kids_zone.jpg" alt="1F 乐高积木森林" class="w-full h-32 object-cover">
+        <div class="p-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-slate-900">1F 乐高积木海洋 · 心理脱敏区</span>
+            <span class="text-[9.5px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">零白大褂</span>
+          </div>
+          <p class="text-[10.5px] text-slate-600 mt-1">
+            配备巨型乐高积木池与滑梯。宝贝进门先玩 10 分钟，消除对医院的陌生与防御感。
+          </p>
+        </div>
+      </div>
+
+      <!-- 实景楼层卡片 2 -->
+      <div class="rounded-2xl border border-sky-200 overflow-hidden bg-sky-50/30">
+        <img src="images/vip_room.jpg" alt="3F 恐龙童梦舱" class="w-full h-32 object-cover">
+        <div class="p-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-slate-900">3F 恐龙童梦舱 · 吸顶巨幕诊室</span>
+            <span class="text-[9.5px] font-bold text-sky-800 bg-sky-100 px-2 py-0.5 rounded-full">躺看动画</span>
+          </div>
+          <p class="text-[10.5px] text-slate-600 mt-1">
+            躺下即看汪汪队，天花板配备专业护眼巨幕与静音吸唾管，涂氟防蛀 1 分钟快速成膜。
+          </p>
+        </div>
+      </div>
+
+      <!-- 实景楼层卡片 3 -->
+      <div class="rounded-2xl border border-emerald-200 overflow-hidden bg-emerald-50/30">
+        <img src="images/digital_center.jpg" alt="数字化低辐射中心" class="w-full h-32 object-cover">
+        <div class="p-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-slate-900">儿童微剂量绿色数字化排查</span>
+            <span class="text-[9.5px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">极低辐射</span>
+          </div>
+          <p class="text-[10.5px] text-slate-600 mt-1">
+            德国西诺德儿童微剂量 CBCT，单次拍摄辐射仅相当于吃半根香蕉，守护宝贝全身健康。
+          </p>
+        </div>
+      </div>
+
+      <button onclick="closeCastleModal()" class="w-full py-2.5 bg-slate-800 text-white font-black text-xs rounded-xl shadow-xs active:scale-95 transition-all">
+        了解完毕 · 返回探险登机牌
+      </button>
+    </div>
+  </div>
+
   <!-- Lucide & Dynamic Param Logic -->
   <script>
     lucide.createIcons();
@@ -1481,7 +1585,52 @@
     }
 
     function showToyDrawer() {
+      const modal = document.getElementById('castle-roam-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
       setSpeech('城堡1楼有超大乐高滑梯，2楼还有恐龙绘本哦！', '🏰');
+    }
+
+    function closeCastleModal() {
+      const modal = document.getElementById('castle-roam-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function openAnimePickerModal() {
+      const modal = document.getElementById('anime-picker-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeAnimePickerModal() {
+      const modal = document.getElementById('anime-picker-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function confirmAnimeChoice() {
+      const selected = document.querySelector('input[name="anime_choice"]:checked');
+      if (selected) {
+        const val = selected.value;
+        const btnText = document.getElementById('btn-anime-text');
+        if (btnText) btnText.innerText = `已锁定《${val}》`;
+        setSpeech(`好耶！已为您在3F恐龙舱锁定《${val}》，躺下就看！`, '📺');
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.6 }
+        });
+      }
+      closeAnimePickerModal();
     }
 
     window.addEventListener('load', () => {

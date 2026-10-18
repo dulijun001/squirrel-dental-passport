@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>松鼠口腔 · 小勇士术后安心关怀舱 · 宝贝护理指南</title>
+
+  <!-- iOS / 微信全屏沉浸配置 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#FFFDF7">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 图标 -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Confetti 礼花动效 -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'candy-peach': '#FFF5F0',
+            'candy-yellow': '#FFF9E6',
+            'candy-green': '#E8FBF4',
+            'candy-blue': '#EBF7FF',
+            'candy-purple': '#F5EFFF',
+            'candy-pink': '#FFEBF3',
+            'macaron-orange': '#FF8A5B',
+            'macaron-teal': '#2EC4B6',
+            'macaron-yellow': '#FFD166',
+            'macaron-red': '#EF476F',
+            'macaron-blue': '#118AB2'
+          },
+          fontFamily: {
+            fredoka: ['"Fredoka"', '"Baloo 2"', 'cursive', 'sans-serif'],
+            baloo: ['"Baloo 2"', 'cursive', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: #FFFDF9;
+      color: #1E293B;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* 糖果微波背景 */
+    .candy-sky-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 480px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.85;
+    }
+
+    .candy-bubble {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(45px);
+      mix-blend-mode: multiply;
+      opacity: 0.55;
+      animation: bubbleFloat 14s ease-in-out infinite alternate;
+    }
+
+    .candy-bubble-1 {
+      width: 320px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(46, 196, 182, 0.3) 0%, rgba(255, 209, 102, 0.2) 70%, transparent 80%);
+      top: -80px;
+      left: -60px;
+      animation-duration: 12s;
+    }
+
+    .candy-bubble-2 {
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(255, 138, 91, 0.25) 0%, rgba(255, 235, 243, 0.3) 70%, transparent 80%);
+      top: 100px;
+      right: -80px;
+      animation-duration: 16s;
+    }
+
+    @keyframes bubbleFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(20px, 30px) scale(1.08); }
+    }
+
+    /* 卡片通用萌系立体质感 */
+    .care-card {
+      background: #FFFFFF;
+      border: 1.5px solid #F3EDE2;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px -5px rgba(230, 160, 100, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+      position: relative;
+    }
+
+    .care-card-primary {
+      background: linear-gradient(175deg, #FFFFFF 0%, #FFFDF7 100%);
+      border: 2px solid #FFE6C5;
+      box-shadow: 0 16px 36px -8px rgba(255, 138, 91, 0.15), 0 0 0 1px rgba(255, 209, 102, 0.2);
+    }
+
+    /* 弹性果冻点击 */
+    .btn-jelly:active {
+      transform: scale(0.95);
+      transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* 倒计时圆环 */
+    .timer-ring-circle {
+      transition: stroke-dashoffset 1s linear;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+
+    /* 脉冲光环 */
+    .pulse-halo {
+      box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.5);
+      animation: pulseGlow 2s infinite cubic-bezier(0.66, 0, 0, 1);
+    }
+
+    @keyframes pulseGlow {
+      to {
+        box-shadow: 0 0 0 14px rgba(46, 196, 182, 0);
+      }
+    }
+  </style>
+</head>
+<body class="p-3.5 sm:p-5 flex flex-col items-center justify-start min-h-screen pb-28">
+
+  <!-- 糖果梦境背景柔光 -->
+  <div class="candy-sky-container">
+    <div class="candy-bubble candy-bubble-1"></div>
+    <div class="candy-bubble candy-bubble-2"></div>
+  </div>
+
+  <div class="w-full max-w-[420px] relative z-10 space-y-4">
+
+    <!-- 顶部状态栏：安心徽章与返回/切换专科 -->
+    <div class="flex items-center justify-between px-1">
+      <a href="javascript:history.back()" class="flex items-center gap-1.5 text-xs font-bold text-slate-500 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-amber-100 shadow-2xs btn-jelly">
+        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+        <span>返回探险护照</span>
+      </a>
+      <div class="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-2xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span>温阿姨 24h 术后守护中</span>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 1. 关怀主卡：小勇士凯旋与项目识别 -->
+    <!-- ========================================== -->
+    <div class="care-card care-card-primary p-4 overflow-hidden relative">
+      <!-- 装饰背景 -->
+      <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-amber-100/40 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="flex items-center justify-between pb-3 border-b border-amber-100">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🦁</span>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span id="child-name-display" class="text-base font-black text-slate-900 font-baloo">轩轩 小勇士</span>
+              <span class="text-[9.5px] font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-200">探险凯旋</span>
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5">档案编号: <span id="passport-no" class="font-mono font-bold text-slate-700">SQ-KID-8820-CARE</span></div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-[9px] font-bold text-amber-700">今日诊疗项目</div>
+          <div id="care-item-tag" class="text-xs font-black text-rose-500 bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-lg mt-0.5 inline-block">儿牙防蛀涂氟</div>
+        </div>
+      </div>
+
+      <!-- 项目快捷切换 Tab (宝妈根据今天孩子具体看牙类型切换针对性指引) -->
+      <div class="grid grid-cols-3 gap-1.5 mt-3 bg-amber-50/70 p-1 rounded-2xl border border-amber-100 text-center">
+        <button onclick="switchCareType('fluoride')" id="tab-fluoride" class="care-tab active-tab py-1.5 text-xs font-bold rounded-xl transition-all bg-white text-orange-600 shadow-xs border border-orange-200">
+          🍓 防蛀涂氟
+        </button>
+        <button onclick="switchCareType('sealant')" id="tab-sealant" class="care-tab py-1.5 text-xs font-bold text-slate-600 rounded-xl transition-all hover:bg-white/60">
+          🛡️ 窝沟封闭
+        </button>
+        <button onclick="switchCareType('anesthesia')" id="tab-anesthesia" class="care-tab py-1.5 text-xs font-bold text-slate-600 rounded-xl transition-all hover:bg-white/60">
+          🩹 补牙/拔乳牙
+        </button>
+      </div>
+
+      <!-- 温阿姨温暖寄语 -->
+      <div class="mt-3 bg-orange-50/60 rounded-2xl p-3 border border-orange-100/80 flex items-start gap-2.5">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-orange-400 text-white flex items-center justify-center shrink-0 text-base shadow-2xs font-bold">
+          👩‍⚕️
+        </div>
+        <div>
+          <div class="text-[11px] font-black text-slate-800">温巧玲主治医师 · 术后守护私信</div>
+          <p id="dr-care-words" class="text-[10.5px] text-amber-950 mt-1 leading-relaxed">
+            “轩轩今天表现超级勇敢，防蛀钻石铠甲已经成膜牢固啦！接下来半小时注意别喝水、别舔牙齿，让保护层发挥100%威力哦！”
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. 核心动态仪表盘：安全禁食禁水倒计时 -->
+    <!-- ========================================== -->
+    <div class="care-card p-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-sm font-bold">
+            ⏱️
+          </div>
+          <div>
+            <div class="text-xs font-black text-slate-900" id="timer-title">防蛀漆固化 · 禁食禁水倒计时</div>
+            <div class="text-[10px] text-slate-400">帮助铠甲充分渗透，避免脱落失效</div>
+          </div>
+        </div>
+        <span id="timer-status-badge" class="text-[10px] font-black bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full border border-orange-200">
+          ⏳ 固化倒计时中
+        </span>
+      </div>
+
+      <!-- 倒计时圆环展示 -->
+      <div class="py-4 flex flex-col items-center justify-center">
+        <div class="relative w-44 h-44 flex items-center justify-center">
+          <svg class="w-full h-full" viewBox="0 0 100 100">
+            <!-- 底环 -->
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#FEEBD5" stroke-width="7" />
+            <!-- 进度环 -->
+            <circle id="timer-circle" class="timer-ring-circle" cx="50" cy="50" r="42" fill="none" stroke="url(#timerGradient)" stroke-width="7.5" stroke-linecap="round" stroke-dasharray="263.89" stroke-dashoffset="0" />
+            <!-- 渐变色定义 -->
+            <defs>
+              <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF8A5B" />
+                <stop offset="100%" stop-color="#FFAA00" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <!-- 中间时间内容 -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span id="countdown-label" class="text-[10px] font-bold text-slate-400">距离可以温和喝水</span>
+            <div id="countdown-time" class="text-3xl font-black text-slate-900 font-mono tracking-tight my-0.5">29:59</div>
+            <div id="countdown-hint" class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200 mt-1">
+              🍓 吞口水没问题，不喝水
+            </div>
+          </div>
+        </div>
+
+        <!-- 倒计时控制按钮 -->
+        <div class="flex items-center gap-2 mt-2">
+          <button onclick="toggleTimer()" id="timer-toggle-btn" class="px-4 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-black rounded-xl shadow-xs active:scale-95 transition-all flex items-center gap-1.5 btn-jelly">
+            <i id="timer-icon" data-lucide="pause" class="w-3.5 h-3.5"></i>
+            <span id="timer-text">暂停计时</span>
+          </button>
+          <button onclick="resetTimer()" class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded-xl active:scale-95 transition-all flex items-center gap-1">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>重置30分</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 倒计时阶段备忘 -->
+      <div class="bg-amber-50/50 rounded-2xl p-3 border border-amber-100 flex items-center justify-between text-[11px]">
+        <div class="flex items-center gap-2">
+          <span class="text-base">🔔</span>
+          <span class="text-slate-700 font-medium">计时结束后，建议先给宝宝喝小口温开水润喉</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. 宝妈最关心的【红黑榜】食谱与护理黄金法则 -->
+    <!-- ========================================== -->
+    <div class="care-card p-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-sm font-bold">
+            🍽️
+          </div>
+          <div>
+            <div class="text-xs font-black text-slate-900">今日红黑饮食与护理指南</div>
+            <div class="text-[10px] text-slate-400">守护防蛀膜，保护娇嫩乳牙</div>
+          </div>
+        </div>
+        <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+          术后24小时专属
+        </span>
+      </div>
+
+      <!-- 红黑双栏对照 -->
+      <div class="grid grid-cols-2 gap-3 mt-3">
+        <!-- 绿榜/红榜：放心吃 -->
+        <div class="bg-emerald-50/60 rounded-2xl p-3 border border-emerald-100/90 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-1.5 pb-2 border-b border-emerald-100">
+              <span class="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">✓</span>
+              <span class="text-xs font-black text-emerald-900">推荐温软食 (绿榜)</span>
+            </div>
+            <ul id="safe-food-list" class="space-y-2 mt-2.5 text-[10.5px] text-slate-700">
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-500 font-bold">•</span>
+                <span>常温牛奶 / 现榨温果汁</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-500 font-bold">•</span>
+                <span>鸡蛋羹 / 嫩豆腐</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-500 font-bold">•</span>
+                <span>南瓜泥 / 烂面条</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-500 font-bold">•</span>
+                <span>常温布丁 / 酸奶</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-3 pt-2 border-t border-emerald-100/60 text-[9.5px] font-bold text-emerald-700 text-center">
+            温和不伤齿，宝贝吃得香
+          </div>
+        </div>
+
+        <!-- 黑榜：坚决不能碰 -->
+        <div class="bg-rose-50/60 rounded-2xl p-3 border border-rose-100/90 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-1.5 pb-2 border-b border-rose-100">
+              <span class="w-4 h-4 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-bold">✕</span>
+              <span class="text-xs font-black text-rose-900">请勿食用 (黑榜)</span>
+            </div>
+            <ul id="avoid-food-list" class="space-y-2 mt-2.5 text-[10.5px] text-slate-700">
+              <li class="flex items-start gap-1.5">
+                <span class="text-rose-500 font-bold">•</span>
+                <span><strong>过热滚烫</strong>汤水 (融化保护层)</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-rose-500 font-bold">•</span>
+                <span><strong>碳酸可乐</strong>/酸性强饮料</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-rose-500 font-bold">•</span>
+                <span><strong>坚硬坚果</strong>/硬糖硬饼干</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-rose-500 font-bold">•</span>
+                <span><strong>粘性牛皮糖</strong>/太妃糖</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-3 pt-2 border-t border-rose-100/60 text-[9.5px] font-bold text-rose-700 text-center">
+            24小时内避免磨损涂氟膜
+          </div>
+        </div>
+      </div>
+
+      <!-- 今晚刷牙特别提醒 -->
+      <div class="mt-3 bg-blue-50/70 rounded-2xl p-3 border border-blue-100 flex items-start gap-2.5">
+        <span class="text-xl">🪥</span>
+        <div>
+          <div class="text-[11px] font-black text-blue-950">今晚刷牙小贴士（敲黑板）</div>
+          <p id="brush-care-tip" class="text-[10px] text-blue-900 mt-0.5 leading-relaxed">
+            今天做完涂氟后，<strong>当晚建议暂时不刷牙、不用牙线</strong>，只需用温水轻轻漱口即可；明天早晨起恢复正常早晚刷牙，防蛀膜已完美固化！
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4. 麻药/补牙/拔牙 特殊防御指南（智能联动） -->
+    <!-- ========================================== -->
+    <div id="anesthesia-care-card" class="care-card p-4 hidden">
+      <div class="flex items-center justify-between pb-3 border-b border-amber-100">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold">
+            🚨
+          </div>
+          <div>
+            <div class="text-xs font-black text-slate-900">局麻后防咬伤高能提醒</div>
+            <div class="text-[10px] text-slate-400">麻药药效通常持续 1.5 - 2 小时</div>
+          </div>
+        </div>
+        <span class="text-[9.5px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">严密看护</span>
+      </div>
+
+      <div class="space-y-2 mt-3 text-xs text-slate-700">
+        <div class="p-2.5 bg-rose-50 rounded-xl border border-rose-100 flex items-start gap-2">
+          <span class="text-rose-600 font-bold text-sm shrink-0">⚠️</span>
+          <div>
+            <span class="font-bold text-rose-900">严禁吮吸、啃咬嘴唇和舌头：</span>
+            <span class="text-[11px] text-rose-800">因麻木无痛感，孩子极易下意识咬破下唇或脸颊内侧造成大面积水肿溃疡，请务必分散孩子注意力（看绘本/动画片）。</span>
+          </div>
+        </div>
+        <div class="p-2.5 bg-amber-50 rounded-xl border border-amber-100 flex items-start gap-2">
+          <span class="text-amber-600 font-bold text-sm shrink-0">🩸</span>
+          <div>
+            <span class="font-bold text-amber-900">拔牙止血棉球：</span>
+            <span class="text-[11px] text-amber-800">轻咬 30-40 分钟后轻轻吐出，唾液中带少量粉红色血丝属于正常现象，切勿频繁用力吐口水或吮吸伤口。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 5. 术后疑问速查 FAQ & 温阿姨一键报平安 -->
+    <!-- ========================================== -->
+    <div class="care-card p-4 space-y-3">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-sm font-bold">
+            ❓
+          </div>
+          <div>
+            <div class="text-xs font-black text-slate-900">宝妈常问速查 · 3 秒定心丸</div>
+            <div class="text-[10px] text-slate-400">真实儿牙临床高频解答</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 折叠问答 1 -->
+      <div class="border border-slate-100 rounded-2xl overflow-hidden">
+        <button onclick="toggleFaq(1)" class="w-full p-3 text-left bg-slate-50/70 hover:bg-slate-100/70 flex items-center justify-between transition-colors">
+          <span class="text-xs font-bold text-slate-800">Q1. 涂氟后牙齿表面黄黄的，正常吗？</span>
+          <i id="faq-icon-1" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+        </button>
+        <div id="faq-ans-1" class="p-3 bg-white text-[11px] text-slate-600 leading-relaxed hidden border-t border-slate-100">
+          完全正常！瑞士医用氟保护漆本身带有轻微天然琥珀色，这正是高浓度氟离子附着在牙齿表面的保护膜。随着进食与明日正常刷牙，颜色会自然褪去恢复亮白。
+        </div>
+      </div>
+
+      <!-- 折叠问答 2 -->
+      <div class="border border-slate-100 rounded-2xl overflow-hidden">
+        <button onclick="toggleFaq(2)" class="w-full p-3 text-left bg-slate-50/70 hover:bg-slate-100/70 flex items-center justify-between transition-colors">
+          <span class="text-xs font-bold text-slate-800">Q2. 宝宝不小心咽下去涂氟药膏有害吗？</span>
+          <i id="faq-icon-2" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+        </button>
+        <div id="faq-ans-2" class="p-3 bg-white text-[11px] text-slate-600 leading-relaxed hidden border-t border-slate-100">
+          请宝妈放心！松鼠口腔采用的是国际认证儿童专属果味氟化泡沫/凝胶，单次全口用量极低且 1 分钟即牢固固化，随唾液吞咽极微量无毒无害，不会引起氟斑牙或不适。
+        </div>
+      </div>
+
+      <!-- 折叠问答 3 -->
+      <div class="border border-slate-100 rounded-2xl overflow-hidden">
+        <button onclick="toggleFaq(3)" class="w-full p-3 text-left bg-slate-50/70 hover:bg-slate-100/70 flex items-center justify-between transition-colors">
+          <span class="text-xs font-bold text-slate-800">Q3. 下一次复查与涂氟该什么时候来？</span>
+          <i id="faq-icon-3" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+        </button>
+        <div id="faq-ans-3" class="p-3 bg-white text-[11px] text-slate-600 leading-relaxed hidden border-t border-slate-100">
+          根据中华口腔医学会儿童口腔指南：乳牙期建议<strong>每 3-6 个月</strong>进行一次全口氟保护与换牙期监测。温阿姨团队会在第 3 个月时提前为您推送复诊提醒。
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 6. 医生团队 24h 应急连线与微信直通车 -->
+    <!-- ========================================== -->
+    <div class="deluxe-kid-card bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-3xl shadow-md flex items-center justify-between gap-3">
+      <div class="min-w-0">
+        <div class="flex items-center gap-1.5">
+          <span class="text-base">👩‍⚕️</span>
+          <span class="text-sm font-black tracking-tight">温阿姨儿牙守护直通车</span>
+        </div>
+        <div class="text-[10.5px] text-emerald-100 mt-1 leading-tight">
+          孩子回家后有任何疑问、红肿或不适，随时微信发图/一键拨号
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <a href="tel:0871-68888888" class="p-2.5 bg-white text-emerald-700 rounded-2xl shadow-xs font-bold text-xs flex items-center gap-1 btn-jelly">
+          <i data-lucide="phone-call" class="w-4 h-4"></i>
+          <span>应急热线</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 底部版权与专科认证 -->
+    <div class="pt-2 pb-6 text-center text-slate-400 text-[10px] space-y-1">
+      <div class="font-bold text-amber-800/80">松鼠口腔医院 · 儿童齿科中心 · 专科术后保障体系</div>
+      <div class="text-[9px] text-slate-400">昆明市西山区锦粼天序独栋专科 · 云南省二级专科医院</div>
+    </div>
+
+  </div>
+
+  <!-- 底部固定浮动操作栏 -->
+  <div class="fixed bottom-0 left-0 right-0 p-3 bg-white/95 backdrop-blur-md border-t border-amber-100 flex items-center justify-center z-50 shadow-lg">
+    <div class="w-full max-w-[420px] flex items-center gap-2.5">
+      <button onclick="shareCareGuide()" class="flex-1 py-3 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all btn-jelly">
+        <i data-lucide="share-2" class="w-4 h-4 text-amber-600"></i>
+        <span>转发给爸爸/家属</span>
+      </button>
+      <button onclick="openDoctorChat()" class="flex-[1.4] py-3 bg-gradient-to-r from-orange-500 via-amber-500 to-emerald-500 text-white rounded-2xl font-black text-xs shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition-all btn-jelly">
+        <i data-lucide="message-circle" class="w-4 h-4 text-yellow-200"></i>
+        <span>温阿姨企微专属留言</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 企微弹窗模态框 -->
+  <div id="wechat-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-3xl p-5 w-full max-w-xs text-center space-y-3.5 animate-bounce-in shadow-2xl border-2 border-amber-200">
+      <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-2xl font-bold">
+        👩‍⚕️
+      </div>
+      <div>
+        <div class="text-sm font-black text-slate-900">温阿姨儿童齿科专属医助</div>
+        <div class="text-[11px] text-slate-500 mt-0.5">扫码或长按添加，随时拍照解答护理问题</div>
+      </div>
+      <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 inline-block">
+        <div class="w-40 h-40 bg-white border border-slate-200 rounded-xl flex flex-col items-center justify-center p-2 shadow-inner">
+          <i data-lucide="qr-code" class="w-28 h-28 text-slate-700"></i>
+          <span class="text-[9px] font-mono text-slate-400 mt-1">SQ-DENTAL-WEN-CARE</span>
+        </div>
+      </div>
+      <div class="text-[10px] text-amber-700 bg-amber-50 py-1.5 px-2 rounded-xl font-medium">
+        已自动将宝贝今日项目同步至温阿姨备忘录
+      </div>
+      <button onclick="closeDoctorChat()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors">
+        我知道了
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 1. 初始化 Lucide 图标
+    lucide.createIcons();
+
+    // 2. URL 参数解析
+    const urlParams = new URLSearchParams(window.location.search);
+    const childName = urlParams.get('name') || '轩轩 小勇士';
+    let rawItem = urlParams.get('item') || '儿牙防蛀涂氟';
+    try {
+      rawItem = decodeURIComponent(rawItem);
+    } catch(e){}
+    const careItem = rawItem;
+
+    document.getElementById('child-name-display').innerText = childName;
+    document.getElementById('care-item-tag').innerText = careItem;
+
+    // 3. 倒计时状态机
+    let totalSeconds = 30 * 60; // 30 分钟
+    let remainingSeconds = totalSeconds;
+    let timerInterval = null;
+    let isRunning = true;
+
+    const timerCircle = document.getElementById('timer-circle');
+    const circumference = 2 * Math.PI * 42; // r=42 -> ~263.89
+    timerCircle.style.strokeDasharray = `${circumference}`;
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(remainingSeconds / 60);
+      const secs = remainingSeconds % 60;
+      document.getElementById('countdown-time').innerText = 
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+      const progress = (totalSeconds - remainingSeconds) / totalSeconds;
+      const offset = circumference - (progress * circumference);
+      timerCircle.style.strokeDashoffset = offset;
+
+      if (remainingSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        isRunning = false;
+        document.getElementById('countdown-time').innerText = "00:00";
+        document.getElementById('countdown-label').innerText = "固化圆满完成！";
+        document.getElementById('countdown-hint').innerHTML = "🎉 铠甲坚固！现在可以温和喝水啦";
+        document.getElementById('countdown-hint').className = "text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 mt-1";
+        document.getElementById('timer-status-badge').innerHTML = "✓ 固化已完成";
+        document.getElementById('timer-status-badge').className = "text-[10px] font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-200";
+        
+        // 庆祝礼花
+        confetti({
+          particleCount: 60,
+          spread: 60,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    function toggleTimer() {
+      const btnText = document.getElementById('timer-text');
+      const btnIcon = document.getElementById('timer-icon');
+      if (isRunning) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        btnText.innerText = "继续计时";
+        btnIcon.setAttribute('data-lucide', 'play');
+      } else {
+        if (remainingSeconds <= 0) remainingSeconds = totalSeconds;
+        isRunning = true;
+        btnText.innerText = "暂停计时";
+        btnIcon.setAttribute('data-lucide', 'pause');
+        startTimer();
+      }
+      lucide.createIcons();
+    }
+
+    function resetTimer() {
+      remainingSeconds = totalSeconds;
+      isRunning = true;
+      document.getElementById('timer-text').innerText = "暂停计时";
+      document.getElementById('timer-icon').setAttribute('data-lucide', 'pause');
+      lucide.createIcons();
+      updateTimerDisplay();
+      startTimer();
+    }
+
+    // 启动初始计时器
+    startTimer();
+    updateTimerDisplay();
+
+    // 4. 专科诊疗项目切换
+    function switchCareType(type) {
+      const tabs = ['fluoride', 'sealant', 'anesthesia'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === type) {
+          btn.className = "care-tab active-tab py-1.5 text-xs font-bold rounded-xl transition-all bg-white text-orange-600 shadow-xs border border-orange-200";
+        } else {
+          btn.className = "care-tab py-1.5 text-xs font-bold text-slate-600 rounded-xl transition-all hover:bg-white/60";
+        }
+      });
+
+      const anesthesiaCard = document.getElementById('anesthesia-care-card');
+      const careItemTag = document.getElementById('care-item-tag');
+      const drWords = document.getElementById('dr-care-words');
+      const brushTip = document.getElementById('brush-care-tip');
+
+      if (type === 'fluoride') {
+        anesthesiaCard.classList.add('hidden');
+        careItemTag.innerText = "儿牙防蛀涂氟";
+        drWords.innerText = "“轩轩今天表现超级勇敢，防蛀钻石铠甲已经成膜牢固啦！接下来半小时注意别喝水、别舔牙齿，让保护层发挥100%威力哦！”";
+        brushTip.innerHTML = "今天做完涂氟后，<strong>当晚建议暂时不刷牙、不用牙线</strong>，只需用温水轻轻漱口即可；明天早晨起恢复正常早晚刷牙，防蛀膜已完美固化！";
+        totalSeconds = 30 * 60;
+        resetTimer();
+      } else if (type === 'sealant') {
+        anesthesiaCard.classList.add('hidden');
+        careItemTag.innerText = "窝沟封闭保护";
+        drWords.innerText = "“宝宝的大牙窝沟已经筑起坚固的光固化防护盾牌！封闭剂已经固化，2小时内尽量温和软食，避免用力咬极硬的骨头或坚果即可。”";
+        brushTip.innerHTML = "窝沟封闭后<strong>今晚可以正常刷牙</strong>，建议家长协助孩子将牙面窝沟位置轻柔刷净，定期3个月复查一次封闭剂完整度。";
+        totalSeconds = 60 * 60; // 1小时软食提示
+        resetTimer();
+      } else if (type === 'anesthesia') {
+        anesthesiaCard.classList.remove('hidden');
+        careItemTag.innerText = "舒适补牙 / 乳牙维护";
+        drWords.innerText = "“由于使用了温和局麻，目前嘴唇和小脸颊处于麻木状态。轩轩可能会觉得‘嘴巴鼓鼓的’想去咬，宝妈一定要多看护，等麻药退去再吃东西！”";
+        brushTip.innerHTML = "补牙侧 24 小时内避免咀嚼过硬食物，刷牙时动作轻柔避开伤口棉球区，若有轻微胀感可用小冰袋隔毛巾轻敷 5 分钟。";
+        totalSeconds = 90 * 60; // 1.5小时防咬唇提示
+        resetTimer();
+      }
+    }
+
+    // 5. FAQ 折叠展开
+    function toggleFaq(index) {
+      const ans = document.getElementById(`faq-ans-${index}`);
+      const icon = document.getElementById(`faq-icon-${index}`);
+      if (ans.classList.contains('hidden')) {
+        ans.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        ans.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // 6. 企微弹窗
+    function openDoctorChat() {
+      document.getElementById('wechat-modal').classList.remove('hidden');
+      document.getElementById('wechat-modal').classList.add('flex');
+    }
+
+    function closeDoctorChat() {
+      document.getElementById('wechat-modal').classList.add('hidden');
+      document.getElementById('wechat-modal').classList.remove('flex');
+    }
+
+    // 7. 转发分享
+    function shareCareGuide() {
+      if (navigator.share) {
+        navigator.share({
+          title: '松鼠口腔 · 小勇士术后安心关怀指南',
+          text: `${childName}今日在松鼠口腔完成了${careItem}，这是专属术后护理与食谱指引，全家一起守护！`,
+          url: window.location.href
+        }).catch(() => {});
+      } else {
+        alert('请点击右上角「...」或直接截屏发到家庭微信群，让爸爸和长辈一同掌握宝贝护理要点！');
+      }
+    }
+  </script>
+</body>
+</html>

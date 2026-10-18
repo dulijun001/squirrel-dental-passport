@@ -1394,8 +1394,16 @@
       });
       setSpeech('哇！太棒了，小勇士！明天恐龙童梦舱见！', '🚀');
       const btn = document.getElementById('btn-confirm-kid');
-      btn.innerHTML = '<span>已生成小勇士存证！</span><span>🎉</span>';
-      btn.classList.add('from-emerald-400', 'to-teal-500');
+      if (btn) {
+        btn.innerHTML = '<span>正在生成荣誉存证...</span><span>🎉</span>';
+        btn.classList.add('from-emerald-400', 'to-teal-500');
+      }
+
+      // 跳转到儿牙专属生效存证页 pediatric-confirmed.html
+      setTimeout(() => {
+        const query = window.location.search || `?name=${encodeURIComponent(kidName)}&item=${encodeURIComponent(kidItem)}&time=${encodeURIComponent(kidTime)}`;
+        window.location.href = `pediatric-confirmed.html${query}`;
+      }, 700);
     }
 
     function toggleMagicShield() {

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>松鼠口腔 · 数字化隐形美学正畸专属预约函</title>
+
+  <!-- iOS / 微信全屏沉浸配置 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#F0FDF4">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 图标 -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Confetti 礼花动效 -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Three.js 3D 渲染引擎 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: #F8FAFC; /* 清透高雅莫兰迪冰蓝底色 */
+      color: #0F172A;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* 物理真实拟物登机牌 */
+    .boarding-pass {
+      background: #FFFFFF;
+      border-radius: 24px;
+      position: relative;
+      box-shadow: 0 16px 36px -10px rgba(13, 148, 136, 0.15), 0 0 0 1px #CCFBF1;
+      overflow: hidden;
+    }
+
+    .pass-header {
+      background: linear-gradient(135deg, #0D9488 0%, #06B6D4 60%, #38BDF8 100%);
+      position: relative;
+    }
+
+    /* 左右真实咬口打孔 */
+    .punch-hole-left, .punch-hole-right {
+      position: absolute;
+      top: 132px;
+      width: 24px;
+      height: 24px;
+      background-color: #F8FAFC;
+      border-radius: 50%;
+      z-index: 30;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+    }
+    .punch-hole-left {
+      left: -12px;
+      border-right: 1px solid #CCFBF1;
+    }
+    .punch-hole-right {
+      right: -12px;
+      border-left: 1px solid #CCFBF1;
+    }
+
+    /* 撕裂齿孔虚线 */
+    .rip-line {
+      position: absolute;
+      top: 143px;
+      left: 14px;
+      right: 14px;
+      border-top: 2px dashed #99F6E4;
+      z-index: 20;
+    }
+
+    /* 渐变流光文字 */
+    .shimmer-text {
+      background: linear-gradient(90deg, #0F766E 0%, #0284C7 50%, #0F766E 100%);
+      background-size: 200% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      animation: shine 4s linear infinite;
+    }
+
+    @keyframes shine {
+      to {
+        background-position: 200% center;
+      }
+    }
+
+    /* 3D 展台光晕与微光地盘 */
+    .ortho-stage-halo {
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(45, 212, 191, 0.22) 0%, rgba(56, 189, 248, 0.08) 50%, transparent 75%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* 自定义美学滑块样式 */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 8px;
+      cursor: pointer;
+      background: linear-gradient(90deg, #F43F5E 0%, #FB923C 35%, #14B8A6 100%);
+      border-radius: 999px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    }
+    input[type=range]::-webkit-slider-thumb {
+      height: 24px;
+      width: 24px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      cursor: grab;
+      -webkit-appearance: none;
+      margin-top: -8px;
+      box-shadow: 0 4px 10px rgba(13, 148, 136, 0.35), 0 0 0 3px #0D9488;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    input[type=range]::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.15);
+      box-shadow: 0 6px 14px rgba(13, 148, 136, 0.45), 0 0 0 4px #0D9488;
+    }
+
+    /* 模态浮动徽章 */
+    .glass-badge {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(204, 251, 241, 0.8);
+      box-shadow: 0 4px 12px -2px rgba(13, 148, 136, 0.08);
+    }
+  </style>
+</head>
+<body class="p-4 md:py-8 max-w-md mx-auto min-h-screen flex flex-col justify-between">
+
+  <!-- 主体卡片容器 -->
+  <main class="space-y-4">
+
+    <!-- 顶部状态栏提示 -->
+    <header class="flex items-center justify-between text-xs text-teal-800 font-medium px-1">
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+        <span>数字化美学微笑中心 · 专属通道</span>
+      </div>
+      <div class="flex items-center gap-1 text-slate-500 text-[11px]">
+        <span>编号: SQ-ORTHO-8821</span>
+      </div>
+    </header>
+
+    <!-- 🎫 数字化正畸登机牌主凭证 -->
+    <section class="boarding-pass shadow-xl border border-teal-100">
+      
+      <!-- 左右打孔与撕咬线 -->
+      <div class="punch-hole-left"></div>
+      <div class="punch-hole-right"></div>
+      <div class="rip-line"></div>
+
+      <!-- 登机牌头部（珍珠青碧渐变） -->
+      <div class="pass-header p-5 text-white pb-7">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xl font-bold tracking-tight">SQUIRREL ORTHO</span>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-white/20 backdrop-blur-sm border border-white/30 font-semibold tracking-wider">3D 口腔美学</span>
+            </div>
+            <p class="text-xs text-teal-100">昆明松鼠口腔医院 · 微笑美学重塑专线</p>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center shadow-inner">
+            <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+          </div>
+        </div>
+
+        <!-- 患者专属问候 -->
+        <div class="mt-4 pt-3 border-t border-white/20 flex justify-between items-baseline">
+          <div>
+            <p class="text-[11px] text-teal-100 uppercase tracking-wider">尊贵预约贵宾</p>
+            <h1 class="text-xl font-extrabold tracking-wide" id="card-name">林诗语 女士</h1>
+          </div>
+          <div class="text-right">
+            <p class="text-[11px] text-teal-100 uppercase tracking-wider">定制矫治方案</p>
+            <span class="text-sm font-bold bg-white/25 px-2.5 py-1 rounded-full border border-white/30">隐形美学正畸</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 登机牌中部核心信息（就诊详情） -->
+      <div class="p-5 pt-8 bg-white">
+        <div class="grid grid-cols-2 gap-4 pb-4 border-b border-slate-100 text-xs">
+          <div>
+            <span class="text-slate-400 block mb-0.5">预约抵院时间</span>
+            <div class="flex items-center gap-1.5 font-bold text-slate-800 text-sm">
+              <i data-lucide="calendar" class="w-4 h-4 text-teal-600"></i>
+              <span id="card-time">明日 14:30</span>
+            </div>
+          </div>
+          <div>
+            <span class="text-slate-400 block mb-0.5">就诊科室与主诉</span>
+            <div class="flex items-center gap-1.5 font-bold text-slate-800 text-sm">
+              <i data-lucide="smile" class="w-4 h-4 text-teal-600"></i>
+              <span>牙列拥挤 · 伴轻度骨性前突</span>
+            </div>
+          </div>
+          <div>
+            <span class="text-slate-400 block mb-0.5">主诊专家</span>
+            <div class="flex items-center gap-1.5 font-bold text-slate-800 text-sm">
+              <i data-lucide="award" class="w-4 h-4 text-teal-600"></i>
+              <span>陈雪华 主任医师 (隐适美认证)</span>
+            </div>
+          </div>
+          <div>
+            <span class="text-slate-400 block mb-0.5">贵宾专享车位</span>
+            <div class="flex items-center gap-1.5 font-bold text-slate-800 text-sm">
+              <i data-lucide="car" class="w-4 h-4 text-teal-600"></i>
+              <span id="card-car">地下 B1-06 (直达电梯)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🚀 核心 3D 展台：数字化牙弓矫治模拟舱 -->
+        <div class="mt-4">
+          <div class="flex justify-between items-center mb-2">
+            <div>
+              <h2 class="text-sm font-extrabold text-slate-800 flex items-center gap-1.5">
+                <i data-lucide="box" class="w-4 h-4 text-teal-600"></i>
+                <span>3D 数字化矫治模拟舱</span>
+              </h2>
+              <p class="text-[11px] text-slate-400">手指拖动滑块查看【从拥挤到排齐】动态位移</p>
+            </div>
+            
+            <!-- 牙套模式切换开关 -->
+            <button id="toggle-aligner-btn" class="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200 hover:bg-teal-100 transition active:scale-95 shadow-sm">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-teal-600"></i>
+              <span id="aligner-btn-text">佩戴隐形牙套</span>
+            </button>
+          </div>
+
+          <!-- 3D WebGL 交互画布容器 -->
+          <div id="ortho-stage-box" class="relative w-full h-80 rounded-2xl overflow-hidden bg-gradient-to-b from-slate-50 via-teal-50/30 to-slate-100/90 border border-teal-100 flex items-center justify-center select-none" style="touch-action: none;">
+            <!-- 全息展示光台 -->
+            <div class="ortho-stage-halo"></div>
+            
+            <canvas id="ortho-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block relative z-10"></canvas>
+
+            <!-- 旋转引导信标 -->
+            <div id="hint-drag-rotate" class="pointer-events-none absolute top-2 left-2.5 px-2.5 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-teal-200 text-[8.5px] text-teal-800 flex items-center gap-1 shadow-sm transition-opacity duration-500 whitespace-nowrap z-20">
+              <i data-lucide="rotate-3d" class="w-3 h-3 text-teal-600"></i>
+              <span>360° 单指自由旋转 / 双指缩放</span>
+            </div>
+
+            <!-- 视角快捷复位 -->
+            <div class="absolute top-2 right-2.5 z-20 flex gap-1.5">
+              <button id="btn-view-occlusal" title="咬合面俯视" class="px-2 py-1 rounded-lg bg-white/90 backdrop-blur-md border border-teal-200 text-[10px] font-bold text-teal-700 shadow-sm active:scale-95">
+                俯视牙弓
+              </button>
+              <button id="btn-view-front" title="正颜笑容微笑面" class="px-2 py-1 rounded-lg bg-white/90 backdrop-blur-md border border-teal-200 text-[10px] font-bold text-teal-700 shadow-sm active:scale-95">
+                正面微笑
+              </button>
+            </div>
+
+            <!-- 当前排齐状态实时浮窗 -->
+            <div class="absolute bottom-2.5 left-3 right-3 z-20 pointer-events-none">
+              <div class="glass-badge py-1.5 px-3 rounded-xl flex items-center justify-between text-xs">
+                <span class="text-slate-500 font-medium text-[11px]" id="status-label">当前阶段：初诊严重拥挤伴前突</span>
+                <span class="text-teal-700 font-extrabold text-[12px]" id="status-pct">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🎚️ 蜕变进度滑动控制器 -->
+          <div class="mt-3 bg-teal-50/60 p-3.5 rounded-2xl border border-teal-100">
+            <div class="flex justify-between items-center text-xs font-bold mb-2">
+              <span class="text-rose-600 flex items-center gap-1">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Day 1 (拥挤杂乱)
+              </span>
+              <span class="shimmer-text flex items-center gap-1">
+                <i data-lucide="sparkle" class="w-3.5 h-3.5 text-teal-600"></i> Day 360 (黄金微笑线)
+              </span>
+            </div>
+            
+            <input type="range" id="ortho-slider" min="0" max="100" value="0" step="1" class="w-full">
+
+            <div class="flex justify-between items-center mt-2 text-[10.5px] text-slate-500 font-medium">
+              <span>拖动滑块查看牙列自适应回位过程</span>
+              <span class="text-teal-700 font-semibold cursor-pointer underline hover:text-teal-800" id="btn-auto-play">自动演示 ▶</span>
+            </div>
+          </div>
+
+          <!-- 🔬 四大正畸专病承诺与医嘱卡片 -->
+          <div class="grid grid-cols-2 gap-2 mt-3.5">
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-150 text-[11px] hover:border-teal-300 transition">
+              <div class="flex items-center gap-1 text-teal-700 font-bold mb-0.5">
+                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-teal-600"></i>
+                <span>非必要不拔牙</span>
+              </div>
+              <p class="text-slate-500 text-[10px] leading-tight">全颌 3D CT 精准测算骨量，优先采用扩弓/片切保留天然牙。</p>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-150 text-[11px] hover:border-teal-300 transition">
+              <div class="flex items-center gap-1 text-teal-700 font-bold mb-0.5">
+                <i data-lucide="feather" class="w-3.5 h-3.5 text-teal-600"></i>
+                <span>柔性轻力少酸痛</span>
+              </div>
+              <p class="text-slate-500 text-[10px] leading-tight">高回弹医用级高分子膜片，微米级持续恒力，舒适无感就餐。</p>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-150 text-[11px] hover:border-teal-300 transition">
+              <div class="flex items-center gap-1 text-teal-700 font-bold mb-0.5">
+                <i data-lucide="scan" class="w-3.5 h-3.5 text-teal-600"></i>
+                <span>5分钟口扫立见效果</span>
+              </div>
+              <p class="text-slate-500 text-[10px] leading-tight">告别恶心传统咬模，iTero 高清 3D 扫描现场直出 3D 矫正终案。</p>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-150 text-[11px] hover:border-teal-300 transition">
+              <div class="flex items-center gap-1 text-teal-700 font-bold mb-0.5">
+                <i data-lucide="smile-plus" class="w-3.5 h-3.5 text-teal-600"></i>
+                <span>E-Line 美学侧颜</span>
+              </div>
+              <p class="text-slate-500 text-[10px] leading-tight">不仅排齐牙齿，更专注内收凸嘴、重塑鼻唇下巴黄金审美线。</p>
+            </div>
+          </div>
+
+          <!-- 主任寄语 -->
+          <div class="mt-3 p-3 rounded-xl bg-teal-50/70 border border-teal-200/60 flex items-start gap-2.5">
+            <div class="w-7 h-7 rounded-full bg-teal-600 text-white flex-shrink-0 flex items-center justify-center font-bold text-xs shadow-sm">
+              陈
+            </div>
+            <div class="text-[11px] text-slate-700 leading-snug">
+              <span class="font-bold text-teal-900">陈雪华主任美学寄语：</span>
+              “牙齿矫正是送给自己最好的人生投资。初诊无需任何心理负担，我们将用三维数字化口扫带您预见排齐后的灿烂笑容。”
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 院区导航与就诊提醒 -->
+    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+      <div>
+        <h3 class="text-xs font-bold text-slate-800">昆明松鼠口腔医院 · 美学正畸中心</h3>
+        <p class="text-[11px] text-slate-500">西山区希望路 · 专属自动抬杆，电梯直达 4F VIP美学中心</p>
+      </div>
+      <a href="https://uri.amap.com/marker?position=102.718,25.043&name=昆明松鼠口腔医院" target="_blank" class="px-3 py-1.5 rounded-xl bg-teal-600 text-white font-bold text-xs flex items-center gap-1 shadow-sm hover:bg-teal-700 active:scale-95">
+        <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+        <span>一键导航</span>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- 底部固定确认按钮 -->
+  <footer class="mt-6 sticky bottom-3 z-30">
+    <button id="btn-confirm-arrival" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-teal-600 via-teal-500 to-cyan-500 text-white font-extrabold text-base shadow-lg shadow-teal-500/25 flex items-center justify-center gap-2 active:scale-[0.98] transition">
+      <i data-lucide="check-circle" class="w-5 h-5"></i>
+      <span>确认准时赴约 · 出具正畸特权凭证</span>
+    </button>
+  </footer>
+
+  <!-- 3D 渲染与核心动画逻辑 -->
+  <script>
+    // 1. 初始化 Lucide 图标
+    lucide.createIcons();
+
+    // 2. 解析 URL 参数定制
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('name')) document.getElementById('card-name').textContent = params.get('name');
+    if (params.get('time')) document.getElementById('card-time').textContent = params.get('time');
+    if (params.get('car')) document.getElementById('card-car').textContent = params.get('car');
+
+    // 3. Three.js 牙列排齐 3D 模拟引擎
+    let scene, camera, renderer;
+    let teethMeshes = [];
+    let alignerMesh = null;
+    let isAlignerVisible = false;
+    let targetProgress = 0; // 0 to 1
+    let currentProgress = 0;
+    let isAutoPlaying = false;
+
+    // 牙齿解剖位置数据（14 颗天然牙弓上牙数据：包含初始拥挤位置 & 完美黄金卵圆牙弓目标位置）
+    // 7颗左侧，7颗右侧：中切牙、侧切牙、尖牙、第一前磨牙、第二前磨牙、第一磨牙、第二磨牙
+    // 牙弓数据 (14 颗真实解剖比例上颌牙，紧密相依)
+    // 角度 t 从 0 (门牙中线) 到 1.3 (第二磨牙)
+    // 完美排齐位置沿着黄金椭圆弧线分布：x = sin(t)*2.1, z = cos(t)*1.7 - 0.2
+    const dentalArchData = [
+      // 左侧牙齿 (L1 - L7)
+      { id: 'L1', name: '左中切牙', type: 'incisor',
+        cPos: [0.38, 0.12, 1.32], cRot: [0.15, 0.45, 0.1],
+        aPos: [0.35, 0.0, 1.48], aRot: [0, 0.12, 0], w: 0.68, h: 0.95, d: 0.38 },
+      { id: 'L2', name: '左侧切牙(内陷)', type: 'incisor',
+        cPos: [0.85, -0.08, 1.05], cRot: [-0.2, -0.35, -0.15],
+        aPos: [0.95, 0.0, 1.38], aRot: [0, 0.32, 0], w: 0.58, h: 0.88, d: 0.35 },
+      { id: 'L3', name: '左尖牙(虎牙外翘)', type: 'canine',
+        cPos: [1.62, 0.25, 1.25], cRot: [0.3, 0.65, 0.35],
+        aPos: [1.48, 0.0, 1.15], aRot: [0, 0.55, 0], w: 0.62, h: 1.05, d: 0.45 },
+      { id: 'L4', name: '左第一前磨牙', type: 'premolar',
+        cPos: [1.88, -0.04, 0.68], cRot: [-0.08, 0.8, -0.05],
+        aPos: [1.85, 0.0, 0.75], aRot: [0, 0.78, 0], w: 0.60, h: 0.85, d: 0.55 },
+      { id: 'L5', name: '左第二前磨牙', type: 'premolar',
+        cPos: [2.10, 0.05, 0.18], cRot: [0.05, 0.98, 0.05],
+        aPos: [2.08, 0.0, 0.22], aRot: [0, 0.95, 0], w: 0.62, h: 0.85, d: 0.58 },
+      { id: 'L6', name: '左第一磨牙', type: 'molar',
+        cPos: [2.25, -0.02, -0.42], cRot: [-0.04, 1.2, 0],
+        aPos: [2.22, 0.0, -0.42], aRot: [0, 1.15, 0], w: 0.85, h: 0.82, d: 0.85 },
+      { id: 'L7', name: '左第二磨牙', type: 'molar',
+        cPos: [2.32, 0.02, -1.10], cRot: [0, 1.32, 0],
+        aPos: [2.28, 0.0, -1.10], aRot: [0, 1.28, 0], w: 0.80, h: 0.78, d: 0.80 },
+
+      // 右侧牙齿 (R1 - R7)
+      { id: 'R1', name: '右中切牙', type: 'incisor',
+        cPos: [-0.38, 0.10, 1.35], cRot: [0.12, -0.4, -0.1],
+        aPos: [-0.35, 0.0, 1.48], aRot: [0, -0.12, 0], w: 0.68, h: 0.95, d: 0.38 },
+      { id: 'R2', name: '右侧切牙(内倾扭转)', type: 'incisor',
+        cPos: [-0.88, -0.12, 1.02], cRot: [-0.25, 0.45, 0.2],
+        aPos: [-0.95, 0.0, 1.38], aRot: [0, -0.32, 0], w: 0.58, h: 0.88, d: 0.35 },
+      { id: 'R3', name: '右尖牙(虎牙高位外凸)', type: 'canine',
+        cPos: [-1.68, 0.32, 1.30], cRot: [0.35, -0.7, -0.4],
+        aPos: [-1.48, 0.0, 1.15], aRot: [0, -0.55, 0], w: 0.62, h: 1.05, d: 0.45 },
+      { id: 'R4', name: '右第一前磨牙', type: 'premolar',
+        cPos: [-1.86, -0.03, 0.70], cRot: [-0.07, -0.75, 0.08],
+        aPos: [-1.85, 0.0, 0.75], aRot: [0, -0.78, 0], w: 0.60, h: 0.85, d: 0.55 },
+      { id: 'R5', name: '右第二前磨牙', type: 'premolar',
+        cPos: [-2.10, 0.04, 0.20], cRot: [0.06, -0.96, -0.05],
+        aPos: [-2.08, 0.0, 0.22], aRot: [0, -0.95, 0], w: 0.62, h: 0.85, d: 0.58 },
+      { id: 'R6', name: '右第一磨牙', type: 'molar',
+        cPos: [-2.26, -0.03, -0.40], cRot: [-0.04, -1.2, 0],
+        aPos: [-2.22, 0.0, -0.42], aRot: [0, -1.15, 0], w: 0.85, h: 0.82, d: 0.85 },
+      { id: 'R7', name: '右第二磨牙', type: 'molar',
+        cPos: [-2.30, 0.02, -1.08], cRot: [0, -1.3, 0],
+        aPos: [-2.28, 0.0, -1.10], aRot: [0, -1.28, 0], w: 0.80, h: 0.78, d: 0.80 },
+    ];
+
+    function initOrthoViewer() {
+      const canvas = document.getElementById('ortho-3d-canvas');
+      const container = document.getElementById('ortho-stage-box');
+      if (!canvas || !container) return;
+
+      const width = container.clientWidth || 340;
+      const height = container.clientHeight || 320;
+
+      // 1. 场景与摄像机
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+      camera.position.set(0, -0.15, 4.8);
+      camera.lookAt(0, 0.2, 0.2);
+
+      // 2. 渲染器配置
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance"
+      });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.15;
+
+      // 3. 高定摄影棚灯光系统（塑造立体解剖学光影与温润牙釉质反射）
+      const ambientLight = new THREE.AmbientLight(0xfff7ed, 0.8);
+      scene.add(ambientLight);
+
+      const mainLight = new THREE.DirectionalLight(0xffffff, 1.8);
+      mainLight.position.set(4, 8, 6);
+      scene.add(mainLight);
+
+      const rimLight = new THREE.DirectionalLight(0x0284c7, 1.4);
+      rimLight.position.set(-5, 4, -4);
+      scene.add(rimLight);
+
+      const bottomWarm = new THREE.DirectionalLight(0xfef08a, 0.6);
+      bottomWarm.position.set(0, -6, 2);
+      scene.add(bottomWarm);
+
+      // 4. 根容器 (支持整体旋转缩放)
+      const archRoot = new THREE.Group();
+      archRoot.rotation.set(-0.12, -0.22, 0); // 略微俯视展示优雅牙弓弧线
+      scene.add(archRoot);
+
+      // 5. 材质设定
+      // 5.1 天然牙釉质材质 (Enamel Material) - 温润天然象牙白与清漆高光
+      const enamelMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0xfffef7,
+        roughness: 0.2,
+        metalness: 0.02,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1,
+        transmission: 0.12,
+        ior: 1.54
+      });
+
+      // 5.2 仿生粉嫩健康牙龈材质
+      const gingivaMaterial = new THREE.MeshStandardMaterial({
+        color: 0xf472b6,
+        roughness: 0.45,
+        metalness: 0.02
+      });
+
+      // 5.3 高透晶亮隐形牙套材质 (Invisible Aligner)
+      const alignerMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0xa7f3d0,
+        roughness: 0.05,
+        metalness: 0.08,
+        transmission: 0.9,
+        transparent: true,
+        opacity: 0.72,
+        ior: 1.52,
+        clearcoat: 1.0,
+        depthWrite: false
+      });
+
+      // 创建解剖学牙冠几何体 (根据真实牙位类型与长宽高定制)
+      function createAnatomicToothGeometry(type, w, h, d) {
+        let g;
+        if (type === "incisor") {
+          g = new THREE.BoxGeometry(w, h, d, 6, 6, 4);
+          const p = g.attributes.position;
+          for (let i = 0; i < p.count; i++) {
+            let y = p.getY(i);
+            if (y > 0) {
+              // 牙颈部微收拢贴合牙龈
+              p.setX(i, p.getX(i) * 0.88);
+              p.setZ(i, p.getZ(i) * 0.82);
+            } else {
+              // 咬合切缘变薄并微呈扇形
+              p.setZ(i, p.getZ(i) * 0.55);
+              p.setX(i, p.getX(i) * 1.05);
+            }
+          }
+        } else if (type === "canine") {
+          // 尖牙带明显唇侧突起与尖锐咬合尖
+          g = new THREE.ConeGeometry(w * 0.58, h, 16, 4);
+          g.rotateX(Math.PI);
+        } else if (type === "premolar") {
+          // 前磨牙双尖结构
+          g = new THREE.CylinderGeometry(w * 0.5, w * 0.44, h, 16, 4);
+        } else {
+          // 大磨牙四尖咀嚼面
+          g = new THREE.BoxGeometry(w, h, d, 4, 4, 4);
+          const p = g.attributes.position;
+          for (let i = 0; i < p.count; i++) {
+            if (p.getY(i) > 0) {
+              p.setX(i, p.getX(i) * 0.88);
+              p.setZ(i, p.getZ(i) * 0.88);
+            }
+          }
+        }
+        g.computeVertexNormals();
+        return g;
+      }
+
+      // 添加拱形仿生健康粉嫩牙龈基座 (Gingival Arch Base)
+      const gumPoints = [];
+      for (let t = -Math.PI * 0.45; t <= Math.PI * 0.45; t += 0.08) {
+        const x = Math.sin(t) * 2.15;
+        const z = Math.cos(t) * 1.62 - 0.25;
+        gumPoints.push(new THREE.Vector3(x, 0.45, z));
+      }
+      const gumCurve = new THREE.CatmullRomCurve3(gumPoints);
+      const gumGeom = new THREE.TubeGeometry(gumCurve, 54, 0.38, 16, false);
+      const gumMesh = new THREE.Mesh(gumGeom, gingivaMaterial);
+      gumMesh.castShadow = true;
+      gumMesh.receiveShadow = true;
+      archRoot.add(gumMesh);
+
+      // 6. 实例化 14 颗真实解剖牙齿
+      teethMeshes = dentalArchData.map(data => {
+        const geom = createAnatomicToothGeometry(data.type, data.w, data.h, data.d);
+        const mesh = new THREE.Mesh(geom, enamelMaterial);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
+        mesh.userData = {
+          cPos: new THREE.Vector3(...data.cPos),
+          cRot: new THREE.Euler(...data.cRot),
+          aPos: new THREE.Vector3(...data.aPos),
+          aRot: new THREE.Euler(...data.aRot)
+        };
+
+        mesh.position.copy(mesh.userData.cPos);
+        mesh.rotation.copy(mesh.userData.cRot);
+
+        archRoot.add(mesh);
+        return mesh;
+      });
+
+      // 7. 隐形牙套晶透外壳 (自适应贴合牙列 U型纳米膜片)
+      const alignerPoints = [];
+      for (let t = -Math.PI * 0.46; t <= Math.PI * 0.46; t += 0.08) {
+        const x = Math.sin(t) * 2.18;
+        const z = Math.cos(t) * 1.68 - 0.22;
+        alignerPoints.push(new THREE.Vector3(x, 0.02, z));
+      }
+      const alignerCurve = new THREE.CatmullRomCurve3(alignerPoints);
+      const alignerGeom = new THREE.TubeGeometry(alignerCurve, 56, 0.48, 20, false);
+      alignerMesh = new THREE.Mesh(alignerGeom, alignerMaterial);
+      alignerMesh.visible = false;
+      archRoot.add(alignerMesh);
+
+      // 8. 交互控制（平滑旋转阻尼 + 缩放）
+      let isDragging = false;
+      let prevMouseX = 0;
+      let prevMouseY = 0;
+      let rotSpeedX = 0;
+      let rotSpeedY = 0;
+
+      canvas.addEventListener('pointerdown', (e) => {
+        isDragging = true;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+        rotSpeedX = 0;
+        rotSpeedY = 0;
+        document.getElementById('hint-drag-rotate').style.opacity = '0';
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const deltaX = e.clientX - prevMouseX;
+        const deltaY = e.clientY - prevMouseY;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+
+        archRoot.rotation.y += deltaX * 0.012;
+        archRoot.rotation.x += deltaY * 0.008;
+
+        rotSpeedX = deltaX * 0.008;
+        rotSpeedY = deltaY * 0.005;
+      });
+
+      window.addEventListener('pointerup', () => {
+        isDragging = false;
+      });
+
+      // 快捷视角切换
+      document.getElementById('btn-view-occlusal').addEventListener('click', () => {
+        archRoot.rotation.set(Math.PI * 0.42, 0, 0);
+      });
+      document.getElementById('btn-view-front').addEventListener('click', () => {
+        archRoot.rotation.set(0.1, 0, 0);
+      });
+
+      // 牙套穿脱切换
+      const toggleAlignerBtn = document.getElementById('toggle-aligner-btn');
+      const alignerBtnText = document.getElementById('aligner-btn-text');
+      toggleAlignerBtn.addEventListener('click', () => {
+        isAlignerVisible = !isAlignerVisible;
+        alignerMesh.visible = isAlignerVisible;
+        if (isAlignerVisible) {
+          alignerBtnText.textContent = '褪去隐形牙套';
+          toggleAlignerBtn.classList.replace('bg-teal-50', 'bg-teal-600');
+          toggleAlignerBtn.classList.replace('text-teal-700', 'text-white');
+        } else {
+          alignerBtnText.textContent = '佩戴隐形牙套';
+          toggleAlignerBtn.classList.replace('bg-teal-600', 'bg-teal-50');
+          toggleAlignerBtn.classList.replace('text-white', 'text-teal-700');
+        }
+      });
+
+      // 9. 排齐进度滑块绑定
+      const slider = document.getElementById('ortho-slider');
+      const statusLabel = document.getElementById('status-label');
+      const statusPct = document.getElementById('status-pct');
+
+      slider.addEventListener('input', (e) => {
+        isAutoPlaying = false;
+        targetProgress = parseInt(e.target.value) / 100;
+        updateStatus(targetProgress);
+      });
+
+      function updateStatus(val) {
+        const pct = Math.round(val * 100);
+        statusPct.textContent = `${pct}%`;
+        if (pct < 20) {
+          statusLabel.textContent = '当前阶段：初诊严重拥挤伴前突';
+        } else if (pct < 60) {
+          statusLabel.textContent = '矫治中期：牙弓扩弓展开，扭转牙纠正';
+        } else if (pct < 95) {
+          statusLabel.textContent = '精细微调：前牙内收，对齐黄金中线';
+        } else {
+          statusLabel.textContent = '大功告成：完美卵圆牙弓 · 黄金微笑线';
+        }
+      }
+
+      // 自动演示功能
+      const btnAutoPlay = document.getElementById('btn-auto-play');
+      btnAutoPlay.addEventListener('click', () => {
+        isAutoPlaying = !isAutoPlaying;
+        btnAutoPlay.textContent = isAutoPlaying ? '暂停演示 ⏸' : '自动演示 ▶';
+      });
+
+      // 10. 渲染循环
+      let autoDirection = 1;
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // 惯性阻尼旋转
+        if (!isDragging) {
+          archRoot.rotation.y += rotSpeedX;
+          archRoot.rotation.x += rotSpeedY;
+          rotSpeedX *= 0.92;
+          rotSpeedY *= 0.92;
+
+          // 微妙悬浮呼吸
+          archRoot.position.y = Math.sin(Date.now() * 0.002) * 0.05;
+        }
+
+        // 自动演示动画推进
+        if (isAutoPlaying) {
+          targetProgress += 0.008 * autoDirection;
+          if (targetProgress >= 1) {
+            targetProgress = 1;
+            autoDirection = -1;
+          } else if (targetProgress <= 0) {
+            targetProgress = 0;
+            autoDirection = 1;
+          }
+          slider.value = Math.round(targetProgress * 100);
+          updateStatus(targetProgress);
+        }
+
+        // 平滑插值更新每颗牙齿的姿态
+        currentProgress += (targetProgress - currentProgress) * 0.12;
+
+        teethMeshes.forEach(mesh => {
+          mesh.position.lerpVectors(mesh.userData.cPos, mesh.userData.aPos, currentProgress);
+          // 旋转欧拉角平滑插值
+          mesh.rotation.x = THREE.MathUtils.lerp(mesh.userData.cRot.x, mesh.userData.aRot.x, currentProgress);
+          mesh.rotation.y = THREE.MathUtils.lerp(mesh.userData.cRot.y, mesh.userData.aRot.y, currentProgress);
+          mesh.rotation.z = THREE.MathUtils.lerp(mesh.userData.cRot.z, mesh.userData.aRot.z, currentProgress);
+        });
+
+        // 牙套随着排齐程度自适应透明度
+        if (alignerMesh.visible) {
+          alignerMesh.material.opacity = 0.5 + currentProgress * 0.35;
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      // 窗口自适应
+      window.addEventListener('resize', () => {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+    }
+
+    // 页面加载完成后启动
+    window.addEventListener('DOMContentLoaded', initOrthoViewer);
+
+    // 确认赴约礼花交互
+    document.getElementById('btn-confirm-arrival').addEventListener('click', () => {
+      confetti({
+        particleCount: 120,
+        spread: 70,
+        origin: { y: 0.8 },
+        colors: ['#0D9488', '#06B6D4', '#38BDF8', '#F59E0B']
+      });
+      alert('已为您锁定明日正畸专家号与 3D 口扫优先通道！');
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>松鼠口腔 · 小小护齿探险通行证 (儿童齿科专享版)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Three.js for 3D Tooth Buddy -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            candy: {
+              yellow: '#FFDE59',
+              cream: '#FFFBEA',
+              pink: '#FF70A6',
+              softpink: '#FFE5EC',
+              mint: '#48E5C2',
+              softmint: '#E8FAF6',
+              blue: '#4D96FF',
+              purple: '#9B5DE5',
+              orange: '#FF9F1C'
+            }
+          },
+          fontFamily: {
+            cute: ['"Fredoka"', '"Noto Sans SC"', 'sans-serif'],
+            sans: ['"Noto Sans SC"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: #FFFDF7 radial-gradient(circle at 50% 0%, #FFF5D6 0%, #FFEBF2 45%, #EBF8FF 100%);
+      font-family: 'Noto Sans SC', sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Floating cute bubbles in background */
+    .bubble-bg {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.5;
+      animation: floatBubble 9s infinite ease-in-out;
+      z-index: 0;
+    }
+    @keyframes floatBubble {
+      0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+      50% { transform: translateY(-20px) rotate(10deg) scale(1.08); }
+    }
+
+    /* Kid Pass Ticket Container */
+    .kid-pass-card {
+      background: #FFFFFF;
+      border-radius: 28px;
+      box-shadow: 0 16px 36px -6px rgba(255, 112, 166, 0.15), 0 8px 20px -4px rgba(255, 183, 3, 0.12);
+      border: 2.5px solid #FFE699;
+      position: relative;
+    }
+
+    /* Notches with cute scalloped bites */
+    .pass-scallop-l, .pass-scallop-r {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: #FFF7E3;
+      border-radius: 50%;
+      top: 215px;
+      z-index: 20;
+    }
+    .pass-scallop-l { left: -12px; box-shadow: inset -2.5px 0 0 #FFE699; }
+    .pass-scallop-r { right: -12px; box-shadow: inset 2.5px 0 0 #FFE699; }
+
+    /* 3D Stage Box */
+    .tooth-stage {
+      background: radial-gradient(circle at 50% 30%, #FFFFFF 0%, #E0F2FE 70%, #BAE6FD 100%);
+      border-radius: 26px;
+      border: 2.5px solid #7DD3FC;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 28px -6px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Badge tags */
+    .badge-pop {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 11px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    /* Fixed bottom floating bar */
+    .bottom-cta-bar {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.94);
+      border-top: 2px solid #FFE699;
+      box-shadow: 0 -8px 24px rgba(255, 159, 28, 0.12);
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-700 pb-28 relative">
+
+  <!-- Background Decorative Floating Bubbles -->
+  <div class="bubble-bg bg-candy-softpink w-60 h-60 -top-12 -left-12" style="animation-delay: 0s;"></div>
+  <div class="bubble-bg bg-candy-softmint w-52 h-52 top-96 -right-10" style="animation-delay: 3s;"></div>
+  <div class="bubble-bg bg-amber-100 w-64 h-64 top-[650px] -left-16" style="animation-delay: 6s;"></div>
+
+  <!-- Top App Navigation / Cute Brand Header -->
+  <header class="sticky top-0 z-30 px-4 py-2.5 backdrop-blur-md bg-white/85 border-b border-amber-200/50 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-400 to-amber-200 flex items-center justify-center text-lg shadow-2xs">
+        🐿️
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5 leading-none">
+          <span class="font-black text-sm tracking-tight text-slate-800">松鼠口腔 · 童趣齿科</span>
+          <span class="bg-rose-100 text-rose-500 text-[9px] font-black px-1.5 py-0.5 rounded-full">零哭闹守护</span>
+        </div>
+        <p class="text-[10px] text-slate-400 font-medium mt-0.5">独栋森林童梦空间 · 3F 探索诊室</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <div class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs">
+        <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+        恐龙童梦舱已就绪
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Card Container -->
+  <main class="max-w-[400px] mx-auto px-3.5 pt-3 space-y-3.5 relative z-10">
+
+    <!-- 🎫 THE KID PASS: 松鼠森林奇遇·小小护齿探险通行证 -->
+    <div class="kid-pass-card p-4 relative overflow-hidden">
+      <!-- Cutout Scallop Notches -->
+      <div class="pass-scallop-l"></div>
+      <div class="pass-scallop-r"></div>
+
+      <!-- Top Header Badge -->
+      <div class="flex items-center justify-between pb-3 border-b border-dashed border-amber-200">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🎖️</span>
+          <div>
+            <div class="text-[10px] font-black uppercase tracking-wider text-amber-500">KIDS ADVENTURE BOARDING PASS</div>
+            <div class="text-base font-black text-slate-800">小勇士护齿探险通行证</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="bg-gradient-to-r from-candy-pink to-rose-400 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-2xs whitespace-nowrap">
+            VIP 护牙特工
+          </span>
+          <div class="text-[9px] text-slate-400 font-mono mt-0.5">NO.SQ-KID-8820</div>
+        </div>
+      </div>
+
+      <!-- Hero Kid Info & Mission Row -->
+      <div class="py-3 grid grid-cols-2 gap-2.5 items-center">
+        <!-- Passenger Kid -->
+        <div class="bg-amber-50/80 p-2.5 rounded-2xl border border-amber-200/60">
+          <div class="text-[10px] font-bold text-amber-600 flex items-center gap-1 mb-0.5">
+            <span>👦</span> 护齿小勇士
+          </div>
+          <div class="text-lg font-black text-slate-800 tracking-tight flex items-baseline gap-1">
+            <span id="kid-name">轩轩</span>
+            <span class="text-[10px] font-bold text-amber-700 bg-amber-200/70 px-1.5 py-0.5 rounded-md">6岁半</span>
+          </div>
+          <div class="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1">
+            <i data-lucide="shield-check" class="w-3 h-3 text-emerald-500"></i>
+            首次探险 · 0哭闹勋章
+          </div>
+        </div>
+
+        <!-- Mission Project -->
+        <div class="bg-sky-50/80 p-2.5 rounded-2xl border border-sky-200/60">
+          <div class="text-[10px] font-bold text-sky-600 flex items-center gap-1 mb-0.5">
+            <span>🚀</span> 今日探险任务
+          </div>
+          <div class="text-sm font-black text-slate-800 tracking-tight" id="kid-mission">
+            泡泡护齿防蛀涂氟
+          </div>
+          <div class="text-[10px] text-sky-600 mt-0.5 flex items-center gap-1">
+            <span>🍓</span> 瑞士香甜草莓慕斯味
+          </div>
+        </div>
+      </div>
+
+      <!-- Time & Secret Base Row -->
+      <div class="grid grid-cols-2 gap-2.5 pb-3 border-b border-dashed border-amber-200">
+        <div class="bg-rose-50/60 p-2.5 rounded-2xl border border-rose-100">
+          <div class="text-[10px] font-bold text-rose-500 flex items-center gap-1 mb-0.5">
+            <i data-lucide="clock" class="w-3 h-3"></i> 赴约集合时间
+          </div>
+          <div class="text-base font-black text-slate-800" id="kid-time">明日 10:30</div>
+          <div class="text-[9px] text-slate-400">建议提前10分钟玩积木区</div>
+        </div>
+
+        <div class="bg-purple-50/60 p-2.5 rounded-2xl border border-purple-100">
+          <div class="text-[10px] font-bold text-purple-600 flex items-center gap-1 mb-0.5">
+            <i data-lucide="map-pin" class="w-3 h-3"></i> 奇趣诊室
+          </div>
+          <div class="text-base font-black text-slate-800">3F 恐龙童梦舱</div>
+          <div class="text-[9px] text-purple-500">吸顶汪汪队动画大屏 📺</div>
+        </div>
+      </div>
+
+      <!-- Doctor & Nurse Angels -->
+      <div class="pt-2.5 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-pink-400 to-rose-300 flex items-center justify-center text-lg shadow-2xs">
+            👩‍⚕️
+          </div>
+          <div>
+            <div class="flex items-center gap-1">
+              <span class="font-bold text-xs text-slate-800">温巧玲 主治医师</span>
+              <span class="bg-rose-100 text-rose-600 text-[9px] font-bold px-1.5 py-0.2 rounded-full">温柔阿姨</span>
+            </div>
+            <p class="text-[10px] text-slate-400 font-medium">国家儿牙专委会 · 12,000+萌娃好评</p>
+          </div>
+        </div>
+        <div>
+          <span class="badge-pop bg-emerald-50 text-emerald-600 border border-emerald-200">
+            🌟 专席已锁定
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🦷 3D Q萌大白牙仔探索舱 (INTERACTIVE TOOTH BUDDY) -->
+    <div class="tooth-stage p-3.5 shadow-sm">
+      <!-- Stage Header -->
+      <div class="flex items-center justify-between mb-1.5">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-amber-400 text-white flex items-center justify-center text-xs shadow-2xs font-bold">
+            🦷
+          </span>
+          <div>
+            <h3 class="font-black text-xs text-slate-800 flex items-center gap-1">
+              3D 萌萌牙精灵 · 探险实验室
+              <span class="text-[9px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded-full">可触摸把玩</span>
+            </h3>
+            <p class="text-[9px] text-slate-500">单指360°转动牙仔 · 亲身体验神奇护齿魔法</p>
+          </div>
+        </div>
+
+        <button id="btn-sound-react" onclick="toothGiggle()" class="text-[11px] bg-white/90 hover:bg-white text-slate-700 font-bold px-2 py-0.5 rounded-full border border-sky-300 shadow-2xs active:scale-95 transition-transform flex items-center gap-1">
+          <span>👋 挠痒痒</span>
+        </button>
+      </div>
+
+      <!-- 3D WebGL Canvas Container -->
+      <div class="relative w-full h-[240px] rounded-2xl overflow-hidden flex items-center justify-center">
+        <canvas id="tooth-buddy-canvas" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+
+        <!-- Floating Dialog Bubble from Tooth -->
+        <div id="tooth-speech" class="absolute top-2 left-3 bg-white/95 backdrop-blur-sm border-2 border-amber-300 px-2.5 py-1 rounded-xl text-[11px] font-bold text-slate-700 shadow-md flex items-center gap-1 transition-all duration-300 max-w-[85%]">
+          <span>💖</span>
+          <span id="speech-text">小勇士，快帮我穿上防蛀盾牌！</span>
+        </div>
+
+        <!-- Status Tag Overlay -->
+        <div id="tooth-status-tag" class="absolute bottom-2 left-3 bg-white/90 backdrop-blur-sm border border-slate-200 px-2 py-0.5 rounded-full text-[10px] font-bold text-slate-600 shadow-2xs flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          状态：快乐天然大白牙
+        </div>
+      </div>
+
+      <!-- Magic Action Bar (Kids Interactive Tools) -->
+      <div class="grid grid-cols-3 gap-2 mt-2.5">
+        <!-- Magic Shield Button -->
+        <button id="btn-magic-shield" onclick="toggleMagicShield()" class="bg-gradient-to-b from-teal-50 to-teal-100/80 hover:from-teal-100 border-2 border-teal-300 text-teal-800 p-2 rounded-2xl text-center active:scale-95 transition-all shadow-2xs flex flex-col items-center">
+          <span class="text-lg mb-0.5">🛡️</span>
+          <span class="text-xs font-black">穿魔法盾牌</span>
+          <span class="text-[8px] text-teal-600 font-medium">涂氟/窝沟封闭</span>
+        </button>
+
+        <!-- Defeat Sugar Monster Button -->
+        <button id="btn-defeat-monster" onclick="toggleSugarMonster()" class="bg-gradient-to-b from-purple-50 to-purple-100/80 hover:from-purple-100 border-2 border-purple-300 text-purple-800 p-2 rounded-2xl text-center active:scale-95 transition-all shadow-2xs flex flex-col items-center">
+          <span class="text-lg mb-0.5">👾</span>
+          <span class="text-xs font-black">击跑蛀牙怪</span>
+          <span class="text-[8px] text-purple-600 font-medium">泡泡大扫除</span>
+        </button>
+
+        <!-- Fruit Snack Sparkle Button -->
+        <button id="btn-eat-apple" onclick="feedFruit()" class="bg-gradient-to-b from-rose-50 to-rose-100/80 hover:from-rose-100 border-2 border-rose-300 text-rose-800 p-2 rounded-2xl text-center active:scale-95 transition-all shadow-2xs flex flex-col items-center">
+          <span class="text-lg mb-0.5">🍎</span>
+          <span class="text-xs font-black">吃颗脆苹果</span>
+          <span class="text-[8px] text-rose-600 font-medium">咯吱咬一口</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 🧸 专为宝妈打造的“消除焦虑 4 大锦囊” -->
+    <div class="bg-white rounded-3xl p-4 border border-amber-200/80 shadow-sm space-y-3">
+      <div class="flex items-center justify-between pb-2 border-b border-amber-100">
+        <div class="flex items-center gap-1.5">
+          <span class="text-lg">🤱</span>
+          <h4 class="font-black text-slate-800 text-xs">宝妈安心探险指南 · 4项零哭闹承诺</h4>
+        </div>
+        <span class="text-[9px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.2 rounded-full">
+          全程透明陪伴
+        </span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <!-- 1: 动画片看牙 -->
+        <div class="bg-gradient-to-br from-amber-50/60 to-orange-50/30 p-2.5 rounded-2xl border border-amber-200/60">
+          <div class="w-6 h-6 rounded-lg bg-amber-400 text-white flex items-center justify-center text-xs mb-1 shadow-2xs">
+            📺
+          </div>
+          <div class="text-[11px] font-black text-slate-800 mb-0.5">边看动画边看牙</div>
+          <p class="text-[10px] text-slate-500 leading-normal">天花板巨幕动画大屏，戴小墨镜舒适不刺眼，笑看全过程。</p>
+        </div>
+
+        <!-- 2: 行为诱导 -->
+        <div class="bg-gradient-to-br from-pink-50/60 to-rose-50/30 p-2.5 rounded-2xl border border-pink-200/60">
+          <div class="w-6 h-6 rounded-lg bg-pink-400 text-white flex items-center justify-center text-xs mb-1 shadow-2xs">
+            🧸
+          </div>
+          <div class="text-[11px] font-black text-slate-800 mb-0.5">行为诱导不硬按</div>
+          <p class="text-[10px] text-slate-500 leading-normal">Tell-Show-Do 角色扮演沟通法，绝不强行按压束缚。</p>
+        </div>
+
+        <!-- 3: 果味涂氟 -->
+        <div class="bg-gradient-to-br from-emerald-50/60 to-teal-50/30 p-2.5 rounded-2xl border border-emerald-200/60">
+          <div class="w-6 h-6 rounded-lg bg-emerald-400 text-white flex items-center justify-center text-xs mb-1 shadow-2xs">
+            🍓
+          </div>
+          <div class="text-[11px] font-black text-slate-800 mb-0.5">果味慕斯无酸痛</div>
+          <p class="text-[10px] text-slate-500 leading-normal">瑞士进口护齿氟化慕斯，草莓慕斯香甜口感，1分钟护齿成膜。</p>
+        </div>
+
+        <!-- 4: 扭蛋盲盒 -->
+        <div class="bg-gradient-to-br from-purple-50/60 to-indigo-50/30 p-2.5 rounded-2xl border border-purple-200/60">
+          <div class="w-6 h-6 rounded-lg bg-purple-400 text-white flex items-center justify-center text-xs mb-1 shadow-2xs">
+            🎁
+          </div>
+          <div class="text-[11px] font-black text-slate-800 mb-0.5">通关巨型扭蛋盲盒</div>
+          <p class="text-[10px] text-slate-500 leading-normal">表现勇敢即颁发“小卫士勋章”，1楼大厅免费抽专属盲盒！</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🏰 森林童梦独栋漫游指南 -->
+    <div class="bg-gradient-to-br from-sky-50 via-teal-50 to-amber-50 rounded-3xl p-3 border border-sky-200/70 shadow-sm flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-xl bg-white border border-sky-200 shadow-2xs flex items-center justify-center text-xl">
+          🏰
+        </div>
+        <div>
+          <div class="text-xs font-black text-slate-800 flex items-center gap-1">
+            松鼠童梦城堡 · 楼层动线
+            <span class="text-[9px] font-bold bg-sky-500 text-white px-1.5 py-0.2 rounded-full">探险地图</span>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-0.5">1F 乐高积木王国 ➔ 2F 绘本阅读区 ➔ 3F 奇趣诊室</p>
+        </div>
+      </div>
+      <button onclick="showToyDrawer()" class="bg-white hover:bg-slate-50 text-sky-700 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-sky-300 shadow-2xs active:scale-95 transition-transform flex items-center gap-0.5 whitespace-nowrap">
+        <span>逛逛</span>
+        <i data-lucide="chevron-right" class="w-3 h-3"></i>
+      </button>
+    </div>
+
+    <!-- 🎁 互动式通关奖励徽章墙 -->
+    <div class="bg-amber-50/80 border-2 border-dashed border-amber-300 rounded-3xl p-3.5 text-center">
+      <div class="text-xs font-black text-amber-900 mb-0.5 flex items-center justify-center gap-1">
+        <span>🏆</span> 今日待解锁勋章：【超能护齿小勇士】
+      </div>
+      <p class="text-[10px] text-amber-700 mb-2.5">看牙过程中不哭闹、张大嘴巴 3 次即可当场点亮！</p>
+      <div class="flex justify-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-white border-2 border-amber-300 shadow-2xs flex items-center justify-center text-base animate-bounce">
+          🦁
+        </div>
+        <div class="w-10 h-10 rounded-full bg-white border-2 border-emerald-300 shadow-2xs flex items-center justify-center text-base">
+          🦖
+        </div>
+        <div class="w-10 h-10 rounded-full bg-white border-2 border-purple-300 shadow-2xs flex items-center justify-center text-base">
+          🚀
+        </div>
+        <div class="w-10 h-10 rounded-full bg-amber-200/70 border-2 border-dashed border-amber-400 flex items-center justify-center text-slate-400 text-xs font-bold">
+          ?
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 🌟 FIXED BOTTOM BAR: 确认出发与出具凭证 -->
+  <div class="fixed bottom-0 left-0 right-0 z-40 bottom-cta-bar px-4 py-2.5 pb-safe">
+    <div class="max-w-[400px] mx-auto flex items-center gap-3">
+      <div class="flex-1">
+        <div class="flex items-center gap-1.5 text-xs font-black text-slate-800">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          恐龙童梦舱专席已留好
+        </div>
+        <div class="text-[10px] text-slate-400 font-medium">轩轩小勇士 · 明日 10:30 · 附地下车位</div>
+      </div>
+
+      <button id="btn-confirm-kid" onclick="triggerKidPassport()" class="bg-gradient-to-r from-amber-400 via-orange-400 to-candy-pink hover:opacity-95 text-white font-black text-xs px-4 py-2.5 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1 whitespace-nowrap">
+        <span>出具小勇士凭证</span>
+        <span>🚀</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Lucide icons init -->
+  <script>
+    lucide.createIcons();
+  </script>
+
+  <!-- ========================================== -->
+  <!-- 3D CUTE TOOTH BUDDY (Three.js Engine) -->
+  <!-- ========================================== -->
+  <script>
+    let scene, camera, renderer;
+    let toothGroup, toothBody, eyeLeft, eyeRight;
+    let blushLeft, blushRight, smileMouth, shieldMesh, monsterGroup;
+    let handLeft, handRight;
+    let isShieldActive = false;
+    let isMonsterActive = false;
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    let targetRotationY = 0;
+    let targetRotationX = 0;
+
+    function init3DToothBuddy() {
+      const container = document.getElementById('tooth-buddy-canvas').parentElement;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      scene = new THREE.Scene();
+
+      camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
+      camera.position.set(0, 0.15, 3.8);
+
+      renderer = new THREE.WebGLRenderer({
+        canvas: document.getElementById('tooth-buddy-canvas'),
+        alpha: true,
+        antialias: true
+      });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.88);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffedd5, 1.3);
+      dirLight.position.set(3, 4, 4);
+      scene.add(dirLight);
+
+      const rimLight = new THREE.DirectionalLight(0x38bdf8, 0.8);
+      rimLight.position.set(-3, -2, -2);
+      scene.add(rimLight);
+
+      // Root Group
+      toothGroup = new THREE.Group();
+      scene.add(toothGroup);
+
+      // --- Build Cute Tooth Body with soft lighting and shadow ---
+      buildToothGeometry();
+
+      // --- Build Cute Eyes, Pupils, Blush, Smile ---
+      buildToothFace();
+
+      // --- Build Cute Little Arms/Hands ---
+      buildToothHands();
+
+      // --- Build Magic Shield (Bubble) ---
+      buildMagicShield();
+
+      // --- Build Sugar Monster ---
+      buildSugarMonster();
+
+      // Ground Soft Shadow Circle
+      const shadowGeo = new THREE.PlaneGeometry(1.6, 0.8);
+      const shadowMat = new THREE.MeshBasicMaterial({
+        color: 0x0284c7,
+        transparent: true,
+        opacity: 0.15
+      });
+      const groundShadow = new THREE.Mesh(shadowGeo, shadowMat);
+      groundShadow.rotation.x = -Math.PI / 2;
+      groundShadow.position.y = -0.92;
+      scene.add(groundShadow);
+
+      // Touch / Mouse controls
+      const canvas = document.getElementById('tooth-buddy-canvas');
+      canvas.addEventListener('pointerdown', (e) => {
+        isDragging = true;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const deltaX = e.clientX - previousMousePosition.x;
+        const deltaY = e.clientY - previousMousePosition.y;
+        targetRotationY += deltaX * 0.01;
+        targetRotationX += deltaY * 0.008;
+        targetRotationX = Math.max(-0.4, Math.min(0.4, targetRotationX));
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener('pointerup', () => { isDragging = false; });
+
+      // Animate Loop
+      animateToothBuddy();
+    }
+
+    // 1. Tooth Body Geometry (Rounded smooth chubby baby molar)
+    function buildToothGeometry() {
+      const toothMat = new THREE.MeshStandardMaterial({
+        color: 0xfdfbf7,
+        roughness: 0.12,
+        metalness: 0.02,
+      });
+
+      // Main crown: 4 lobes shape
+      const crownGeo = new THREE.CylinderGeometry(0.75, 0.62, 0.98, 36, 10);
+      const pos = crownGeo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        let x = pos.getX(i);
+        let y = pos.getY(i);
+        let z = pos.getZ(i);
+
+        let angle = Math.atan2(z, x);
+        let rOffset = Math.sin(angle * 2) * 0.08;
+        if (y > 0.1) {
+          let topWave = Math.sin(angle * 4) * 0.06;
+          pos.setY(i, y + topWave);
+        }
+        pos.setX(i, x * (1 + rOffset));
+        pos.setZ(i, z * (1 + rOffset));
+      }
+      crownGeo.computeVertexNormals();
+
+      toothBody = new THREE.Mesh(crownGeo, toothMat);
+      toothBody.position.y = 0.1;
+      toothGroup.add(toothBody);
+
+      // Two cute baby roots below
+      const rootMat = new THREE.MeshStandardMaterial({
+        color: 0xf8f9fa,
+        roughness: 0.25
+      });
+      const rootGeoL = new THREE.ConeGeometry(0.25, 0.55, 16);
+      rootGeoL.rotateX(Math.PI);
+      const rootL = new THREE.Mesh(rootGeoL, rootMat);
+      rootL.position.set(-0.3, -0.42, 0);
+      rootL.rotation.z = -0.16;
+      toothGroup.add(rootL);
+
+      const rootR = rootL.clone();
+      rootR.position.set(0.3, -0.42, 0);
+      rootR.rotation.z = 0.16;
+      toothGroup.add(rootR);
+    }
+
+    // 2. Cute Anime Face
+    function buildToothFace() {
+      // Big Shiny Eyes
+      const eyeMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+      const eyeGeo = new THREE.SphereGeometry(0.12, 16, 16);
+      eyeGeo.scale(1, 1.25, 0.4);
+
+      eyeLeft = new THREE.Mesh(eyeGeo, eyeMat);
+      eyeLeft.position.set(-0.26, 0.18, 0.67);
+      toothGroup.add(eyeLeft);
+
+      eyeRight = new THREE.Mesh(eyeGeo, eyeMat);
+      eyeRight.position.set(0.26, 0.18, 0.67);
+      toothGroup.add(eyeRight);
+
+      // Eye Sparkle Highlights
+      const sparkMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const sparkGeo = new THREE.SphereGeometry(0.045, 12, 12);
+      const sparkL1 = new THREE.Mesh(sparkGeo, sparkMat);
+      sparkL1.position.set(-0.23, 0.23, 0.74);
+      toothGroup.add(sparkL1);
+
+      const sparkR1 = new THREE.Mesh(sparkGeo, sparkMat);
+      sparkR1.position.set(0.29, 0.23, 0.74);
+      toothGroup.add(sparkR1);
+
+      // Second smaller sparkle
+      const sparkSmall = new THREE.SphereGeometry(0.02, 8, 8);
+      const sparkL2 = new THREE.Mesh(sparkSmall, sparkMat);
+      sparkL2.position.set(-0.28, 0.14, 0.73);
+      toothGroup.add(sparkL2);
+
+      const sparkR2 = new THREE.Mesh(sparkSmall, sparkMat);
+      sparkR2.position.set(0.24, 0.14, 0.73);
+      toothGroup.add(sparkR2);
+
+      // Cheerful Pink Blush Cheeks
+      const blushMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e, transparent: true, opacity: 0.75 });
+      const blushGeo = new THREE.CircleGeometry(0.09, 16);
+
+      blushLeft = new THREE.Mesh(blushGeo, blushMat);
+      blushLeft.position.set(-0.46, 0.05, 0.63);
+      blushLeft.rotation.y = -0.32;
+      toothGroup.add(blushLeft);
+
+      blushRight = new THREE.Mesh(blushGeo, blushMat);
+      blushRight.position.set(0.46, 0.05, 0.63);
+      blushRight.rotation.y = 0.32;
+      toothGroup.add(blushRight);
+
+      // Smile mouth (curved tube)
+      const curve = new THREE.CubicBezierCurve3(
+        new THREE.Vector3(-0.16, 0.04, 0.70),
+        new THREE.Vector3(-0.08, -0.09, 0.71),
+        new THREE.Vector3(0.08, -0.09, 0.71),
+        new THREE.Vector3(0.16, 0.04, 0.70)
+      );
+      const mouthGeo = new THREE.TubeGeometry(curve, 20, 0.024, 8, false);
+      const mouthMat = new THREE.MeshBasicMaterial({ color: 0xe11d48 });
+      smileMouth = new THREE.Mesh(mouthGeo, mouthMat);
+      toothGroup.add(smileMouth);
+    }
+
+    // 2.5 Cute Little Waving Hands
+    function buildToothHands() {
+      const handMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
+      const handGeo = new THREE.SphereGeometry(0.1, 16, 16);
+      handGeo.scale(1, 0.8, 0.8);
+
+      handLeft = new THREE.Mesh(handGeo, handMat);
+      handLeft.position.set(-0.78, 0.02, 0.1);
+      handLeft.rotation.z = 0.4;
+      toothGroup.add(handLeft);
+
+      handRight = new THREE.Mesh(handGeo, handMat);
+      handRight.position.set(0.78, 0.02, 0.1);
+      handRight.rotation.z = -0.4;
+      toothGroup.add(handRight);
+    }
+
+    // 3. Magic Protective Crystal Shield Bubble
+    function buildMagicShield() {
+      const shieldGeo = new THREE.SphereGeometry(1.22, 32, 32);
+      const shieldMat = new THREE.MeshPhysicalMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.0, // hidden initially
+        roughness: 0.04,
+        transmission: 0.88,
+        ior: 1.35,
+        thickness: 0.6,
+        emissive: 0x0284c7,
+        emissiveIntensity: 0.0
+      });
+      shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
+      shieldMesh.position.y = 0.05;
+      toothGroup.add(shieldMesh);
+    }
+
+    // 4. Sugar Bug Monster (Purple cute monster)
+    function buildSugarMonster() {
+      monsterGroup = new THREE.Group();
+      monsterGroup.position.set(0.65, 0.45, 0.5);
+      monsterGroup.scale.set(0.001, 0.001, 0.001); // invisible initially
+
+      const mMat = new THREE.MeshStandardMaterial({ color: 0x9333ea, roughness: 0.35 });
+      const mBody = new THREE.Mesh(new THREE.DodecahedronGeometry(0.24, 1), mMat);
+      monsterGroup.add(mBody);
+
+      // Monster goofy single eye
+      const mEye = new THREE.Mesh(new THREE.SphereGeometry(0.07, 12, 12), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+      mEye.position.set(0, 0.05, 0.2);
+      monsterGroup.add(mEye);
+
+      const mPupil = new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 12), new THREE.MeshBasicMaterial({ color: 0x000000 }));
+      mPupil.position.set(0, 0.05, 0.26);
+      monsterGroup.add(mPupil);
+
+      // Monster horns
+      const hornGeo = new THREE.ConeGeometry(0.05, 0.15, 8);
+      const hornL = new THREE.Mesh(hornGeo, new THREE.MeshStandardMaterial({ color: 0xf43f5e }));
+      hornL.position.set(-0.1, 0.22, 0);
+      hornL.rotation.z = -0.3;
+      monsterGroup.add(hornL);
+
+      const hornR = hornL.clone();
+      hornR.position.set(0.1, 0.22, 0);
+      hornR.rotation.z = 0.3;
+      monsterGroup.add(hornR);
+
+      toothGroup.add(monsterGroup);
+    }
+
+    // --- Interactive Functions ---
+
+    // 1. Toggle Magic Shield (Fluoride / Fissure seal)
+    function toggleMagicShield() {
+      isShieldActive = !isShieldActive;
+      const speech = document.getElementById('speech-text');
+      const statusTag = document.getElementById('tooth-status-tag');
+      const btn = document.getElementById('btn-magic-shield');
+
+      if (isShieldActive) {
+        shieldMesh.material.opacity = 0.5;
+        shieldMesh.material.emissiveIntensity = 0.45;
+        btn.classList.add('ring-3', 'ring-teal-400');
+        speech.textContent = '哇！穿上钻石泡泡防蛀铠甲啦，酸酸糖果都不怕！🛡️';
+        statusTag.innerHTML = '<span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span> 状态：防蛀泡泡全能防护中';
+        
+        confetti({
+          particleCount: 45,
+          spread: 60,
+          origin: { y: 0.45 },
+          colors: ['#38BDF8', '#FFDE59', '#FF70A6', '#48E5C2']
+        });
+      } else {
+        shieldMesh.material.opacity = 0.0;
+        shieldMesh.material.emissiveIntensity = 0.0;
+        btn.classList.remove('ring-3', 'ring-teal-400');
+        speech.textContent = '小勇士，快帮我穿上防蛀盾牌！';
+        statusTag.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 状态：快乐天然大白牙';
+      }
+    }
+
+    // 2. Defeat Sugar Monster
+    function toggleSugarMonster() {
+      const speech = document.getElementById('speech-text');
+      const statusTag = document.getElementById('tooth-status-tag');
+      
+      if (!isMonsterActive) {
+        isMonsterActive = true;
+        monsterGroup.scale.set(1, 1, 1);
+        speech.textContent = '哎呀！蛀牙小怪兽想偷吃糖！快点击“击跑蛀牙怪”帮我！👾';
+        statusTag.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span> 状态：警报！发现蛀牙小怪兽';
+      } else {
+        isMonsterActive = false;
+        
+        let flyDist = 0;
+        const flyInterval = setInterval(() => {
+          flyDist += 0.15;
+          monsterGroup.position.x += 0.2;
+          monsterGroup.position.y += 0.25;
+          monsterGroup.rotation.z += 0.4;
+          monsterGroup.scale.multiplyScalar(0.85);
+          if (flyDist > 3) {
+            clearInterval(flyInterval);
+            monsterGroup.scale.set(0.001, 0.001, 0.001);
+            monsterGroup.position.set(0.65, 0.45, 0.5);
+          }
+        }, 30);
+
+        speech.textContent = '太棒啦！泡泡特工队把小怪兽赶跑咯！🎉';
+        statusTag.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 状态：蛀牙怪已被消灭！';
+
+        confetti({
+          particleCount: 50,
+          spread: 80,
+          origin: { y: 0.45 },
+          colors: ['#FFDE59', '#9B5DE5', '#FF70A6']
+        });
+      }
+    }
+
+    // 3. Feed Apple / Snack
+    function feedFruit() {
+      const speech = document.getElementById('speech-text');
+      speech.textContent = '咯吱咯吱！脆苹果真甜真健康！🍎✨';
+      
+      let step = 0;
+      const wiggleInterval = setInterval(() => {
+        step++;
+        toothGroup.position.y = Math.sin(step * 0.5) * 0.12;
+        toothGroup.rotation.z = Math.sin(step * 0.6) * 0.1;
+        if (step > 16) {
+          clearInterval(wiggleInterval);
+          toothGroup.position.y = 0;
+          toothGroup.rotation.z = 0;
+        }
+      }, 35);
+
+      confetti({
+        particleCount: 30,
+        spread: 50,
+        origin: { y: 0.45 },
+        colors: ['#FF5E7E', '#22C55E', '#FFDE59']
+      });
+    }
+
+    // 4. Tickle tooth
+    function toothGiggle() {
+      const speech = document.getElementById('speech-text');
+      speech.textContent = '好痒呀哈哈哈哈～谢谢小勇士！😄';
+      
+      eyeLeft.scale.y = 0.1;
+      eyeRight.scale.y = 0.1;
+      setTimeout(() => {
+        eyeLeft.scale.y = 1.25;
+        eyeRight.scale.y = 1.25;
+      }, 300);
+    }
+
+    function triggerKidPassport() {
+      confetti({
+        particleCount: 80,
+        spread: 90,
+        origin: { y: 0.6 }
+      });
+      alert('🌟 叮咚！轩轩小勇士的“专属护齿探险通行证”已确认出具！\n\n恐龙童梦舱与温巧玲阿姨已做好全部准备，凭此卡到院即可领取专属护齿徽章与扭蛋币！');
+    }
+
+    function showToyDrawer() {
+      alert('🏰 松鼠童梦城堡包含：\n1F 乐高积木王国 + 免费饮品吧\n2F 奇趣绘本馆 + 益智滑滑梯\n3F 汪汪队/恐龙沉浸诊室\n\n带孩子提前 10-15 分钟到院体验最佳！');
+    }
+
+    // Render loop with idle breathing and cute waving
+    let clock = new THREE.Clock();
+    function animateToothBuddy() {
+      requestAnimationFrame(animateToothBuddy);
+      const elapsedTime = clock.getElapsedTime();
+
+      // Damped drag rotation
+      toothGroup.rotation.y += (targetRotationY - toothGroup.rotation.y) * 0.08;
+      toothGroup.rotation.x += (targetRotationX - toothGroup.rotation.x) * 0.08;
+
+      // Gentle floating breathing when idle
+      if (!isDragging) {
+        toothGroup.position.y = Math.sin(elapsedTime * 2.2) * 0.04;
+        if (handRight) {
+          handRight.rotation.z = -0.4 + Math.sin(elapsedTime * 4) * 0.15;
+        }
+      }
+
+      // Shield pulsating light effect
+      if (isShieldActive && shieldMesh) {
+        shieldMesh.rotation.y += 0.012;
+        shieldMesh.rotation.z += 0.006;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      const container = document.getElementById('tooth-buddy-canvas').parentElement;
+      if (!container || !renderer) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      init3DToothBuddy();
+    });
+  </script>
+</body>
+</html>

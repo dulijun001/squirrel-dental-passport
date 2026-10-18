@@ -1399,7 +1399,7 @@
       </div>
 
       <!-- 6 步纵向透明时间轴 (适老化大字号 + 权威标签 + 白话痛点消除) -->
-      <div class="space-y-3.5 relative pl-0.5">
+      <div id="journey-steps-container" class="space-y-3.5 relative pl-0.5">
         <!-- 动态发光流光导轨 -->
         <div class="pulse-track"></div>
         
@@ -1772,6 +1772,113 @@
       </div>
     </section>
 
+    <!-- 3. 儿牙（儿童齿科）3D 萌萌牙精灵探险实验室 -->
+    <section id="section-3d-pediatric" class="deluxe-card shadow-sm stagger-spring stagger-5 spotlight-card" style="display: none; background: radial-gradient(circle at 50% 20%, #FFFFFF 0%, #F0FDF4 50%, #ECFEFF 100%); border-color: #A7F3D0;">
+      <!-- 头部标题与触控引导 -->
+      <div class="flex items-center justify-between pb-3 border-b border-emerald-100">
+        <div class="flex items-center gap-2.5 min-w-0 pr-2">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-400 to-teal-300 text-white flex items-center justify-center font-bold shrink-0 shadow-2xs">
+            <span class="text-base">🦷</span>
+          </div>
+          <div class="min-w-0">
+            <div class="text-xs font-black text-slate-900 flex items-center gap-1.5 flex-wrap">
+              <span class="whitespace-nowrap">3D 萌萌牙精灵 · 奇趣探险实验室</span>
+              <span class="text-[8.5px] px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold shrink-0">零哭闹交互</span>
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5 truncate">单指360°旋转把玩 · 亲身体验神奇护齿魔法</div>
+          </div>
+        </div>
+        <button id="btn-pediatric-tickle" onclick="toothGigglePediatric()" class="px-2.5 py-1 rounded-full bg-white border border-emerald-200 text-emerald-700 text-[10.5px] font-bold shadow-2xs flex items-center gap-1 shrink-0 active:scale-95 transition-transform">
+          <span>👋 挠痒痒</span>
+        </button>
+      </div>
+
+      <!-- 核心 3D 萌牙 WebGL 舞台容器 -->
+      <div class="mt-3 relative w-full h-[260px] rounded-2xl overflow-hidden border border-emerald-200/80 shadow-inner flex items-center justify-center" style="background: radial-gradient(circle at 50% 35%, #FFFFFF 0%, #E0F2FE 70%, #BAE6FD 100%);">
+        <canvas id="pediatric-3d-canvas" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+
+        <!-- 牙精灵对话气泡 -->
+        <div id="pediatric-speech-bubble" class="absolute top-2.5 left-3 bg-white/95 backdrop-blur-md border-2 border-amber-300 px-3 py-1.5 rounded-2xl rounded-bl-xs text-[11px] font-black text-slate-800 shadow-md flex items-center gap-1.5 transition-all duration-300 max-w-[85%]">
+          <span>💖</span>
+          <span id="pediatric-speech-text">小勇士，快帮我穿上钻石泡泡盾牌！</span>
+        </div>
+
+        <!-- 状态指示条 -->
+        <div id="pediatric-status-tag" class="absolute bottom-2.5 left-3 bg-white/90 backdrop-blur-md border border-slate-200 px-2.5 py-1 rounded-full text-[10px] font-bold text-slate-700 shadow-2xs flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>状态：快乐天然大白牙</span>
+        </div>
+      </div>
+
+      <!-- 探险交互三键阵列 -->
+      <div class="grid grid-cols-3 gap-2 mt-3">
+        <!-- 魔法盾牌按钮 (涂氟/窝沟封闭) -->
+        <button id="btn-pediatric-shield" onclick="toggleMagicShieldPediatric()" class="bg-gradient-to-b from-teal-50 to-teal-100/80 hover:from-teal-100 border-2 border-teal-300 text-teal-800 p-2 rounded-2xl text-center active:scale-95 transition-all shadow-2xs flex flex-col items-center">
+          <span class="text-lg mb-0.5">🛡️</span>
+          <span class="text-xs font-black">穿魔法盾牌</span>
+          <span class="text-[8.5px] text-teal-600 font-medium">涂氟/窝沟封闭</span>
+        </button>
+
+        <!-- 击跑蛀牙怪 -->
+        <button id="btn-pediatric-monster" onclick="toggleSugarMonsterPediatric()" class="bg-gradient-to-b from-purple-50 to-purple-100/80 hover:from-purple-100 border-2 border-purple-300 text-purple-800 p-2 rounded-2xl text-center active:scale-95 transition-all shadow-2xs flex flex-col items-center">
+          <span class="text-lg mb-0.5">👾</span>
+          <span class="text-xs font-black">击跑蛀牙怪</span>
+          <span class="text-[8.5px] text-purple-600 font-medium">泡泡大扫除</span>
+        </button>
+
+        <!-- 吃颗脆苹果 -->
+        <button id="btn-pediatric-apple" onclick="feedFruitPediatric()" class="bg-gradient-to-b from-rose-50 to-rose-100/80 hover:from-rose-100 border-2 border-rose-300 text-rose-800 p-2 rounded-2xl text-center active:scale-95 transition-all shadow-2xs flex flex-col items-center">
+          <span class="text-lg mb-0.5">🍎</span>
+          <span class="text-xs font-black">吃颗脆苹果</span>
+          <span class="text-[8.5px] text-rose-600 font-medium">咯吱咬一口</span>
+        </button>
+      </div>
+
+      <!-- 4 大儿牙特色专属科普解构 -->
+      <div class="mt-3.5 grid grid-cols-2 gap-2 text-left">
+        <div class="p-2.5 rounded-xl bg-white/90 border border-emerald-100 shadow-2xs">
+          <div class="flex items-center gap-1 text-[11px] font-bold text-slate-800 mb-0.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>边看动画边看牙</span>
+          </div>
+          <div class="text-[10px] text-slate-500 leading-tight">天花板巨幕动画大屏，戴小墨镜舒适不刺眼，全程笑呵呵。</div>
+        </div>
+
+        <div class="p-2.5 rounded-xl bg-white/90 border border-emerald-100 shadow-2xs">
+          <div class="flex items-center gap-1 text-[11px] font-bold text-slate-800 mb-0.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>行为诱导不硬按</span>
+          </div>
+          <div class="text-[10px] text-slate-500 leading-tight">Tell-Show-Do 角色扮演沟通，绝不强行按压束缚。</div>
+        </div>
+
+        <div class="p-2.5 rounded-xl bg-white/90 border border-emerald-100 shadow-2xs">
+          <div class="flex items-center gap-1 text-[11px] font-bold text-slate-800 mb-0.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>果味慕斯温和涂氟</span>
+          </div>
+          <div class="text-[10px] text-slate-500 leading-tight">瑞士草莓慕斯香甜口感，像吃甜点一样香，1分钟护齿成膜。</div>
+        </div>
+
+        <div class="p-2.5 rounded-xl bg-white/90 border border-emerald-100 shadow-2xs">
+          <div class="flex items-center gap-1 text-[11px] font-bold text-slate-800 mb-0.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>通关巨型扭蛋盲盒</span>
+          </div>
+          <div class="text-[10px] text-slate-500 leading-tight">看牙勇敢颁发小勇士勋章，1楼大厅凭卡免费扭蛋一次！</div>
+        </div>
+      </div>
+
+      <!-- 温巧玲主任寄语 -->
+      <div class="mt-3 p-2.5 rounded-xl bg-emerald-50/90 border border-emerald-200 flex items-start gap-2 text-[10.5px] text-slate-700 leading-relaxed">
+        <i data-lucide="heart-handshake" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+        <div>
+          <strong class="text-emerald-950 font-bold">温巧玲主任安心寄语：</strong>
+          “在松鼠童趣诊室，看牙不是受罪，而是一场像去迪士尼一样的寻宝探险！家长全程陪伴，让孩子笑着完成健康护齿。”
+        </div>
+      </div>
+    </section>
+
 <!-- 🌟 组件 3：【专家名片横滑池 MDT Expert Pool】(刘彦廷领衔 + 韩峄 + 周剑 + 杨彬雁) -->
     <section class="deluxe-card stagger-spring stagger-6">
       <div class="flex items-center justify-between mb-3">
@@ -1935,6 +2042,97 @@
           <div class="mt-2.5 pt-2 border-t border-orange-100 flex items-center justify-between text-[10px]">
             <span class="text-slate-400">颌面骨量 · 关节健康总顾问</span>
             <span class="text-orange-600 font-bold">查看履历 &gt;</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 儿牙专属专家组 (温巧玲领衔 + 张萌萌 + 陈雪华 + 韩峄) -->
+      <div id="doc-pool-pediatric" class="doc-pool -mx-1 px-1" style="display: none;">
+        <!-- 医生 1: 温巧玲 主治医师 -->
+        <div class="doc-card doc-card-tilted" onclick="openDetailModal('doctor')"><div class="doc-card-glow"></div>
+          <div class="flex items-start gap-3">
+            <div class="w-16 h-20 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex flex-col items-center justify-center text-white border border-emerald-300 shadow-sm shrink-0">
+              <span class="text-2xl mb-0.5">👩‍⚕️</span>
+              <span class="text-[9px] font-black tracking-wider">儿牙领衔</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-black text-slate-900">温巧玲</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 font-black border border-emerald-300">明日亲诊</span>
+              </div>
+              <div class="text-[10px] text-emerald-700 font-semibold mt-0.5">主治医师 / 儿牙学科带头人</div>
+              <div class="text-[10px] text-slate-600 mt-1 line-clamp-2 leading-tight">中华口腔医学会儿牙专委会，12,000+ 萌娃好评。专攻：儿童行为诱导、舒适化无痛防蛀、乳牙微创保牙髓。</div>
+            </div>
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-emerald-100 flex items-center justify-between text-[10px]">
+            <span class="text-slate-400">零哭闹守护 · 宝妈安心首选</span>
+            <span class="text-emerald-700 font-bold">查看履历 &gt;</span>
+          </div>
+        </div>
+
+        <!-- 医生 2: 张萌萌 动画诱导资深护师 -->
+        <div class="doc-card doc-card-tilted" onclick="openDetailModal('doctor')"><div class="doc-card-glow"></div>
+          <div class="flex items-start gap-3">
+            <div class="w-16 h-20 rounded-xl bg-gradient-to-br from-pink-400 to-rose-400 flex flex-col items-center justify-center text-white border border-pink-300 shadow-sm shrink-0">
+              <span class="text-2xl mb-0.5">🧸</span>
+              <span class="text-[9px] font-black tracking-wider">情绪安抚</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-black text-slate-900">张萌萌</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-pink-100 text-pink-700 font-black border border-pink-200">零哭闹纪录</span>
+              </div>
+              <div class="text-[10px] text-pink-600 font-semibold mt-0.5">儿牙资深护师 / 动画游戏导师</div>
+              <div class="text-[10px] text-slate-600 mt-1 line-clamp-2 leading-tight">国家二级心理咨询背景，擅长游戏化脱敏沟通（Tell-Show-Do），让孩子把看牙当玩乐。</div>
+            </div>
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-pink-100 flex items-center justify-between text-[10px]">
+            <span class="text-slate-400">儿童行为诱导专家</span>
+            <span class="text-pink-600 font-bold">查看履历 &gt;</span>
+          </div>
+        </div>
+
+        <!-- 医生 3: 陈雪华 主任医师 (早期肌功能诱导) -->
+        <div class="doc-card doc-card-tilted" onclick="openDetailModal('doctor')"><div class="doc-card-glow"></div>
+          <div class="flex items-start gap-3">
+            <div class="w-16 h-20 rounded-xl bg-gradient-to-br from-orange-400 to-amber-500 flex flex-col items-center justify-center text-white border border-orange-300 shadow-sm shrink-0">
+              <i data-lucide="sparkles" class="w-7 h-7 mb-1 text-white"></i>
+              <span class="text-[9px] font-black tracking-wider">早期干预</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-black text-slate-900">陈雪华</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-800 font-black border border-amber-300">联合会诊</span>
+              </div>
+              <div class="text-[10px] text-orange-600 font-semibold mt-0.5">正畸科总监 / 主任医师</div>
+              <div class="text-[10px] text-slate-600 mt-1 line-clamp-2 leading-tight">把关儿童 3-12 岁乳牙换牙期颌骨发育与口呼吸早期矫正（MRC / 咬合诱导）。</div>
+            </div>
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-orange-100 flex items-center justify-between text-[10px]">
+            <span class="text-slate-400">面型发育 · 早期咬合顾问</span>
+            <span class="text-orange-600 font-bold">查看履历 &gt;</span>
+          </div>
+        </div>
+
+        <!-- 医生 4: 韩峄 医疗副院长 (院感质控与器械安全) -->
+        <div class="doc-card doc-card-tilted" onclick="openDetailModal('doctor')"><div class="doc-card-glow"></div>
+          <div class="flex items-start gap-3">
+            <div class="w-16 h-20 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex flex-col items-center justify-center text-white border border-teal-300 shadow-sm shrink-0">
+              <i data-lucide="shield-check" class="w-7 h-7 mb-1 text-white"></i>
+              <span class="text-[9px] font-black tracking-wider">质控把关</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-black text-slate-900">韩峄</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-teal-100 text-teal-800 font-black border border-teal-300">安全质控</span>
+              </div>
+              <div class="text-[10px] text-teal-700 font-semibold mt-0.5">医疗副院长 / 院感质控主任</div>
+              <div class="text-[10px] text-slate-600 mt-1 line-clamp-2 leading-tight">严格执行国家级儿童就诊器械无菌消音标准，一人一机一用一灭菌，零交叉感染。</div>
+            </div>
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-teal-100 flex items-center justify-between text-[10px]">
+            <span class="text-slate-400">院感质控 · 医疗安全总指挥</span>
+            <span class="text-teal-700 font-bold">查看履历 &gt;</span>
           </div>
         </div>
       </div>
@@ -2760,30 +2958,170 @@
       applyProjectSpecialty(item);
     }
 
+    const pediatricStepsHTML = `
+        <!-- 动态发光流光导轨 -->
+        <div class="pulse-track"></div>
+        
+        <!-- 步骤 1: 乐高积木大厅签到 -->
+        <div class="flex items-start gap-3 relative">
+          <div class="w-6 h-6 rounded-full bg-emerald-500 text-white text-[11px] font-black flex items-center justify-center shrink-0 z-10 shadow-sm shadow-emerald-500/30">
+            1
+          </div>
+          <div class="flex-1 bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100/90 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-xs">乐高积木王国签到 · 领小勇士挂牌</span>
+              <span class="text-[9px] text-emerald-800 font-bold bg-emerald-100/80 px-1.5 py-0.2 rounded">约 3 分钟</span>
+            </div>
+            <div class="text-[11px] text-slate-600 mt-1 leading-relaxed">
+              1楼大厅直报宝宝名字，专属护士阿姨迎候，戴上小勇士勋章与扭蛋币，无需普通门诊排队，在乐高滑梯区先放松玩乐。
+            </div>
+          </div>
+        </div>
+
+        <!-- 步骤 2: 心理脱敏与角色扮演 -->
+        <div class="flex items-start gap-3 relative">
+          <div class="w-6 h-6 rounded-full bg-teal-500 text-white text-[11px] font-black flex items-center justify-center shrink-0 z-10 shadow-sm shadow-teal-500/30">
+            2
+          </div>
+          <div class="flex-1 bg-white p-2.5 rounded-xl border border-teal-100 text-xs shadow-2xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-xs">心理脱敏 · 小熊刷牙游戏沟通</span>
+              <span class="text-[9px] text-teal-700 font-bold bg-teal-50 px-1.5 py-0.2 rounded border border-teal-200">Tell-Show-Do</span>
+            </div>
+            <div class="text-[11px] text-slate-600 mt-1 leading-relaxed">
+              温巧玲医生拿出毛绒玩具小熊，用童话语言边讲故事边演示“小牙刷洗泡泡浴”，彻底消除孩子对器械的陌生与恐惧。
+            </div>
+          </div>
+        </div>
+
+        <!-- 步骤 3: 恐龙童梦舱沉浸就诊 -->
+        <div class="flex items-start gap-3 relative">
+          <div class="w-6 h-6 rounded-full bg-sky-500 text-white text-[11px] font-black flex items-center justify-center shrink-0 z-10 shadow-sm shadow-sky-500/30">
+            3
+          </div>
+          <div class="flex-1 bg-white p-2.5 rounded-xl border border-sky-100 text-xs shadow-2xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-xs">3F 恐龙童梦舱 · 吸顶天花板巨幕</span>
+              <span class="text-[9px] text-sky-700 font-bold bg-sky-50 px-1.5 py-0.2 rounded border border-sky-200">动画陪伴</span>
+            </div>
+            <div class="text-[11px] text-slate-600 mt-1 leading-relaxed">
+              躺在舒适牙椅上，头顶巨幕投影播放孩子最爱的《汪汪队》或《小猪佩奇》，戴上防蓝光墨镜，全程笑呵呵不哭闹。
+            </div>
+          </div>
+        </div>
+
+        <!-- 步骤 4: STA 舒适化无感护齿 -->
+        <div class="flex items-start gap-3 relative">
+          <div class="w-6 h-6 rounded-full bg-purple-500 text-white text-[11px] font-black flex items-center justify-center shrink-0 z-10 shadow-sm shadow-purple-500/30">
+            4
+          </div>
+          <div class="flex-1 bg-white p-2.5 rounded-xl border border-purple-100 text-xs shadow-2xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-xs">STA 计算机恒速舒适护齿</span>
+              <span class="text-[9px] text-purple-700 font-bold bg-purple-50 px-1.5 py-0.2 rounded border border-purple-200">告别针筒恐惧</span>
+            </div>
+            <div class="text-[11px] text-slate-600 mt-1 leading-relaxed">
+              微米级电脑恒速恒压微流传导，孩子几乎感觉不到任何酸胀不适，配合笑气镇静，在不知不觉中完成牙齿健康护理。
+            </div>
+          </div>
+        </div>
+
+        <!-- 步骤 5: 瑞士果味慕斯温和涂氟 -->
+        <div class="flex items-start gap-3 relative">
+          <div class="w-6 h-6 rounded-full bg-pink-500 text-white text-[11px] font-black flex items-center justify-center shrink-0 z-10 shadow-sm shadow-pink-500/30">
+            5
+          </div>
+          <div class="flex-1 bg-white p-2.5 rounded-xl border border-pink-100 text-xs shadow-2xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-xs">瑞士草莓慕斯高频涂氟 / 窝沟封闭</span>
+              <span class="text-[9px] text-pink-700 font-bold bg-pink-50 px-1.5 py-0.2 rounded border border-pink-200">香甜防蛀</span>
+            </div>
+            <div class="text-[11px] text-slate-600 mt-1 leading-relaxed">
+              香甜可口的草莓果味慕斯，1 分钟快速成膜形成防蛀钻石保护铠甲，宝宝像吃甜点一样轻松搞定！
+            </div>
+          </div>
+        </div>
+
+        <!-- 步骤 6: 颁发小勇士勋章与巨型扭蛋机抽奖 -->
+        <div class="flex items-start gap-3 relative">
+          <div class="w-6 h-6 rounded-full bg-amber-500 text-white text-[11px] font-black flex items-center justify-center shrink-0 z-10 shadow-sm shadow-amber-500/30">
+            6
+          </div>
+          <div class="flex-1 bg-amber-50/50 p-2.5 rounded-xl border border-amber-200/90 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-xs">颁发超能小勇士金质勋章 · 免费扭蛋</span>
+              <span class="text-[9px] text-amber-800 font-bold bg-amber-200/80 px-1.5 py-0.2 rounded">通关奖励</span>
+            </div>
+            <div class="text-[11px] text-slate-600 mt-1 leading-relaxed">
+              护齿通关！医生阿姨为宝宝佩戴金质小勇士徽章，凭探险通行证在 1 楼大厅免费转动巨型扭蛋机一次，收获满满惊喜！
+            </div>
+          </div>
+        </div>
+`;
+    let defaultImplantStepsHTML = null;
+
     function applyProjectSpecialty(item) {
       const isOrtho = item && (item.includes('正畸') || item.includes('矫正') || item.includes('牙套') || item.includes('隐形'));
+      const isPediatric = item && (item.includes('儿牙') || item.includes('儿童') || item.includes('孩子') || item.includes('宝宝') || item.includes('涂氟') || item.includes('窝沟') || item.includes('防蛀') || item.includes('小勇士'));
       
       const cardItem = document.getElementById('card-item');
       const cardProject = document.getElementById('card-project');
       const cardDoc = document.getElementById('card-doc');
+      const cardGate = document.getElementById('card-gate');
       const secImplant = document.getElementById('section-3d-implant');
       const secOrtho = document.getElementById('section-3d-ortho');
+      const secPediatric = document.getElementById('section-3d-pediatric');
       const poolImplant = document.getElementById('doc-pool-implant');
       const poolOrtho = document.getElementById('doc-pool-ortho');
+      const poolPediatric = document.getElementById('doc-pool-pediatric');
       const fastPassDesc = document.getElementById('fast-pass-desc');
+      const bottomDoc = document.getElementById('bottom-bar-doc');
 
-      if (isOrtho) {
+      if (isPediatric) {
+        if (cardItem) cardItem.textContent = '儿童舒适化齿科';
+        if (cardProject) cardProject.textContent = item || '小勇士护齿探险 · 果味涂氟防蛀';
+        if (cardDoc) cardDoc.textContent = '温巧玲儿牙专家组';
+        if (bottomDoc) bottomDoc.textContent = '温巧玲主任专席';
+        if (cardGate) cardGate.textContent = '3F 恐龙童梦舱 · 吸顶汪汪队动画大屏';
+        if (fastPassDesc) fastPassDesc.textContent = '提前登记孩子喜好动画片与年龄，专家组已预留恐龙童梦舱';
+
+        const stepName = document.getElementById('step-lead-name');
+        if (stepName && stepName.textContent.includes('先生')) {
+          stepName.textContent = '「轩轩 小勇士」';
+        }
+
+        if (secImplant) secImplant.style.display = 'none';
+        if (secOrtho) secOrtho.style.display = 'none';
+        if (secPediatric) secPediatric.style.display = "block";
+
+        const jContainer = document.getElementById("journey-steps-container");
+        if (jContainer && typeof pediatricStepsHTML !== "undefined") {
+          jContainer.innerHTML = pediatricStepsHTML;
+        }
+
+        if (poolImplant) poolImplant.style.display = 'none';
+        if (poolOrtho) poolOrtho.style.display = 'none';
+        if (poolPediatric) poolPediatric.style.display = 'flex';
+
+        setTimeout(() => {
+          init3DPediatricViewer();
+          lucide.createIcons();
+        }, 120);
+      } else if (isOrtho) {
         if (cardItem) cardItem.textContent = item || '隐形美学正畸';
         if (cardProject) cardProject.textContent = item || '数字化隐形美学正畸';
         if (cardDoc) cardDoc.textContent = '陈雪华正畸专家组';
-        const bottomDoc = document.getElementById('bottom-bar-doc');
         if (bottomDoc) bottomDoc.textContent = '陈雪华主任专席';
+        if (cardGate) cardGate.textContent = '3F-VIP03 美学特诊室';
         if (fastPassDesc) fastPassDesc.textContent = '提前登记颌面咬合与美学期望，专家组预审免等待';
 
         if (secImplant) secImplant.style.display = 'none';
         if (secOrtho) secOrtho.style.display = 'block';
+        if (secPediatric) secPediatric.style.display = 'none';
+
         if (poolImplant) poolImplant.style.display = 'none';
         if (poolOrtho) poolOrtho.style.display = 'flex';
+        if (poolPediatric) poolPediatric.style.display = 'none';
 
         setTimeout(() => {
           init3DOrthoViewer();
@@ -2795,14 +3133,17 @@
           if (cardProject) cardProject.textContent = item;
         }
         if (cardDoc) cardDoc.textContent = '刘彦廷种植专家组';
-        const bottomDoc = document.getElementById('bottom-bar-doc');
         if (bottomDoc) bottomDoc.textContent = '刘彦廷院长专席';
+        if (cardGate) cardGate.textContent = '3F-VIP01 尊贵独立特诊室';
         if (fastPassDesc) fastPassDesc.textContent = '提前登记慢病用药史，专家组预审免等待';
 
         if (secImplant) secImplant.style.display = 'block';
         if (secOrtho) secOrtho.style.display = 'none';
+        if (secPediatric) secPediatric.style.display = 'none';
+
         if (poolImplant) poolImplant.style.display = 'flex';
         if (poolOrtho) poolOrtho.style.display = 'none';
+        if (poolPediatric) poolPediatric.style.display = 'none';
 
         setTimeout(() => {
           if (typeof init3DImplantViewer === 'function') init3DImplantViewer();
@@ -2810,6 +3151,7 @@
         }, 120);
       }
     }
+
 
     function toggleGenerator() {
       document.getElementById('generator-drawer').classList.toggle('open');
@@ -4701,6 +5043,346 @@
       initDecryptedTextEngine();
     }, 200);
   });
+
+    // ==========================================
+    // 🦷 3D 萌萌牙精灵 (儿牙专属 Three.js 引擎)
+    // ==========================================
+    
+
+    
+
+    let pScene, pCamera, pRenderer;
+    let pToothGroup, pToothBody, pEyeL, pEyeR, pBlushL, pBlushR, pSmileMouth;
+    let pHandL, pHandR, pShieldMesh, pMonsterGroup;
+    let pIsShieldActive = false;
+    let pIsMonsterActive = false;
+    let pIsDragging = false;
+    let pPrevMouse = { x: 0, y: 0 };
+    let pTargetRotY = 0;
+    let pTargetRotX = 0;
+    let pViewerInited = false;
+
+    function init3DPediatricViewer() {
+      if (pViewerInited) return;
+      const canvas = document.getElementById("pediatric-3d-canvas");
+      if (!canvas) return;
+      const container = canvas.parentElement;
+      const width = container.clientWidth || 360;
+      const height = container.clientHeight || 260;
+
+      pScene = new THREE.Scene();
+      pCamera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
+      pCamera.position.set(0, 0.15, 3.8);
+
+      pRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      pRenderer.setSize(width, height);
+      pRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Lights
+      const ambLight = new THREE.AmbientLight(0xffffff, 0.9);
+      pScene.add(ambLight);
+
+      const dLight = new THREE.DirectionalLight(0xffedd5, 1.3);
+      dLight.position.set(3, 4, 4);
+      pScene.add(dLight);
+
+      const rimL = new THREE.DirectionalLight(0x38bdf8, 0.7);
+      rimL.position.set(-3, -2, -2);
+      pScene.add(rimL);
+
+      pToothGroup = new THREE.Group();
+      pScene.add(pToothGroup);
+
+      // Build chubby anatomical baby molar
+      const toothMat = new THREE.MeshStandardMaterial({
+        color: 0xfdfbf7,
+        roughness: 0.12,
+        metalness: 0.02
+      });
+
+      const crownGeo = new THREE.CylinderGeometry(0.75, 0.62, 0.98, 36, 10);
+      const pos = crownGeo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        let x = pos.getX(i);
+        let y = pos.getY(i);
+        let z = pos.getZ(i);
+        let angle = Math.atan2(z, x);
+        let rOffset = Math.sin(angle * 2) * 0.08;
+        if (y > 0.1) {
+          let topWave = Math.sin(angle * 4) * 0.06;
+          pos.setY(i, y + topWave);
+        }
+        pos.setX(i, x * (1 + rOffset));
+        pos.setZ(i, z * (1 + rOffset));
+      }
+      crownGeo.computeVertexNormals();
+
+      pToothBody = new THREE.Mesh(crownGeo, toothMat);
+      pToothBody.position.y = 0.1;
+      pToothGroup.add(pToothBody);
+
+      // Two cute baby roots
+      const rootMat = new THREE.MeshStandardMaterial({ color: 0xf8f9fa, roughness: 0.25 });
+      const rootGeoL = new THREE.ConeGeometry(0.25, 0.55, 16);
+      rootGeoL.rotateX(Math.PI);
+      const rL = new THREE.Mesh(rootGeoL, rootMat);
+      rL.position.set(-0.3, -0.42, 0);
+      rL.rotation.z = -0.16;
+      pToothGroup.add(rL);
+
+      const rR = rL.clone();
+      rR.position.set(0.3, -0.42, 0);
+      rR.rotation.z = 0.16;
+      pToothGroup.add(rR);
+
+      // Big Pixar Eyes
+      const eyeMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+      const eyeGeo = new THREE.SphereGeometry(0.12, 16, 16);
+      eyeGeo.scale(1, 1.25, 0.4);
+
+      pEyeL = new THREE.Mesh(eyeGeo, eyeMat);
+      pEyeL.position.set(-0.26, 0.18, 0.67);
+      pToothGroup.add(pEyeL);
+
+      pEyeR = new THREE.Mesh(eyeGeo, eyeMat);
+      pEyeR.position.set(0.26, 0.18, 0.67);
+      pToothGroup.add(pEyeR);
+
+      // Sparkle Highlights
+      const sparkMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const sparkG = new THREE.SphereGeometry(0.045, 12, 12);
+      const spL1 = new THREE.Mesh(sparkG, sparkMat);
+      spL1.position.set(-0.23, 0.23, 0.74);
+      pToothGroup.add(spL1);
+      const spR1 = new THREE.Mesh(sparkG, sparkMat);
+      spR1.position.set(0.29, 0.23, 0.74);
+      pToothGroup.add(spR1);
+
+      // Cheerful Pink Blush Cheeks
+      const blushMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e, transparent: true, opacity: 0.75 });
+      const blushG = new THREE.CircleGeometry(0.09, 16);
+      pBlushL = new THREE.Mesh(blushG, blushMat);
+      pBlushL.position.set(-0.46, 0.05, 0.63);
+      pBlushL.rotation.y = -0.32;
+      pToothGroup.add(pBlushL);
+      pBlushR = new THREE.Mesh(blushG, blushMat);
+      pBlushR.position.set(0.46, 0.05, 0.63);
+      pBlushR.rotation.y = 0.32;
+      pToothGroup.add(pBlushR);
+
+      // Smile mouth
+      const curve = new THREE.CubicBezierCurve3(
+        new THREE.Vector3(-0.16, 0.04, 0.70),
+        new THREE.Vector3(-0.08, -0.09, 0.71),
+        new THREE.Vector3(0.08, -0.09, 0.71),
+        new THREE.Vector3(0.16, 0.04, 0.70)
+      );
+      const mouthG = new THREE.TubeGeometry(curve, 20, 0.024, 8, false);
+      const mouthMat = new THREE.MeshBasicMaterial({ color: 0xe11d48 });
+      pSmileMouth = new THREE.Mesh(mouthG, mouthMat);
+      pToothGroup.add(pSmileMouth);
+
+      // Cute Little Waving Hands
+      const handMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
+      const handG = new THREE.SphereGeometry(0.1, 16, 16);
+      handG.scale(1, 0.8, 0.8);
+      pHandL = new THREE.Mesh(handG, handMat);
+      pHandL.position.set(-0.78, 0.02, 0.1);
+      pHandL.rotation.z = 0.4;
+      pToothGroup.add(pHandL);
+      pHandR = new THREE.Mesh(handG, handMat);
+      pHandR.position.set(0.78, 0.02, 0.1);
+      pHandR.rotation.z = -0.4;
+      pToothGroup.add(pHandR);
+
+      // Magic Protective Shield Bubble
+      const sGeo = new THREE.SphereGeometry(1.22, 32, 32);
+      const sMat = new THREE.MeshPhysicalMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.0,
+        roughness: 0.04,
+        transmission: 0.88,
+        ior: 1.35,
+        thickness: 0.6,
+        emissive: 0x0284c7,
+        emissiveIntensity: 0.0
+      });
+      pShieldMesh = new THREE.Mesh(sGeo, sMat);
+      pShieldMesh.position.y = 0.05;
+      pToothGroup.add(pShieldMesh);
+
+      // Sugar Bug Monster
+      pMonsterGroup = new THREE.Group();
+      pMonsterGroup.position.set(0.65, 0.45, 0.5);
+      pMonsterGroup.scale.set(0.001, 0.001, 0.001);
+      const mBody = new THREE.Mesh(new THREE.DodecahedronGeometry(0.24, 1), new THREE.MeshStandardMaterial({ color: 0x9333ea, roughness: 0.35 }));
+      pMonsterGroup.add(mBody);
+      const mEye = new THREE.Mesh(new THREE.SphereGeometry(0.07, 12, 12), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+      mEye.position.set(0, 0.05, 0.2);
+      pMonsterGroup.add(mEye);
+      const mPupil = new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 12), new THREE.MeshBasicMaterial({ color: 0x000000 }));
+      mPupil.position.set(0, 0.05, 0.26);
+      pMonsterGroup.add(mPupil);
+      const hGeo = new THREE.ConeGeometry(0.05, 0.15, 8);
+      const hL = new THREE.Mesh(hGeo, new THREE.MeshStandardMaterial({ color: 0xf43f5e }));
+      hL.position.set(-0.1, 0.22, 0);
+      hL.rotation.z = -0.3;
+      pMonsterGroup.add(hL);
+      const hR = hL.clone();
+      hR.position.set(0.1, 0.22, 0);
+      hR.rotation.z = 0.3;
+      pMonsterGroup.add(hR);
+      pToothGroup.add(pMonsterGroup);
+
+      // Soft ground shadow
+      const gShad = new THREE.Mesh(
+        new THREE.PlaneGeometry(1.6, 0.8),
+        new THREE.MeshBasicMaterial({ color: 0x0284c7, transparent: true, opacity: 0.15 })
+      );
+      gShad.rotation.x = -Math.PI / 2;
+      gShad.position.y = -0.92;
+      pScene.add(gShad);
+
+      // Touch / Drag controls
+      canvas.addEventListener("pointerdown", (e) => {
+        pIsDragging = true;
+        pPrevMouse = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener("pointermove", (e) => {
+        if (!pIsDragging) return;
+        const dx = e.clientX - pPrevMouse.x;
+        const dy = e.clientY - pPrevMouse.y;
+        pTargetRotY += dx * 0.01;
+        pTargetRotX += dy * 0.008;
+        pTargetRotX = Math.max(-0.4, Math.min(0.4, pTargetRotX));
+        pPrevMouse = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener("pointerup", () => { pIsDragging = false; });
+
+      pViewerInited = true;
+
+      // Animate loop
+      const clock = new THREE.Clock();
+      function animP() {
+        requestAnimationFrame(animP);
+        const t = clock.getElapsedTime();
+        pToothGroup.rotation.y += (pTargetRotY - pToothGroup.rotation.y) * 0.08;
+        pToothGroup.rotation.x += (pTargetRotX - pToothGroup.rotation.x) * 0.08;
+
+        if (!pIsDragging) {
+          pToothGroup.position.y = Math.sin(t * 2.2) * 0.04;
+          if (pHandR) pHandR.rotation.z = -0.4 + Math.sin(t * 4) * 0.15;
+        }
+
+        if (pIsShieldActive && pShieldMesh) {
+          pShieldMesh.rotation.y += 0.012;
+          pShieldMesh.rotation.z += 0.006;
+        }
+
+        pRenderer.render(pScene, pCamera);
+      }
+      animP();
+    }
+
+    function toggleMagicShieldPediatric() {
+      pIsShieldActive = !pIsShieldActive;
+      const sp = document.getElementById("pediatric-speech-text");
+      const st = document.getElementById("pediatric-status-tag");
+      const btn = document.getElementById("btn-pediatric-shield");
+      if (pIsShieldActive) {
+        if (pShieldMesh) {
+          pShieldMesh.material.opacity = 0.5;
+          pShieldMesh.material.emissiveIntensity = 0.45;
+        }
+        if (btn) btn.classList.add("ring-3", "ring-teal-400");
+        if (sp) sp.textContent = "哇！穿上钻石泡泡防蛀铠甲啦，酸酸糖果都不怕！🛡️";
+        if (st) st.innerHTML = "<span class='w-2 h-2 rounded-full bg-teal-400 animate-ping'></span> <span>状态：防蛀泡泡全能防护中</span>";
+        if (typeof confetti === "function") {
+          confetti({ particleCount: 45, spread: 60, origin: { y: 0.45 }, colors: ["#38BDF8", "#FFDE59", "#FF70A6", "#48E5C2"] });
+        }
+      } else {
+        if (pShieldMesh) {
+          pShieldMesh.material.opacity = 0.0;
+          pShieldMesh.material.emissiveIntensity = 0.0;
+        }
+        if (btn) btn.classList.remove("ring-3", "ring-teal-400");
+        if (sp) sp.textContent = "小勇士，快帮我穿上钻石泡泡盾牌！";
+        if (st) st.innerHTML = "<span class='w-2 h-2 rounded-full bg-emerald-400 animate-ping'></span> <span>状态：快乐天然大白牙</span>";
+      }
+    }
+
+    function toggleSugarMonsterPediatric() {
+      const sp = document.getElementById("pediatric-speech-text");
+      const st = document.getElementById("pediatric-status-tag");
+      if (!pIsMonsterActive) {
+        pIsMonsterActive = true;
+        if (pMonsterGroup) pMonsterGroup.scale.set(1, 1, 1);
+        if (sp) sp.textContent = "哎呀！蛀牙小怪兽想偷吃糖！快点击“击跑蛀牙怪”帮我！👾";
+        if (st) st.innerHTML = "<span class='w-2 h-2 rounded-full bg-rose-500 animate-ping'></span> <span>状态：警报！发现蛀牙小怪兽</span>";
+      } else {
+        pIsMonsterActive = false;
+        let flyDist = 0;
+        const flyInterval = setInterval(() => {
+          flyDist += 0.15;
+          if (pMonsterGroup) {
+            pMonsterGroup.position.x += 0.2;
+            pMonsterGroup.position.y += 0.25;
+            pMonsterGroup.rotation.z += 0.4;
+            pMonsterGroup.scale.multiplyScalar(0.85);
+          }
+          if (flyDist > 3) {
+            clearInterval(flyInterval);
+            if (pMonsterGroup) {
+              pMonsterGroup.scale.set(0.001, 0.001, 0.001);
+              pMonsterGroup.position.set(0.65, 0.45, 0.5);
+            }
+          }
+        }, 30);
+        if (sp) sp.textContent = "太棒啦！泡泡特工队把小怪兽赶跑咯！🎉";
+        if (st) st.innerHTML = "<span class='w-2 h-2 rounded-full bg-emerald-400 animate-ping'></span> <span>状态：蛀牙怪已被消灭！</span>";
+        if (typeof confetti === "function") {
+          confetti({ particleCount: 50, spread: 80, origin: { y: 0.45 }, colors: ["#FFDE59", "#9B5DE5", "#FF70A6"] });
+        }
+      }
+    }
+
+    function feedFruitPediatric() {
+      const sp = document.getElementById("pediatric-speech-text");
+      if (sp) sp.textContent = "咯吱咯吱！脆苹果真甜真健康！🍎✨";
+      let step = 0;
+      const wig = setInterval(() => {
+        step++;
+        if (pToothGroup) {
+          pToothGroup.position.y = Math.sin(step * 0.5) * 0.12;
+          pToothGroup.rotation.z = Math.sin(step * 0.6) * 0.1;
+        }
+        if (step > 16) {
+          clearInterval(wig);
+          if (pToothGroup) {
+            pToothGroup.position.y = 0;
+            pToothGroup.rotation.z = 0;
+          }
+        }
+      }, 35);
+      if (typeof confetti === "function") {
+        confetti({ particleCount: 30, spread: 50, origin: { y: 0.45 }, colors: ["#FF5E7E", "#22C55E", "#FFDE59"] });
+      }
+    }
+
+    function toothGigglePediatric() {
+      const sp = document.getElementById("pediatric-speech-text");
+      if (sp) sp.textContent = "好痒呀哈哈哈哈～谢谢小勇士！😄";
+      if (pEyeL && pEyeR) {
+        pEyeL.scale.y = 0.1;
+        pEyeR.scale.y = 0.1;
+        setTimeout(() => {
+          pEyeL.scale.y = 1.25;
+          pEyeR.scale.y = 1.25;
+        }, 300);
+      }
+    }
+
 </script>
 
   

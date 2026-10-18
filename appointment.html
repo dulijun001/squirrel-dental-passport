@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  <script>
+    (function() {
+      try {
+        var p = new URLSearchParams(window.location.search);
+        var item = p.get(item) || ;
+        if (item.includes(儿牙) || item.includes(儿童) || item.includes(涂氟) || item.includes(窝沟) || item.includes(防蛀) || item.includes(小勇士)) {
+          window.location.replace(pediatric.html + window.location.search);
+        }
+      } catch(e) {}
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>松鼠口腔 · 贵宾到院专属就诊函</title>
